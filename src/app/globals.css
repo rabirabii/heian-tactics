@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --accent: #d6ff1f;
+  --border-ink: #0a0a0a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-border-ink: var(--border-ink);
+  --font-sans: var(--font-display), Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-data), "IBM Plex Mono", monospace;
+}
+
+/* dark mode intentionally deferred — finish light pass first */
+
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+::selection {
+  background: var(--accent);
+  color: var(--foreground);
+}
