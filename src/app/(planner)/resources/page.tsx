@@ -1,4 +1,4 @@
-import { ResourcesPage } from "@/features/dashboard/dashboard-shell";
+import { ResourcesPage } from '@/components/resources/ResourcesPage';
 
 export default function ResourcesRoute() {
   return <ResourcesPage />;

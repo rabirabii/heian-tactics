@@ -4,27 +4,27 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:pointer-events-none disabled:opacity-50",
+  "",
   {
     variants: {
       variant: {
-        default: "bg-emerald-500 text-zinc-950 hover:bg-emerald-400",
-        secondary:
-          "border border-white/10 bg-white/8 text-zinc-100 hover:bg-white/12",
-        ghost: "text-zinc-300 hover:bg-white/8 hover:text-white",
-        danger: "bg-rose-500 text-white hover:bg-rose-400",
+        default: "bg-[var(--color-bg)] text-[var(--color-ink)] hover:bg-[var(--color-accent)]/20",
+        destructive: "bg-[var(--color-bg)] text-[var(--color-ink)] hover:bg-[var(--color-accent)]/20",
+        outline: "bg-[var(--color-bg)] text-[var(--color-ink)] hover:bg-[var(--color-accent)]/20",
+        secondary: "bg-[var(--color-bg)] text-[var(--color-ink)] hover:bg-[var(--color-accent)]/20",
       },
       size: {
-        default: "h-9 px-3",
-        sm: "h-8 px-2.5 text-xs",
-        icon: "size-9 px-0",
+        default: "h-10 px-4 text-sm",
+        sm: "h-9 px-3 text-xs",
+        lg: "h-11 px-6 text-base",
+        icon: "h-10 w-10",
       },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
     },
-  },
+  }
 );
 
 export interface ButtonProps
@@ -33,19 +33,21 @@ export interface ButtonProps
   asChild?: boolean;
 }
 
-export function Button({
-  className,
-  variant,
-  size,
-  asChild = false,
-  ...props
-}: ButtonProps) {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, ...props }, ref) => {
   const Component = asChild ? Slot : "button";
-
   return (
     <Component
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={cn(
+        buttonVariants({ variant, size }),
+        "btn-base",
+        className
+      )}
+      ref={ref}
       {...props}
     />
   );
-}
+});
+
+Button.displayName = "Button";
+
+export { Button };

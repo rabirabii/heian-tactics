@@ -1,27 +1,45 @@
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const variants = {
-  emerald: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
-  amber: "border-amber-400/30 bg-amber-400/10 text-amber-300",
-  sky: "border-sky-400/30 bg-sky-400/10 text-sky-300",
-  rose: "border-rose-400/30 bg-rose-400/10 text-rose-300",
-  zinc: "border-zinc-400/30 bg-zinc-400/10 text-zinc-300",
-};
+const badgeVariants = cva(
+  "",
+  {
+    variants: {
+      variant: {
+        default: "text-[var(--color-ink)] bg-[var(--color-bg)]",
+        accent: "text-[var(--color-accent)] bg-[var(--color-bg)]",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+);
 
-export function Badge({
-  className,
-  variant = "zinc",
-  ...props
-}: React.ComponentProps<"span"> & { variant?: keyof typeof variants }) {
+export interface BadgeProps
+  extends React.ComponentProps<typeof Slot>,
+    VariantProps<typeof badgeVariants> {
+}
+
+const Badge = React.forwardRef<
+  HTMLElement,
+  BadgeProps
+>(({ className, variant, ...props }, ref) => {
   return (
-    <span
+    <Slot
       className={cn(
-        "inline-flex items-center rounded-md border px-2 py-1 text-xs font-medium",
-        variants[variant],
-        className,
+        badgeVariants({ variant }),
+        "badge",
+        className
       )}
+      ref={ref}
       {...props}
     />
   );
-}
+});
+
+Badge.displayName = "Badge";
+
+export { Badge };

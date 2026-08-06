@@ -63,7 +63,8 @@ export function PlannerNav() {
                 href={item.href}
                 className={cn(
                   "flex h-10 shrink-0 items-center gap-2 rounded-md px-3 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-950",
-                  active && "bg-zinc-950 text-white hover:bg-zinc-950 hover:text-white",
+                  active &&
+                    "bg-zinc-950 text-white hover:bg-zinc-950 hover:text-white",
                 )}
               >
                 <Icon size={16} />
@@ -77,7 +78,7 @@ export function PlannerNav() {
           <div className="rounded-lg border border-zinc-200 p-3">
             <div className="flex items-center justify-between">
               <span className="text-xs text-zinc-500">Zenith ready</span>
-              <Badge variant="emerald">{summary.zenithReadyPercent}%</Badge>
+              <Badge variant="default">{summary.zenithReadyPercent}%</Badge>
             </div>
             <div className="font-data mt-3 grid grid-cols-2 gap-2 text-xs text-zinc-500">
               <span>BD {summary.currentBlackDaruma}</span>
@@ -86,7 +87,11 @@ export function PlannerNav() {
               <span>Done {summary.projectsCompleted}</span>
             </div>
           </div>
-          <Button className="w-full" variant="secondary" onClick={resetDemoData}>
+          <Button
+            className="w-full"
+            variant="secondary"
+            onClick={resetDemoData}
+          >
             <RefreshCcw />
             Reset Demo
           </Button>

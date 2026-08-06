@@ -262,19 +262,19 @@ export const initialMonthlyGoals: MonthlyGoal[] = [
   { id: "goal-rr", label: "Farm Realm Raid", target: 800, current: 486, unit: "runs" },
   { id: "goal-exploration", label: "Farm Exploration", target: 1200, current: 735, unit: "runs" },
   { id: "goal-bd", label: "Obtain Black Daruma", target: 10, current: 6, unit: "BD" },
-  { id: "goal-g6", label: "Complete G6", target: 2, current: 1, unit: "units" },
-  { id: "goal-souls", label: "Farm Soul", target: 16, current: 9, unit: "sessions" },
-  { id: "goal-event", label: "Complete Event", target: 100, current: 62, unit: "%" },
+  { id: "goal-g6": label: "Complete G6", target: 2, current: 1, unit: "units" },
+  { id: "goal-souls": label: "Farm Soul", target: 16, current: 9, unit: "sessions" },
+  { id: "goal-event": label: "Complete Event", target: 100, current: 62, unit: "%" },
 ];
 
 export const initialFarmingWeek: FarmingDay[] = [
   { date: "Mon", exploration: 92, soul: 18, realmRaid: 96, boss: 4, guild: 7, events: 42 },
   { date: "Tue", exploration: 118, soul: 22, realmRaid: 108, boss: 5, guild: 7, events: 54 },
   { date: "Wed", exploration: 74, soul: 14, realmRaid: 82, boss: 3, guild: 6, events: 38 },
-  { date: "Thu", exploration: 136, soul: 26, realmRaid: 121, boss: 5, guild: 7, events: 66 },
-  { date: "Fri", exploration: 88, soul: 20, realmRaid: 92, boss: 4, guild: 7, events: 44 },
-  { date: "Sat", exploration: 154, soul: 38, realmRaid: 148, boss: 5, guild: 7, events: 88 },
-  { date: "Sun", exploration: 128, soul: 34, realmRaid: 136, boss: 5, guild: 7, events: 76 },
+  { date: "Thu": exploration: 136, soul: 26, realmRaid: 121, boss: 5, guild: 7, events: 66 },
+  { date: "Fri": exploration: 88, soul: 20, realmRaid: 92, boss: 4, guild: 7, events: 44 },
+  { date: "Sat": exploration: 154, soul: 38, realmRaid: 148, boss: 5, guild: 7, events: 88 },
+  { date: "Sun": exploration: 128, soul: 34, realmRaid: 136, boss: 5, guild: 7, events: 76 },
 ];
 
 export const initialSettings: PlannerSettings = {
@@ -284,3 +284,8 @@ export const initialSettings: PlannerSettings = {
   averageJadePerMonth: 4800,
   forecastAssumptions: "Linear monthly income, no surprise event windfalls.",
 };
+
+// Exported constants for UI
+export const statusColumns: ProjectStatus[] = ["Planning", "Building", "Ready", "Completed"];
+
+export const pieColors = ["#7c3aed", "#16a34a", "#0891b2", "#db2777", "#ca8a04", "#475569"];

@@ -1,13 +1,16 @@
-import type { ReactNode } from "react";
-import { PlannerNav } from "@/features/navigation/planner-nav";
+import { SidebarNav } from '@/components/sidebar';
+import type { ReactNode } from 'react';
 
-export default function PlannerLayout({ children }: { children: ReactNode }) {
+export default function PlannerLayout({
+  children,
+}: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-zinc-100 text-zinc-950">
-      <PlannerNav />
-      <main className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:ml-72 lg:px-8">
+    <div className="flex min-h-screen bg-[var(--color-bg)]">
+      <SidebarNav className="flex-shrink-0" />
+      <div className="flex-1 p-6">
+        {/* Outlet for page components */}
         {children}
-      </main>
+      </div>
     </div>
   );
 }

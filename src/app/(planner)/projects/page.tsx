@@ -1,4 +1,4 @@
-import { ProjectsPage } from "@/features/dashboard/dashboard-shell";
+import { ProjectsPage } from '@/components/projects/ProjectsPage';
 
 export default function ProjectsRoute() {
   return <ProjectsPage />;

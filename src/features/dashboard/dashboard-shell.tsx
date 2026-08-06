@@ -99,10 +99,10 @@ type SettingsFormValues = z.output<typeof settingsSchema>;
 const pieColors = ["#7c3aed", "#16a34a", "#0891b2", "#db2777", "#ca8a04", "#475569"];
 const statusColumns: ProjectStatus[] = ["Planning", "Building", "Ready", "Completed"];
 
-const priorityVariant: Record<Priority, "emerald" | "amber" | "rose"> = {
-  Low: "emerald",
-  Medium: "amber",
-  High: "rose",
+const priorityVariant: Record<Priority, "default" | "accent"> = {
+  Low: "default",
+  Medium: "default",
+  High: "accent",
 };
 
 function formatNumber(value: number) {
@@ -124,25 +124,27 @@ function PageHeader({
   return (
     <header className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="font-display text-2xl font-black text-zinc-950">{title}</h1>
-        <p className="mt-1 max-w-2xl text-sm text-zinc-600">{description}</p>
+        <h1 className="font-display text-2xl font-black ink">{title}</h1>
+        <p className="mt-1 max-w-2xl text-sm text-secondary">{description}</p>
       </div>
       {action}
     </header>
   );
 }
 
+export { PageHeader };
+
 function MetricCard({
   label,
   value,
   detail,
-  icon: Icon,
+  Icon: Icon,
   accent,
 }: {
   label: string;
   value: string;
   detail: string;
-  icon: LucideIcon;
+  Icon: LucideIcon;
   accent: string;
 }) {
   return (
@@ -307,7 +309,6 @@ function NewProjectForm() {
         <Input id="project-notes" {...form.register("notes")} />
       </div>
       <Button className="lg:col-span-4" type="submit">
-        <Plus />
         Add Project
       </Button>
     </form>
@@ -484,39 +485,37 @@ function ProjectBoard() {
   );
 }
 
-function MonthlyForecastCard() {
+function MonthlyForecastChart() {
   const resources = usePlannerStore((state) => state.resources);
   const monthlyProjection = useMemo(() => buildMonthlyProjection(resources), [resources]);
 
   return (
-    <Card className="min-h-0">
-      <CardHeader>
-        <div>
-          <CardTitle>Monthly Forecast</CardTitle>
-          <CardDescription>Black Daruma, jade, and G6-equivalent projection.</CardDescription>
-        </div>
-      </CardHeader>
-      <div className="h-[330px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={monthlyProjection}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(113,113,122,0.22)" />
-            <XAxis dataKey="month" tickLine={false} axisLine={false} fontSize={12} />
-            <YAxis tickLine={false} axisLine={false} fontSize={12} />
-            <Tooltip
-              contentStyle={{
-                background: "#ffffff",
-                border: "1px solid #e4e4e7",
-                borderRadius: 8,
-                color: "#18181b",
-              }}
-            />
-            <Area type="monotone" dataKey="blackDaruma" stroke="#7c3aed" fill="#7c3aed26" />
-            <Area type="monotone" dataKey="jade" stroke="#ca8a04" fill="#ca8a0426" />
-            <Area type="monotone" dataKey="g6" stroke="#0891b2" fill="#0891b226" />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-    </Card>
+    <div className="panel-bg border-2-black shadow-hard rounded-none p-4">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={monthlyProjection}>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-ink)" strokeOpacity={0.15} />
+          <XAxis dataKey="month" tickLine={false} axisLine={false} />
+          <YAxis tickLine={false} axisLine={false} />
+          <Tooltip
+            contentStyle={{
+              background: 'var(--color-bg)',
+              border: '2px solid var(--color-ink)',
+              borderRadius: 0,
+              boxShadow: '4px 4px 0 0 var(--color-ink)',
+              padding: '4px 8px',
+            }}
+            labelStyle={{
+              color: 'var(--color-ink)',
+              fontWeight: 600,
+            }}
+            wrapperStyle={{}}
+          />
+          <Area type="monotone" dataKey="blackDaruma" stroke="var(--color-accent)" fill="rgba(214, 255, 31, 0.4)" />
+          <Area type="monotone" dataKey="jade" stroke="var(--color-accent)" fill="rgba(214, 255, 31, 0.2)" />
+          <Area type="monotone" dataKey="g6" stroke="var(--color-accent)" fill="rgba(214, 255, 31, 0.1)" />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -531,44 +530,31 @@ function ResourceAllocationCard() {
   );
 
   return (
-    <Card>
-      <CardHeader>
-        <div>
-          <CardTitle>Resource Allocation</CardTitle>
-          <CardDescription>Top available resource pools for planning.</CardDescription>
-        </div>
-      </CardHeader>
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie data={allocation} innerRadius={54} outerRadius={88} dataKey="value" nameKey="name">
-              {allocation.map((entry, index) => (
-                <Cell key={entry.name} fill={pieColors[index % pieColors.length]} />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{
-                background: "#ffffff",
-                border: "1px solid #e4e4e7",
-                borderRadius: 8,
-                color: "#18181b",
-              }}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="font-data grid grid-cols-2 gap-2 text-xs">
-        {allocation.map((item, index) => (
-          <div key={item.name} className="flex items-center gap-2 text-zinc-500">
-            <span
-              className="size-2 rounded-full"
-              style={{ backgroundColor: pieColors[index % pieColors.length] }}
-            />
-            {item.name}: {formatNumber(item.value)}
-          </div>
-        ))}
-      </div>
-    </Card>
+    <div className="border-2-black panel-bg shadow-hard rounded-none p-4">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={allocation}
+            innerRadius={54}
+            outerRadius={88}
+            dataKey="value"
+            nameKey="name"
+          >
+            {allocation.map((entry, index) => (
+              <Cell key={entry.name} fill={pieColors[index % pieColors.length]} />
+            ))}
+          </Pie>
+          <Tooltip
+            contentStyle={{
+              background: "#ffffff",
+              border: "1px solid #e4e4e7",
+              borderRadius: 8,
+              color: "#18181b",
+            }}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -576,7 +562,6 @@ export function DashboardOverviewPage() {
   const resources = usePlannerStore((state) => state.resources);
   const projects = usePlannerStore((state) => state.projects);
   const summary = useMemo(() => summarizeAccount(resources, projects), [projects, resources]);
-  const rankedProjects = useMemo(() => rankProjects(projects, resources), [projects, resources]);
 
   return (
     <>
@@ -589,321 +574,35 @@ export function DashboardOverviewPage() {
           label="Current Black Daruma"
           value={formatNumber(summary.currentBlackDaruma)}
           detail={`${summary.blackDarumaIncome} BD/month`}
-          icon={Target}
-          accent="bg-violet-300"
+          Icon={Target}
+          accent="accent"
         />
         <MetricCard
           label="Current Jade"
           value={formatNumber(summary.currentJade)}
           detail={`${formatNumber(summary.jadeIncome)} jade/month`}
-          icon={TrendingUp}
-          accent="bg-lime-300"
+          Icon={TrendingUp}
+          accent=""
         />
         <MetricCard
           label="Current G6 Count"
           value={formatNumber(summary.currentG6Count)}
           detail={`${summary.metaUnitsCompleted} meta units near ready`}
-          icon={Gauge}
-          accent="bg-cyan-300"
+          Icon={Gauge}
+          accent=""
         />
         <MetricCard
           label="Projects Completed"
           value={`${summary.projectsCompleted}/${projects.length}`}
           detail={`${summary.zenithReadyPercent}% Zenith ready`}
-          icon={Activity}
-          accent="bg-pink-300"
+          Icon={Activity}
+          accent=""
         />
       </section>
 
       <section className="mt-4 grid min-h-0 gap-4 xl:grid-cols-[1.35fr_0.65fr]">
-        <MonthlyForecastCard />
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>Upcoming Projects</CardTitle>
-              <CardDescription>Top allocation candidates only.</CardDescription>
-            </div>
-            <BarChart3 size={18} className="text-zinc-400" />
-          </CardHeader>
-          <div className="space-y-3">
-            {rankedProjects.slice(0, 4).map((forecast, index) => (
-              <div key={forecast.project.id} className="rounded-lg border border-zinc-200 p-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-display text-sm font-bold text-zinc-950">
-                      {index + 1}. {forecast.project.name}
-                    </p>
-                    <p className="mt-1 text-xs text-zinc-500">
-                      ETA {forecast.completionDate} · {forecast.opportunityCost}
-                    </p>
-                  </div>
-                  <Badge variant={priorityVariant[forecast.project.priority]}>
-                    {forecast.allocationScore}
-                  </Badge>
-                </div>
-                <Progress className="mt-3" value={forecast.resourceProgress} />
-              </div>
-            ))}
-          </div>
-        </Card>
-      </section>
-    </>
-  );
-}
-
-export function ResourcesPage() {
-  return (
-    <>
-      <PageHeader
-        title="Resources"
-        description="Update current amounts, monthly income, adjustments, notes, and allocation mix."
-      />
-      <section className="grid gap-5 xl:grid-cols-[0.8fr_1.2fr]">
+        <MonthlyForecastChart />
         <ResourceAllocationCard />
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>Resource Ledger</CardTitle>
-              <CardDescription>Manual adjustments are logged in local browser state.</CardDescription>
-            </div>
-          </CardHeader>
-          <ResourceAdjustmentForm />
-          <div className="mt-4">
-            <ResourceTable />
-          </div>
-        </Card>
-      </section>
-    </>
-  );
-}
-
-export function ProjectsPage() {
-  return (
-    <>
-      <PageHeader
-        title="Projects"
-        description="Manage long-term build projects, status, requirements, priority, and ROI."
-      />
-      <section className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>Build Projects</CardTitle>
-              <CardDescription>Kanban view for roster investments.</CardDescription>
-            </div>
-          </CardHeader>
-          <ProjectBoard />
-        </Card>
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>New Project</CardTitle>
-              <CardDescription>Create a build goal with resource requirements and ROI.</CardDescription>
-            </div>
-          </CardHeader>
-          <NewProjectForm />
-        </Card>
-      </section>
-    </>
-  );
-}
-
-export function RosterPage() {
-  const shikigami = usePlannerStore((state) => state.shikigami);
-
-  return (
-    <>
-      <PageHeader
-        title="Roster"
-        description="Track PvP status, Black Daruma demand, skill state, and multiple soul presets."
-      />
-      <section className="grid gap-4 lg:grid-cols-2">
-        {shikigami.map((unit) => (
-          <Card key={unit.id}>
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2 className="font-display text-lg font-black text-zinc-950">{unit.name}</h2>
-                <p className="font-data mt-1 text-xs text-zinc-500">
-                  G{unit.grade} · Skills {unit.skillLevel} · {unit.pvpStatus}
-                </p>
-              </div>
-              <Badge variant={priorityVariant[unit.priority]}>{unit.metaTier}</Badge>
-            </div>
-            <div className="mt-4 grid gap-2">
-              {unit.soulPresets.map((preset) => (
-                <div key={preset.id} className="rounded-md bg-zinc-100 p-3 text-xs">
-                  <div className="flex justify-between gap-2">
-                    <span className="font-display font-bold text-zinc-950">{preset.name}</span>
-                    <span className="font-data text-zinc-500">{preset.soulSet}</span>
-                  </div>
-                  <div className="font-data mt-2 text-zinc-500">
-                    {Object.entries(preset.stats)
-                      .map(([stat, value]) => `${stat} ${value}`)
-                      .join(" · ")}
-                  </div>
-                  <p className="mt-2 text-zinc-500">{preset.notes}</p>
-                </div>
-              ))}
-            </div>
-          </Card>
-        ))}
-      </section>
-    </>
-  );
-}
-
-export function PlannerPage() {
-  const monthlyGoals = usePlannerStore((state) => state.monthlyGoals);
-  const farmingWeek = usePlannerStore((state) => state.farmingWeek);
-  const updateMonthlyGoal = usePlannerStore((state) => state.updateMonthlyGoal);
-  const weeklyTotals = useMemo(
-    () =>
-      farmingWeek.reduce(
-        (totals, day) => ({
-          exploration: totals.exploration + day.exploration,
-          soul: totals.soul + day.soul,
-          realmRaid: totals.realmRaid + day.realmRaid,
-          boss: totals.boss + day.boss,
-          guild: totals.guild + day.guild,
-          events: totals.events + day.events,
-        }),
-        { exploration: 0, soul: 0, realmRaid: 0, boss: 0, guild: 0, events: 0 },
-      ),
-    [farmingWeek],
-  );
-
-  return (
-    <>
-      <PageHeader
-        title="Planner"
-        description="Monthly goals and weekly farming pace for repeatable account loops."
-      />
-      <section className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>Monthly Planner</CardTitle>
-              <CardDescription>Calendar-style monthly account goals.</CardDescription>
-            </div>
-            <CalendarDays size={18} className="text-zinc-400" />
-          </CardHeader>
-          <div className="space-y-4">
-            {monthlyGoals.map((goal) => {
-              const progress = Math.round((goal.current / goal.target) * 100);
-
-              return (
-                <div key={goal.id}>
-                  <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-                    <span className="font-medium text-zinc-900">{goal.label}</span>
-                    <span className="font-data text-xs text-zinc-500">
-                      {goal.current}/{goal.target} {goal.unit}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-[1fr_84px] gap-3">
-                    <Progress value={progress} />
-                    <Input
-                      aria-label={`${goal.label} current progress`}
-                      type="number"
-                      value={goal.current}
-                      onChange={(event) => updateMonthlyGoal(goal.id, Number(event.target.value))}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>Farming Tracker</CardTitle>
-              <CardDescription>Weekly pace across repeatable farming loops.</CardDescription>
-            </div>
-            <Moon size={18} className="text-zinc-400" />
-          </CardHeader>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={farmingWeek}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(113,113,122,0.22)" />
-                <XAxis dataKey="date" tickLine={false} axisLine={false} fontSize={12} />
-                <YAxis tickLine={false} axisLine={false} fontSize={12} />
-                <Tooltip
-                  contentStyle={{
-                    background: "#ffffff",
-                    border: "1px solid #e4e4e7",
-                    borderRadius: 8,
-                    color: "#18181b",
-                  }}
-                />
-                <Bar dataKey="exploration" fill="#7c3aed" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="realmRaid" fill="#0891b2" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="soul" fill="#ca8a04" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="font-data mt-4 grid grid-cols-2 gap-2 text-xs text-zinc-500 sm:grid-cols-3">
-            <span>Exploration {weeklyTotals.exploration}</span>
-            <span>Realm Raid {weeklyTotals.realmRaid}</span>
-            <span>Soul {weeklyTotals.soul}</span>
-            <span>Boss {weeklyTotals.boss}</span>
-            <span>Guild {weeklyTotals.guild}</span>
-            <span>Events {weeklyTotals.events}</span>
-          </div>
-        </Card>
-      </section>
-    </>
-  );
-}
-
-export function SettingsPage() {
-  const resources = usePlannerStore((state) => state.resources);
-  const projects = usePlannerStore((state) => state.projects);
-  const settings = usePlannerStore((state) => state.settings);
-  const summary = useMemo(() => summarizeAccount(resources, projects), [projects, resources]);
-
-  return (
-    <>
-      <PageHeader
-        title="Settings"
-        description="Planning assumptions, server profile, account statistics, and current averages."
-      />
-      <section className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>Statistics</CardTitle>
-              <CardDescription>Monthly planning averages and completion rate.</CardDescription>
-            </div>
-          </CardHeader>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {[
-              ["BD gained", `${settings.averageBlackDarumaPerMonth}/mo`],
-              ["BD spent", "12 planned"],
-              ["Jade spent", "3.2k planned"],
-              ["Summons", "60 saved"],
-              ["SSR/SP obtained", "2 target slots"],
-              ["G6/month", `${Math.max(1, Math.round(resources.exp.monthlyIncome / 50))}`],
-              ["Completion Rate", `${summary.averageCompletionRate}%`],
-              ["Average Jade/month", formatNumber(settings.averageJadePerMonth)],
-            ].map(([label, value]) => (
-              <div key={label} className="rounded-lg border border-zinc-200 p-3">
-                <p className="text-xs text-zinc-500">{label}</p>
-                <p className="font-data mt-1 text-lg font-bold text-zinc-950">{value}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <div>
-              <CardTitle>Settings</CardTitle>
-              <CardDescription>Server, target season, averages, and forecast assumptions.</CardDescription>
-            </div>
-          </CardHeader>
-          <SettingsForm />
-        </Card>
       </section>
     </>
   );
