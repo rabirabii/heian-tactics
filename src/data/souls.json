@@ -1,0 +1,428 @@
+[
+  {
+    "id": "snow-spirit",
+    "name": "Snow Spirit",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9f/Soul1.png"
+  },
+  {
+    "id": "jizo-statue",
+    "name": "Jizo Statue",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/36/Soul2.png"
+  },
+  {
+    "id": "nightwing",
+    "name": "Nightwing",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/35/Soul3.png"
+  },
+  {
+    "id": "holy-flame",
+    "name": "Holy Flame",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7e/Soul4.png"
+  },
+  {
+    "id": "samisen",
+    "name": "Samisen",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0e/Soul5.png"
+  },
+  {
+    "id": "mimic",
+    "name": "Mimic",
+    "twoPiece": "RES",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/86/Soul6.png"
+  },
+  {
+    "id": "boroboroton",
+    "name": "Boroboroton",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/8d/Soul7.png"
+  },
+  {
+    "id": "fortune-cat",
+    "name": "Fortune Cat",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/42/Soul8.png"
+  },
+  {
+    "id": "shy-soul",
+    "name": "Shy Soul",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9b/Soul9.png"
+  },
+  {
+    "id": "soultaker",
+    "name": "Soultaker",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/36/Soul10.png"
+  },
+  {
+    "id": "dawn-fairy",
+    "name": "Dawn Fairy",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f4/Soul11.png"
+  },
+  {
+    "id": "mirror-lady",
+    "name": "Mirror Lady",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/55/Soul12.png"
+  },
+  {
+    "id": "priestess",
+    "name": "Priestess",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/92/Soul13.png"
+  },
+  {
+    "id": "scarlet",
+    "name": "Scarlet",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0b/Soul14.png"
+  },
+  {
+    "id": "azure-basan",
+    "name": "Azure Basan",
+    "twoPiece": "HIT",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7a/Soul15.png"
+  },
+  {
+    "id": "house-imp",
+    "name": "House Imp",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/3b/Soul16.png"
+  },
+  {
+    "id": "soul-edge",
+    "name": "Soul Edge",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e8/Soul17.png"
+  },
+  {
+    "id": "watcher",
+    "name": "Watcher",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/37/Soul18.png"
+  },
+  {
+    "id": "tree-nymph",
+    "name": "Tree Nymph",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d8/Soul19.png"
+  },
+  {
+    "id": "tree-spirit",
+    "name": "Tree Spirit",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/89/Soul20.png"
+  },
+  {
+    "id": "claws",
+    "name": "Claws",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/ba/Soul21.png"
+  },
+  {
+    "id": "harpy",
+    "name": "Harpy",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/5d/Soul22.png"
+  },
+  {
+    "id": "himeidori",
+    "name": "Himeidori",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/00/Soul23.png"
+  },
+  {
+    "id": "shadow",
+    "name": "Shadow",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/fe/Soul24.png"
+  },
+  {
+    "id": "tomb-guard",
+    "name": "Tomb Guard",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c7/Soul25.png"
+  },
+  {
+    "id": "pearl",
+    "name": "Pearl",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/4e/Soul26.png"
+  },
+  {
+    "id": "dice-sprite",
+    "name": "Dice Sprite",
+    "twoPiece": "RES",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/be/Soul27.png"
+  },
+  {
+    "id": "sea-sprite",
+    "name": "Sea Sprite",
+    "twoPiece": "HIT",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7a/Soul28.png"
+  },
+  {
+    "id": "temptress",
+    "name": "Temptress",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d8/Soul29.png"
+  },
+  {
+    "id": "seductress",
+    "name": "Seductress",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/4a/Soul30.png"
+  },
+  {
+    "id": "senecio",
+    "name": "Senecio",
+    "twoPiece": "RES",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e0/Soul31.png"
+  },
+  {
+    "id": "kyoukotsu",
+    "name": "Kyoukotsu",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/6b/Soul32.png"
+  },
+  {
+    "id": "yamabiko",
+    "name": "Yamabiko",
+    "twoPiece": "RES",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f0/Soul33.png"
+  },
+  {
+    "id": "boss-souls",
+    "name": "Boss Souls",
+    "twoPiece": "Random Stat",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7c/Soul34.png"
+  },
+  {
+    "id": "kataha-no-ashi",
+    "name": "Kataha no Ashi",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/af/Soul39.png"
+  },
+  {
+    "id": "chirizuka",
+    "name": "Chirizuka",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/65/SoulO40.png"
+  },
+  {
+    "id": "abura-akago",
+    "name": "Abura Akago",
+    "twoPiece": "HIT",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c1/SoulO41.png"
+  },
+  {
+    "id": "yonaki-ishi",
+    "name": "Yonaki Ishi",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/13/SoulO42.png"
+  },
+  {
+    "id": "yookuri-no-inu",
+    "name": "Yookuri no Inu",
+    "twoPiece": "RES",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/fa/SoulO43.png"
+  },
+  {
+    "id": "amefuri-kozou",
+    "name": "Amefuri Kozou",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/07/SoulO44.png"
+  },
+  {
+    "id": "hinoenma",
+    "name": "Hinoenma",
+    "twoPiece": "HIT",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/87/Soul45.png"
+  },
+  {
+    "id": "hyosube",
+    "name": "Hyosube",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e0/Soul46.png"
+  },
+  {
+    "id": "aonyobo",
+    "name": "Aonyobo",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9e/Soul47.png"
+  },
+  {
+    "id": "nuribotoke",
+    "name": "Nuribotoke",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9a/Soul48.png"
+  },
+  {
+    "id": "wisp",
+    "name": "Wisp",
+    "twoPiece": "HIT",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/ac/Soul50.png"
+  },
+  {
+    "id": "merrow",
+    "name": "Merrow",
+    "twoPiece": "RES",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/8b/Soul51.png"
+  },
+  {
+    "id": "leviathan",
+    "name": "Leviathan",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/35/Soul52.png"
+  },
+  {
+    "id": "conch-blower",
+    "name": "Conch Blower",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/06/Soul53.png"
+  },
+  {
+    "id": "wispzoa",
+    "name": "Wispzoa",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/5d/Soul54.png"
+  },
+  {
+    "id": "oracle",
+    "name": "Oracle",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/36/Soul55.png"
+  },
+  {
+    "id": "hi-no-kuruma",
+    "name": "Hi no Kuruma",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/ad/Soul56.png"
+  },
+  {
+    "id": "innen",
+    "name": "Innen",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/eb/Soul57.png"
+  },
+  {
+    "id": "tatamitataki",
+    "name": "Tatamitataki",
+    "twoPiece": "HP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0e/Soul58.png"
+  },
+  {
+    "id": "ouseichuu",
+    "name": "Ouseichuu",
+    "twoPiece": "Crit",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/6f/Soul59.png"
+  },
+  {
+    "id": "gagoze",
+    "name": "Gagoze",
+    "twoPiece": "HIT",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d2/Soul60.png"
+  },
+  {
+    "id": "tsurubebi",
+    "name": "Tsurubebi",
+    "twoPiece": "RES",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/47/Soul61.png"
+  },
+  {
+    "id": "mutoudori",
+    "name": "Mutoudori",
+    "twoPiece": "Crit DMG",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/93/Soul63.png"
+  },
+  {
+    "id": "houkaizu",
+    "name": "Houkaizu",
+    "twoPiece": "DEF",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c8/Soul64.png"
+  },
+  {
+    "id": "the-mirror-of-yata",
+    "name": "The Mirror of Yata",
+    "twoPiece": "Random Stat",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/3d/Soul65.png"
+  },
+  {
+    "id": "feather-slash",
+    "name": "Feather Slash",
+    "twoPiece": "Random Stat",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/db/Soul66.png"
+  },
+  {
+    "id": "prophecy-astrolabe",
+    "name": "Prophecy Astrolabe",
+    "twoPiece": "Random Stat",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/86/Soul67.png"
+  },
+  {
+    "id": "moonstone",
+    "name": "Moonstone",
+    "twoPiece": "Random Stat",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/8e/Soul68.png"
+  },
+  {
+    "id": "bond-weaver",
+    "name": "Bond Weaver",
+    "twoPiece": "Random Stat",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/db/Soul69.png"
+  },
+  {
+    "id": "prosperity-arrow",
+    "name": "Prosperity Arrow",
+    "twoPiece": "Random Stat",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/dd/Soul70.png"
+  },
+  {
+    "id": "exp-soul",
+    "name": "EXP Soul",
+    "twoPiece": "Upgrade Material",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/1d/Mitamau1.png"
+  },
+  {
+    "id": "amanojaku",
+    "name": "Amanojaku",
+    "twoPiece": "ATK",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/1d/Mitamau1.png"
+  },
+  {
+    "id": "seikichi-oni",
+    "name": "Seikichi Oni",
+    "twoPiece": "Upgrade Material",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/93/Mitamau1_1.png"
+  },
+  {
+    "id": "youtou",
+    "name": "Youtou",
+    "twoPiece": "Removed",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f2/MitamaOld1.png"
+  },
+  {
+    "id": "suzume",
+    "name": "Suzume",
+    "twoPiece": "Removed",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/ca/MitamaOld2.png"
+  },
+  {
+    "id": "aosaginohi​",
+    "name": "Aosaginohi​",
+    "twoPiece": "Removed",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/15/MitamaOld3.png"
+  },
+  {
+    "id": "kosode-no-te",
+    "name": "Kosode-no-Te",
+    "twoPiece": "Removed",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/22/MitamaOld4.png"
+  }
+]

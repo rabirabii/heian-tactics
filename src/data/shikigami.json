@@ -1,0 +1,1777 @@
+[
+  {
+    "id": "momo-no-sei",
+    "name": "Momo no Sei",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/85/200.png"
+  },
+  {
+    "id": "yuki-onna",
+    "name": "Yuki Onna",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/b8/201.png"
+  },
+  {
+    "id": "sanbi-no-kitsune",
+    "name": "Sanbi no Kitsune",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c0/202.png"
+  },
+  {
+    "id": "lantern-soul",
+    "name": "Lantern Soul",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/57/203.png"
+  },
+  {
+    "id": "zashiki-warashi",
+    "name": "Zashiki Warashi",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f7/205.png",
+    "beginnerFriendly": true,
+    "roles": [
+      "orb_provider"
+    ],
+    "evaluations": [
+      {
+        "category": "pve_farming",
+        "score": "SS",
+        "notes": "Best in slot"
+      },
+      {
+        "category": "pvp_duel",
+        "score": "B",
+        "notes": "Outclassed later"
+      }
+    ]
+  },
+  {
+    "id": "koi-no-sei",
+    "name": "Koi no Sei",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/fc/206.png"
+  },
+  {
+    "id": "kyuumei-neko",
+    "name": "Kyuumei Neko",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/98/207.png"
+  },
+  {
+    "id": "baketanuki",
+    "name": "Baketanuki",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7e/208.png"
+  },
+  {
+    "id": "kappa",
+    "name": "Kappa",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/41/209.png"
+  },
+  {
+    "id": "shiro-mujou",
+    "name": "Shiro Mujou",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d7/210.png"
+  },
+  {
+    "id": "kuro-mujou",
+    "name": "Kuro Mujou",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/20/211.png",
+    "beginnerFriendly": true,
+    "roles": [
+      "aoe_dps"
+    ],
+    "evaluations": [
+      {
+        "category": "pve_farming",
+        "score": "SS",
+        "notes": "Best in slot"
+      },
+      {
+        "category": "pvp_duel",
+        "score": "B",
+        "notes": "Outclassed later"
+      }
+    ]
+  },
+  {
+    "id": "oguna",
+    "name": "Oguna",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/64/212.png"
+  },
+  {
+    "id": "doujo",
+    "name": "Doujo",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/cb/213.png"
+  },
+  {
+    "id": "gaki",
+    "name": "Gaki",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d3/214.png"
+  },
+  {
+    "id": "mouba",
+    "name": "Mouba",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/40/215.png"
+  },
+  {
+    "id": "kodokushi",
+    "name": "Kodokushi",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/98/216.png"
+  },
+  {
+    "id": "ootengu",
+    "name": "Ootengu",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f1/217.png"
+  },
+  {
+    "id": "karasu-tengu",
+    "name": "Karasu Tengu",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9a/218.png"
+  },
+  {
+    "id": "shuten-douji",
+    "name": "Shuten Douji",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a4/219.png"
+  },
+  {
+    "id": "inugami",
+    "name": "Inugami",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/bb/220.png"
+  },
+  {
+    "id": "kamikui",
+    "name": "Kamikui",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/21/221.png"
+  },
+  {
+    "id": "samurai-no-rei",
+    "name": "Samurai no Rei",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/b3/222.png"
+  },
+  {
+    "id": "hone-onna",
+    "name": "Hone Onna",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/39/223.png"
+  },
+  {
+    "id": "ame-onna",
+    "name": "Ame Onna",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e4/224.png"
+  },
+  {
+    "id": "kyonshii-otouto",
+    "name": "Kyonshii Otouto",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/26/225.png"
+  },
+  {
+    "id": "kyonshii-imouto",
+    "name": "Kyonshii Imouto",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/78/226.png"
+  },
+  {
+    "id": "heiyou",
+    "name": "Heiyou",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/24/227.png"
+  },
+  {
+    "id": "ushi-no-toki",
+    "name": "Ushi no Toki",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/cf/228.png"
+  },
+  {
+    "id": "hitotsume-kozou",
+    "name": "Hitotsume Kozou",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/51/230.png"
+  },
+  {
+    "id": "kijo-momiji",
+    "name": "Kijo Momiji",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/1f/231.png"
+  },
+  {
+    "id": "tesso",
+    "name": "Tesso",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f2/232.png"
+  },
+  {
+    "id": "kyonshii-ani",
+    "name": "Kyonshii Ani",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/74/233.png"
+  },
+  {
+    "id": "shouzu",
+    "name": "Shouzu",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7b/234.png"
+  },
+  {
+    "id": "kudagitsune",
+    "name": "Kudagitsune",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/60/236.png"
+  },
+  {
+    "id": "yama-usagi",
+    "name": "Yama Usagi",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c3/237.png"
+  },
+  {
+    "id": "hotarugusa",
+    "name": "Hotarugusa",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/8b/238.png"
+  },
+  {
+    "id": "kochou-no-sei",
+    "name": "Kochou no Sei",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0b/241.png"
+  },
+  {
+    "id": "kairaishi",
+    "name": "Kairaishi",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a0/242.png"
+  },
+  {
+    "id": "yamawaro",
+    "name": "Yamawaro",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c2/243.png"
+  },
+  {
+    "id": "kubinashi",
+    "name": "Kubinashi",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/8c/244.png"
+  },
+  {
+    "id": "lantern-boy",
+    "name": "Lantern Boy",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0f/245.png"
+  },
+  {
+    "id": "akashita",
+    "name": "Akashita",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/68/246.png"
+  },
+  {
+    "id": "umibouzu",
+    "name": "Umibouzu",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f3/247.png"
+  },
+  {
+    "id": "arakawa-no-aruji",
+    "name": "Arakawa no Aruji",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/25/248.png"
+  },
+  {
+    "id": "satori",
+    "name": "Satori",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/dd/249.png"
+  },
+  {
+    "id": "jikikaeru",
+    "name": "Jikikaeru",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/fb/250.png"
+  },
+  {
+    "id": "hangan",
+    "name": "Hangan",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/81/251.png"
+  },
+  {
+    "id": "hououka",
+    "name": "Hououka",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ec/252.png"
+  },
+  {
+    "id": "kyuuketsu-hime",
+    "name": "Kyuuketsu Hime",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/06/253.png"
+  },
+  {
+    "id": "youko",
+    "name": "Youko",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/eb/254.png"
+  },
+  {
+    "id": "enma",
+    "name": "Enma",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/78/255.png"
+  },
+  {
+    "id": "youkinshi",
+    "name": "Youkinshi",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/19/256.png"
+  },
+  {
+    "id": "yumekui",
+    "name": "Yumekui",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/60/257.png"
+  },
+  {
+    "id": "ryoumenbotoke",
+    "name": "Ryoumenbotoke",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/36/258.png"
+  },
+  {
+    "id": "shishio",
+    "name": "Shishio",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/75/259.png"
+  },
+  {
+    "id": "kiyohime",
+    "name": "Kiyohime",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/4e/260.png"
+  },
+  {
+    "id": "kamaitachi",
+    "name": "Kamaitachi",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/02/261.png"
+  },
+  {
+    "id": "ubume",
+    "name": "Ubume",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e9/262.png"
+  },
+  {
+    "id": "futakuchi-onna",
+    "name": "Futakuchi Onna",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ea/263.png"
+  },
+  {
+    "id": "hakurou",
+    "name": "Hakurou",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/92/264.png"
+  },
+  {
+    "id": "ibaraki-douji",
+    "name": "Ibaraki Douji",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/91/265.png"
+  },
+  {
+    "id": "aoandon",
+    "name": "Aoandon",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/67/266.png"
+  },
+  {
+    "id": "sakura-no-sei",
+    "name": "Sakura no Sei",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0a/267.png"
+  },
+  {
+    "id": "ebisu",
+    "name": "Ebisu",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ea/268.png"
+  },
+  {
+    "id": "youtou-hime",
+    "name": "Youtou Hime",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/1d/269.png"
+  },
+  {
+    "id": "jorougumo",
+    "name": "Jorougumo",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/ce/270.png"
+  },
+  {
+    "id": "hannya",
+    "name": "Hannya",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c8/271.png"
+  },
+  {
+    "id": "ichimokuren",
+    "name": "Ichimokuren",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/bb/272.png"
+  },
+  {
+    "id": "aobouzu",
+    "name": "Aobouzu",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/07/273.png"
+  },
+  {
+    "id": "korouka",
+    "name": "Korouka",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f5/274.png"
+  },
+  {
+    "id": "mannendake",
+    "name": "Mannendake",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ee/275.png"
+  },
+  {
+    "id": "yasha",
+    "name": "Yasha",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/16/276.png"
+  },
+  {
+    "id": "kuro-douji",
+    "name": "Kuro Douji",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/45/277.png"
+  },
+  {
+    "id": "shiro-douji",
+    "name": "Shiro Douji",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0a/278.png"
+  },
+  {
+    "id": "kachou-fuugetsu",
+    "name": "Kachou Fuugetsu",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/cb/279.png"
+  },
+  {
+    "id": "kaguya-hime",
+    "name": "Kaguya Hime",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/6c/280.png"
+  },
+  {
+    "id": "enenra",
+    "name": "Enenra",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d4/281.png"
+  },
+  {
+    "id": "kingyo-hime",
+    "name": "Kingyo Hime",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/07/282.png"
+  },
+  {
+    "id": "susabi",
+    "name": "Susabi",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/fa/283.png"
+  },
+  {
+    "id": "chin",
+    "name": "Chin",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/18/285.png"
+  },
+  {
+    "id": "itsumade",
+    "name": "Itsumade",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d8/286.png"
+  },
+  {
+    "id": "hako-no-shoujo",
+    "name": "Hako no Shoujo",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/3c/287.png"
+  },
+  {
+    "id": "higanbana",
+    "name": "Higanbana",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/26/288.png"
+  },
+  {
+    "id": "usagimaru",
+    "name": "Usagimaru",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/76/289.png"
+  },
+  {
+    "id": "komatsumaru",
+    "name": "Komatsumaru",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/ca/290.png"
+  },
+  {
+    "id": "shoyou",
+    "name": "Shoyou",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/99/291.png"
+  },
+  {
+    "id": "yuki-douji",
+    "name": "Yuki Douji",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/43/292.png"
+  },
+  {
+    "id": "doumeki",
+    "name": "Doumeki",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a9/293.png"
+  },
+  {
+    "id": "nura-rikuo",
+    "name": "Nura Rikuo",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a3/294.png"
+  },
+  {
+    "id": "oitsukigami",
+    "name": "Oitsukigami",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d3/295.png"
+  },
+  {
+    "id": "yamakaze",
+    "name": "Yamakaze",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/17/296.png"
+  },
+  {
+    "id": "hiyoribou",
+    "name": "Hiyoribou",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0d/297.png"
+  },
+  {
+    "id": "kaoru",
+    "name": "Kaoru",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f0/298.png"
+  },
+  {
+    "id": "tamamo-no-mae",
+    "name": "Tamamo no Mae",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c3/300.png"
+  },
+  {
+    "id": "juzu",
+    "name": "Juzu",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/97/301.png"
+  },
+  {
+    "id": "kosode-no-te",
+    "name": "Kosode no Te",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7a/302.png"
+  },
+  {
+    "id": "kisei",
+    "name": "Kisei",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/86/303.png"
+  },
+  {
+    "id": "miketsu",
+    "name": "Miketsu",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/95/304.png"
+  },
+  {
+    "id": "kusuriuri",
+    "name": "Kusuriuri",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/64/305.png"
+  },
+  {
+    "id": "mushishi",
+    "name": "Mushishi",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/b8/306.png"
+  },
+  {
+    "id": "nekomata",
+    "name": "Nekomata",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/96/307.png"
+  },
+  {
+    "id": "hozuki",
+    "name": "Hozuki",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f1/308.png"
+  },
+  {
+    "id": "okou",
+    "name": "Okou",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/6b/309.png"
+  },
+  {
+    "id": "peach-maki-&-karashi",
+    "name": "Peach Maki & Karashi",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/29/310.png"
+  },
+  {
+    "id": "menreiki",
+    "name": "Menreiki",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/31/311.png"
+  },
+  {
+    "id": "onikiri",
+    "name": "Onikiri",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/96/312.png"
+  },
+  {
+    "id": "inuyasha",
+    "name": "Inuyasha",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/3d/313.png"
+  },
+  {
+    "id": "sesshoumaru",
+    "name": "Sesshoumaru",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ec/314.png"
+  },
+  {
+    "id": "shouu-ootengu",
+    "name": "Shouu Ootengu",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/df/315.png"
+  },
+  {
+    "id": "hakuzousu",
+    "name": "Hakuzousu",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/ca/316.png"
+  },
+  {
+    "id": "ninmenju",
+    "name": "Ninmenju",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/02/317.png"
+  },
+  {
+    "id": "okikumushi",
+    "name": "Okikumushi",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a5/318.png"
+  },
+  {
+    "id": "kikyou",
+    "name": "Kikyou",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/dd/319.png"
+  },
+  {
+    "id": "ittan-momen",
+    "name": "Ittan Momen",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/42/320.png"
+  },
+  {
+    "id": "noukanshi",
+    "name": "Noukanshi",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/4e/321.png"
+  },
+  {
+    "id": "rengoku-ibaraki-douji",
+    "name": "Rengoku Ibaraki Douji",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/84/322.png"
+  },
+  {
+    "id": "tenjo-kudari",
+    "name": "Tenjo Kudari",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f0/323.png"
+  },
+  {
+    "id": "bakekujira",
+    "name": "Bakekujira",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/16/324.png"
+  },
+  {
+    "id": "orochi",
+    "name": "Orochi",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9d/325.png"
+  },
+  {
+    "id": "inari-miketsu",
+    "name": "Inari Miketsu",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/50/326.png"
+  },
+  {
+    "id": "soufuu-ichimokuren",
+    "name": "Soufuu Ichimokuren",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/bc/327.png"
+  },
+  {
+    "id": "akakage-youtou-hime",
+    "name": "Akakage Youtou Hime",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a6/328.png"
+  },
+  {
+    "id": "kainin",
+    "name": "Kainin",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0d/329.png"
+  },
+  {
+    "id": "shiranui",
+    "name": "Shiranui",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/16/330.png"
+  },
+  {
+    "id": "oura-hannya",
+    "name": "Oura Hannya",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/b6/331.png"
+  },
+  {
+    "id": "kujra",
+    "name": "Kujra",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a5/332.png"
+  },
+  {
+    "id": "ootakemaru",
+    "name": "Ootakemaru",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/53/333.png"
+  },
+  {
+    "id": "gyourou-arakawa-no-aruji",
+    "name": "Gyourou Arakawa no Aruji",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e2/334.png"
+  },
+  {
+    "id": "kani-hime",
+    "name": "Kani Hime",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/90/335.png"
+  },
+  {
+    "id": "rukia-kuchiki",
+    "name": "Rukia Kuchiki",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/18/336.png"
+  },
+  {
+    "id": "ichigo-kurosaki",
+    "name": "Ichigo Kurosaki",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/04/337.png"
+  },
+  {
+    "id": "takiyasha-hime",
+    "name": "Takiyasha Hime",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9a/338.png"
+  },
+  {
+    "id": "jinten-tamamo-no-mae",
+    "name": "Jinten Tamamo no Mae",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f2/339.png"
+  },
+  {
+    "id": "kamimai",
+    "name": "Kamimai",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/95/340.png"
+  },
+  {
+    "id": "oniou-shuten-douji",
+    "name": "Oniou Shuten Douji",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/49/341.png"
+  },
+  {
+    "id": "hoshiguma-douji",
+    "name": "Hoshiguma Douji",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ec/342.png"
+  },
+  {
+    "id": "tenken-jinshin-onikiri",
+    "name": "Tenken Jinshin Onikiri",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/83/343.png"
+  },
+  {
+    "id": "ungaikyou",
+    "name": "Ungaikyou",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/5f/344.png"
+  },
+  {
+    "id": "kidoumaru",
+    "name": "Kidoumaru",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/49/345.png"
+  },
+  {
+    "id": "reikai-kingyo-hime",
+    "name": "Reikai Kingyo Hime",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/67/346.png"
+  },
+  {
+    "id": "enmusubi-no-kami",
+    "name": "Enmusubi no Kami",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/37/347.png"
+  },
+  {
+    "id": "ukiyo-aoandon",
+    "name": "Ukiyo Aoandon",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/8e/348.png"
+  },
+  {
+    "id": "fuuri",
+    "name": "Fuuri",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/ad/349.png"
+  },
+  {
+    "id": "sasori-onna",
+    "name": "Sasori Onna",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/27/350.png"
+  },
+  {
+    "id": "suzuka-gozen",
+    "name": "Suzuka Gozen",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/94/351.png"
+  },
+  {
+    "id": "bakkotsu-kiyohime",
+    "name": "Bakkotsu Kiyohime",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/4d/352.png"
+  },
+  {
+    "id": "kinnara",
+    "name": "Kinnara",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f9/353.png"
+  },
+  {
+    "id": "matsuyoi-ubume",
+    "name": "Matsuyoi Ubume",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/90/354.png"
+  },
+  {
+    "id": "rokumei-ootakemaru",
+    "name": "Rokumei Ootakemaru",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ef/355.png"
+  },
+  {
+    "id": "senhime",
+    "name": "Senhime",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/94/356.png"
+  },
+  {
+    "id": "hatsurei-yamakaze",
+    "name": "Hatsurei Yamakaze",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c4/357.png"
+  },
+  {
+    "id": "yomei-higanbana",
+    "name": "Yomei Higanbana",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e5/358.png"
+  },
+  {
+    "id": "tanjiro-kamado",
+    "name": "Tanjiro Kamado",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/30/359.png"
+  },
+  {
+    "id": "nezuko-kamado",
+    "name": "Nezuko Kamado",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/ab/360.png"
+  },
+  {
+    "id": "akaname",
+    "name": "Akaname",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/fb/361.png"
+  },
+  {
+    "id": "semigoori-yuki-onna",
+    "name": "Semigoori Yuki Onna",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/11/362.png"
+  },
+  {
+    "id": "taishakuten",
+    "name": "Taishakuten",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/26/363.png"
+  },
+  {
+    "id": "asura",
+    "name": "Asura",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e9/364.png",
+    "beginnerFriendly": true,
+    "roles": [
+      "aoe_dps"
+    ],
+    "evaluations": [
+      {
+        "category": "pve_farming",
+        "score": "SS",
+        "notes": "Extremely fast animation"
+      },
+      {
+        "category": "pvp_duel",
+        "score": "S",
+        "notes": "High burst"
+      }
+    ]
+  },
+  {
+    "id": "nyuunai-suzume",
+    "name": "Nyuunai-suzume",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e2/365.png"
+  },
+  {
+    "id": "kuusou-menreiki",
+    "name": "Kuusou Menreiki",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/dd/366.png"
+  },
+  {
+    "id": "kaisei-kachou-fuugetsu",
+    "name": "Kaisei Kachou Fuugetsu",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/cb/367.png"
+  },
+  {
+    "id": "amezaiku",
+    "name": "Amezaiku",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f0/368.png"
+  },
+  {
+    "id": "shokurei",
+    "name": "Shokurei",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/3c/369.png"
+  },
+  {
+    "id": "mishige",
+    "name": "Mishige",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/97/370.png"
+  },
+  {
+    "id": "kawazaru",
+    "name": "Kawazaru",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/b7/371.png"
+  },
+  {
+    "id": "inaba-kaguya-hime",
+    "name": "Inaba Kaguya Hime",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/3b/372.png"
+  },
+  {
+    "id": "yato-no-kami",
+    "name": "Yato no Kami",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a0/373.png"
+  },
+  {
+    "id": "kagewani",
+    "name": "Kagewani",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e7/375.png"
+  },
+  {
+    "id": "suzukiho-hime",
+    "name": "Suzukiho Hime",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/eb/376.png"
+  },
+  {
+    "id": "mujin-yama-usagi",
+    "name": "Mujin Yama Usagi",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/72/377.png"
+  },
+  {
+    "id": "garuda",
+    "name": "Garuda",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/76/378.png"
+  },
+  {
+    "id": "fukengaku",
+    "name": "Fukengaku",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e0/379.png"
+  },
+  {
+    "id": "umi-no-chou",
+    "name": "Umi no Chou",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/1f/382.png"
+  },
+  {
+    "id": "kamiochi-orochi",
+    "name": "Kamiochi Orochi",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d9/383.png"
+  },
+  {
+    "id": "oshiroi-baba",
+    "name": "Oshiroi Baba",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/55/384.png"
+  },
+  {
+    "id": "daiyamaten-enma",
+    "name": "Daiyamaten Enma",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f3/385.png"
+  },
+  {
+    "id": "zenitsu-agatsuma",
+    "name": "Zenitsu Agatsuma",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/38/386.png"
+  },
+  {
+    "id": "inosuke-hashibira",
+    "name": "Inosuke Hashibira",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c9/387.png"
+  },
+  {
+    "id": "kokorogari-kijo-momiji",
+    "name": "Kokorogari Kijo Momiji",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/2b/388.png"
+  },
+  {
+    "id": "susanoo",
+    "name": "Susanoo",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/ad/389.png",
+    "beginnerFriendly": true,
+    "roles": [
+      "aoe_dps",
+      "orb_provider"
+    ],
+    "evaluations": [
+      {
+        "category": "pve_farming",
+        "score": "SS",
+        "notes": "Best in slot"
+      },
+      {
+        "category": "pvp_duel",
+        "score": "B",
+        "notes": "Outclassed later"
+      }
+    ]
+  },
+  {
+    "id": "shinkei-susabi",
+    "name": "Shinkei Susabi",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d1/390.png"
+  },
+  {
+    "id": "jinkougyou",
+    "name": "Jinkougyou",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/79/391.png"
+  },
+  {
+    "id": "shiki",
+    "name": "Shiki",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9e/392.png"
+  },
+  {
+    "id": "zenshin-ungaikyou",
+    "name": "Zenshin Ungaikyou",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ef/393.png"
+  },
+  {
+    "id": "tsukuyomi",
+    "name": "Tsukuyomi",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/59/394.png"
+  },
+  {
+    "id": "ryuukou-oitsukigami",
+    "name": "Ryuukou Oitsukigami",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/2d/395.png"
+  },
+  {
+    "id": "shura-kidoumaru",
+    "name": "Shura Kidoumaru",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f9/396.png"
+  },
+  {
+    "id": "gintoki-sakata",
+    "name": "Gintoki Sakata",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/47/397.png"
+  },
+  {
+    "id": "amanozako",
+    "name": "Amanozako",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/79/398.png"
+  },
+  {
+    "id": "kotodama",
+    "name": "Kotodama",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/6c/399.png"
+  },
+  {
+    "id": "grave-digger",
+    "name": "Grave Digger",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a5/400.png"
+  },
+  {
+    "id": "parasite",
+    "name": "Parasite",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d5/401.png"
+  },
+  {
+    "id": "kyonshii-inu",
+    "name": "Kyonshii Inu",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/71/402.png"
+  },
+  {
+    "id": "umbrella",
+    "name": "Umbrella",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/68/403.png"
+  },
+  {
+    "id": "green-imp",
+    "name": "Green Imp",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/bc/404.png"
+  },
+  {
+    "id": "red-imp",
+    "name": "Red Imp",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/72/405.png"
+  },
+  {
+    "id": "yellow-imp",
+    "name": "Yellow Imp",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/46/406.png"
+  },
+  {
+    "id": "blue-imp",
+    "name": "Blue Imp",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/42/407.png"
+  },
+  {
+    "id": "hahakigami",
+    "name": "Hahakigami",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9b/408.png"
+  },
+  {
+    "id": "nurikabe",
+    "name": "Nurikabe",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/ff/409.png"
+  },
+  {
+    "id": "ootengu-frog",
+    "name": "Ootengu Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/93/414.png"
+  },
+  {
+    "id": "shuten-frog",
+    "name": "Shuten Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/ab/415.png"
+  },
+  {
+    "id": "arakawa-frog",
+    "name": "Arakawa Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/84/416.png"
+  },
+  {
+    "id": "enma-frog",
+    "name": "Enma Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d7/417.png"
+  },
+  {
+    "id": "ryoumenbotoke-frog",
+    "name": "Ryoumenbotoke Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/38/418.png"
+  },
+  {
+    "id": "shishio-frog",
+    "name": "Shishio Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/5a/419.png"
+  },
+  {
+    "id": "ibaraki-frog",
+    "name": "Ibaraki Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/95/420.png"
+  },
+  {
+    "id": "aoandon-frog",
+    "name": "Aoandon Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f1/421.png"
+  },
+  {
+    "id": "youtou-hime-frog",
+    "name": "Youtou Hime Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/31/422.png"
+  },
+  {
+    "id": "ichimokuren-frog",
+    "name": "Ichimokuren Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/16/423.png"
+  },
+  {
+    "id": "kachou-fuugetsu-frog",
+    "name": "Kachou Fuugetsu Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/1e/424.png"
+  },
+  {
+    "id": "kaguya-hime-frog",
+    "name": "Kaguya Hime Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/4d/425.png"
+  },
+  {
+    "id": "susabi-frog",
+    "name": "Susabi Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/b4/426.png"
+  },
+  {
+    "id": "higanbana-frog",
+    "name": "Higanbana Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/84/427.png"
+  },
+  {
+    "id": "yuki-douji-frog",
+    "name": "Yuki Douji Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/af/428.png"
+  },
+  {
+    "id": "tamamo-no-mae-frog",
+    "name": "Tamamo no Mae Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/86/429.png"
+  },
+  {
+    "id": "miketsu-frog",
+    "name": "Miketsu Frog",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f5/430.png"
+  },
+  {
+    "id": "namahage-oni",
+    "name": "Namahage Oni",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/d1/433.png"
+  },
+  {
+    "id": "kagura-&-sadaharu",
+    "name": "Kagura & Sadaharu",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/be/500.png"
+  },
+  {
+    "id": "kujaku-myouou",
+    "name": "Kujaku-Myouou",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/24/550.png"
+  },
+  {
+    "id": "jinshin-shishio",
+    "name": "Jinshin Shishio",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9d/551.png"
+  },
+  {
+    "id": "miakashi",
+    "name": "Miakashi",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/fb/552.png"
+  },
+  {
+    "id": "wenren-yixuan",
+    "name": "Wenren Yixuan",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ef/553.png"
+  },
+  {
+    "id": "negai-tsumugi-enmusubi-no-kami",
+    "name": "Negai Tsumugi Enmusubi no Kami",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/d/dd/554.png"
+  },
+  {
+    "id": "byounen-hotarugusa",
+    "name": "Byounen Hotarugusa",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c8/555.png"
+  },
+  {
+    "id": "amaterasu",
+    "name": "Amaterasu",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/5b/556.png"
+  },
+  {
+    "id": "izanami",
+    "name": "Izanami",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/43/557.png"
+  },
+  {
+    "id": "nusubitogami",
+    "name": "Nusubitogami",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/47/558.png"
+  },
+  {
+    "id": "honshin-sanbi-no-kitsune",
+    "name": "Honshin Sanbi no Kitsune",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e4/559.png"
+  },
+  {
+    "id": "taki",
+    "name": "Taki",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/eb/561.png"
+  },
+  {
+    "id": "eikyo-senhime",
+    "name": "Eikyo Senhime",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f7/562.png"
+  },
+  {
+    "id": "hatsune-miku",
+    "name": "Hatsune Miku",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/ea/563.png"
+  },
+  {
+    "id": "kagamine-rin-&-len",
+    "name": "Kagamine Rin & Len",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0b/564.png"
+  },
+  {
+    "id": "shoufuku-zashiki-warashi",
+    "name": "Shoufuku Zashiki Warashi",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/96/565.png"
+  },
+  {
+    "id": "gyoujitsu-ebisu",
+    "name": "Gyoujitsu Ebisu",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/c/c3/566.png"
+  },
+  {
+    "id": "shentu-ziye",
+    "name": "Shentu Ziye",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/14/567.png"
+  },
+  {
+    "id": "ryougin-suzuka-gozen",
+    "name": "Ryougin Suzuka Gozen",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/07/568.png"
+  },
+  {
+    "id": "nekogawa",
+    "name": "Nekogawa",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e2/569.png"
+  },
+  {
+    "id": "magatsugami",
+    "name": "Magatsugami",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/be/570.png"
+  },
+  {
+    "id": "younen-enenra",
+    "name": "Younen Enenra",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7a/572.png"
+  },
+  {
+    "id": "ryukaku",
+    "name": "Ryukaku",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/a/a6/573.png"
+  },
+  {
+    "id": "shinyuu-inugami",
+    "name": "Shinyuu Inugami",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/73/574.png"
+  },
+  {
+    "id": "fuuyoukun",
+    "name": "Fuuyoukun",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/85/575.png"
+  },
+  {
+    "id": "natsume-&-nyanko-sensei",
+    "name": "Natsume & Nyanko-sensei",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/93/576.png"
+  },
+  {
+    "id": "kikinyou",
+    "name": "Kikinyou",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/9e/577.png"
+  },
+  {
+    "id": "shinjou-hoshiguma-douji",
+    "name": "Shinjou Hoshiguma Douji",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/32/578.png"
+  },
+  {
+    "id": "youon-kinnara",
+    "name": "Youon Kinnara",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/63/579.png"
+  },
+  {
+    "id": "seishi-hiyoribou",
+    "name": "Seishi Hiyoribou",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/61/580.png"
+  },
+  {
+    "id": "karuta",
+    "name": "Karuta",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/45/581.png"
+  },
+  {
+    "id": "megurine-luka",
+    "name": "Megurine Luka",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/43/582.png"
+  },
+  {
+    "id": "himiko",
+    "name": "Himiko",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e3/583.png"
+  },
+  {
+    "id": "jiyou-takiyasha-hime",
+    "name": "Jiyou Takiyasha Hime",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/bf/584.png"
+  },
+  {
+    "id": "gashadokuro",
+    "name": "Gashadokuro",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/7a/585.png"
+  },
+  {
+    "id": "unjou-fukengaku",
+    "name": "Unjou Fukengaku",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/62/586.png"
+  },
+  {
+    "id": "tagitsuhime",
+    "name": "Tagitsuhime",
+    "rarity": "SR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/8c/571.png"
+  },
+  {
+    "id": "sakura-kinomoto",
+    "name": "Sakura Kinomoto",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/3/3b/587.png"
+  },
+  {
+    "id": "syaoran-li",
+    "name": "Syaoran Li",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/48/588.png"
+  },
+  {
+    "id": "myoushi-kyuumei-neko",
+    "name": "Myoushi Kyuumei Neko",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/5d/590.png"
+  },
+  {
+    "id": "yuki-gozen",
+    "name": "Yuki Gozen",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/74/591.png"
+  },
+  {
+    "id": "taira-no-masakado",
+    "name": "Taira no Masakado",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/91/592.png"
+  },
+  {
+    "id": "ur-youtou-hime",
+    "name": "UR Youtou Hime",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/6e/593.png"
+  },
+  {
+    "id": "kannazuki",
+    "name": "Kannazuki",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/f/f5/596.png"
+  },
+  {
+    "id": "kuzunoha",
+    "name": "Kuzunoha",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/8e/597.png"
+  },
+  {
+    "id": "shakubana-momo-no-sei",
+    "name": "Shakubana Momo no Sei",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/6/6d/598.png"
+  },
+  {
+    "id": "shokugetsu-kyuuketsu-hime",
+    "name": "Shokugetsu Kyuuketsu Hime",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/49/599.png"
+  },
+  {
+    "id": "shinigami",
+    "name": "Shinigami",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/43/600.png"
+  },
+  {
+    "id": "omoikane-no-kami",
+    "name": "Omoikane no Kami",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/ba/601.png"
+  },
+  {
+    "id": "tenkamei-suzuhiko-hime",
+    "name": "Tenkamei Suzuhiko Hime",
+    "rarity": "SP",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/5f/602.png"
+  },
+  {
+    "id": "bishamonten",
+    "name": "Bishamonten",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/44/603.png"
+  },
+  {
+    "id": "fusoukozen",
+    "name": "Fusoukozen",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/5/58/604.png"
+  },
+  {
+    "id": "daruma",
+    "name": "Daruma",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/2/2e/Red_Darumas1.png"
+  },
+  {
+    "id": "tamatori",
+    "name": "Tamatori",
+    "rarity": "SSR",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/09/560.png"
+  },
+  {
+    "id": "link-kyuumei-neko",
+    "name": "link-Kyuumei Neko",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/98/207.png"
+  },
+  {
+    "id": "link-ame-onna",
+    "name": "link-Ame Onna",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e4/224.png"
+  },
+  {
+    "id": "kocho-no-sei",
+    "name": "Kocho no Sei",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/0b/241.png"
+  },
+  {
+    "id": "ichimoku-ren",
+    "name": "Ichimoku Ren",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/bb/272.png"
+  },
+  {
+    "id": "link-ninmenju",
+    "name": "link-Ninmenju",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/0/02/317.png"
+  },
+  {
+    "id": "nokanshi",
+    "name": "Nokanshi",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/4/4e/321.png"
+  },
+  {
+    "id": "soufuu-ichimoku-ren",
+    "name": "Soufuu Ichimoku Ren",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/b/bc/327.png"
+  },
+  {
+    "id": "nyuuna-suzume",
+    "name": "Nyuuna-suzume",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/e/e2/365.png"
+  },
+  {
+    "id": "chapter-6",
+    "name": "Chapter 6",
+    "rarity": "N",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/9/98/216.png"
+  },
+  {
+    "id": "chapter-11",
+    "name": "Chapter 11",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/1f/231.png"
+  },
+  {
+    "id": "chapter-15",
+    "name": "Chapter 15",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/7/78/226.png"
+  },
+  {
+    "id": "chapter-19",
+    "name": "Chapter 19",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/8/80/O4t3.png"
+  },
+  {
+    "id": "chapter-20",
+    "name": "Chapter 20",
+    "rarity": "R",
+    "icon": "https://static.wikia.nocookie.net/onmyoji/images/1/1d/269.png"
+  }
+]

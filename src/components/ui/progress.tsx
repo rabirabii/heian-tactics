@@ -9,14 +9,14 @@ export function Progress({
 }) {
   return (
     <div
-      className={cn("h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-white/10", className)}
+      className={cn("h-2 w-full overflow-hidden rounded-full bg-[var(--surface)]", className)}
       role="progressbar"
       aria-valuenow={value}
       aria-valuemin={0}
       aria-valuemax={100}
     >
       <div
-        className="h-full rounded-full bg-emerald-400 transition-all"
+        className="h-full rounded-full bg-[var(--foreground)] transition-all"
         style={{ width: `${Math.min(Math.max(value, 0), 100)}%` }}
       />
     </div>

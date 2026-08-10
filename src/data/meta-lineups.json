@@ -1,0 +1,256 @@
+[
+  {
+    "id": "lineup-1",
+    "name": "Asura Fast Cleave",
+    "category": "PvE - Soul Zone",
+    "description": "Standard fast team for clearing Soul Moan (S11) in 15 seconds.",
+    "onmyoji": {
+      "id": "seimei",
+      "soulPrimary": [],
+      "soulSecondary": [],
+      "slot2": "-",
+      "slot4": "-",
+      "slot6": "-",
+      "statReq": "SPD=128",
+      "indicator": "-",
+      "skillReq": "max"
+    },
+    "shikigami": [
+      {
+        "slot": 1,
+        "primaryId": "asura",
+        "substitutes": [
+          "susanoo"
+        ],
+        "soulPrimary": [
+          "kyokutsu",
+          "shadow"
+        ],
+        "soulSecondary": [
+          "odokuro"
+        ],
+        "slot2": "ATK",
+        "slot4": "ATK",
+        "slot6": "Cdmg",
+        "statReq": "100% Crit",
+        "indicator": "DMG",
+        "skillReq": "x-x-x"
+      },
+      {
+        "slot": 2,
+        "primaryId": "kaoru",
+        "substitutes": [],
+        "soulPrimary": [
+          "azure-basan"
+        ],
+        "soulSecondary": [],
+        "slot2": "HP",
+        "slot4": "HP",
+        "slot6": "HP",
+        "statReq": "-",
+        "indicator": "-",
+        "skillReq": "max"
+      },
+      {
+        "slot": 3,
+        "primaryId": "zashiki",
+        "substitutes": [],
+        "soulPrimary": [
+          "fortune-cat"
+        ],
+        "soulSecondary": [],
+        "slot2": "HP",
+        "slot4": "HP",
+        "slot6": "HP",
+        "statReq": "-",
+        "indicator": "-",
+        "skillReq": "max"
+      },
+      {
+        "slot": 4,
+        "primaryId": "maki-peach",
+        "substitutes": [
+          "yamausagi"
+        ],
+        "soulPrimary": [
+          "fortune-cat"
+        ],
+        "soulSecondary": [],
+        "slot2": "SPD",
+        "slot4": "-",
+        "slot6": "-",
+        "statReq": "SPD>162",
+        "indicator": "-",
+        "skillReq": "max"
+      },
+      {
+        "slot": 5,
+        "primaryId": "tesso",
+        "substitutes": [],
+        "soulPrimary": [
+          "holy-flame"
+        ],
+        "soulSecondary": [],
+        "slot2": "ATK",
+        "slot4": "ATK",
+        "slot6": "Crit",
+        "statReq": "100% Crit",
+        "indicator": "-",
+        "skillReq": "max"
+      }
+    ],
+    "notes": "Fastest cleave.",
+    "substitutePools": [],
+    "weaknesses": [
+      "Cannot survive if speed check fails.",
+      "Requires high crit damage thresholds to one-shot P3."
+    ],
+    "pveScenarios": [
+      {
+        "scenarioName": "If Asura fails to One-Shot Phase 3",
+        "condition": "Lacking enough Crit Damage on Asura.",
+        "solution": "Swap Tesso's Holy Flame for a secondary DPS like Kisei (Seductress) to clean up."
+      }
+    ],
+    "pvpMatchups": [],
+    "beginnerFriendly": true
+  },
+  {
+    "id": "lineup-2",
+    "name": "Susanoo Midrange",
+    "category": "PvP - Duel",
+    "description": "Flexible midrange draft focusing on Susanoo's targeted DPS.",
+    "onmyoji": {
+      "id": "kagura",
+      "soulPrimary": [],
+      "soulSecondary": [],
+      "slot2": "-",
+      "slot4": "-",
+      "slot6": "-",
+      "statReq": "SPD=128",
+      "indicator": "-",
+      "skillReq": "max"
+    },
+    "shikigami": [
+      {
+        "slot": 1,
+        "primaryId": "susanoo",
+        "substitutes": [],
+        "soulPrimary": [
+          "wispzoa",
+          "claws"
+        ],
+        "soulSecondary": [],
+        "slot2": "ATK",
+        "slot4": "ATK",
+        "slot6": "Cdmg",
+        "statReq": "100% Crit",
+        "indicator": "DMG",
+        "skillReq": "max"
+      },
+      {
+        "slot": 2,
+        "primaryId": "shiranui",
+        "substitutes": [],
+        "soulPrimary": [
+          "jizo-statue",
+          "fortune-cat"
+        ],
+        "soulSecondary": [],
+        "slot2": "HP",
+        "slot4": "ATK",
+        "slot6": "Crit",
+        "statReq": "70% Crit, +700 DEF",
+        "indicator": "Survive",
+        "skillReq": "max"
+      },
+      {
+        "slot": 3,
+        "primaryId": "sp-ungaikyo",
+        "substitutes": [
+          "sp-shuten-doji"
+        ],
+        "soulPrimary": [
+          "fortune-cat"
+        ],
+        "soulSecondary": [],
+        "slot2": "SPD",
+        "slot4": "RES",
+        "slot6": "HP",
+        "statReq": "SPD>200, 100%+ RES",
+        "indicator": "Support",
+        "skillReq": "max"
+      },
+      {
+        "slot": 4,
+        "primaryId": "sp-momiji",
+        "substitutes": [],
+        "soulPrimary": [
+          "snow-spirit"
+        ],
+        "soulSecondary": [],
+        "slot2": "SPD",
+        "slot4": "HIT",
+        "slot6": "HP",
+        "statReq": "100%+ HIT",
+        "indicator": "Control",
+        "skillReq": "max"
+      },
+      {
+        "slot": 5,
+        "primaryId": "sp-miketsu",
+        "substitutes": [],
+        "soulPrimary": [
+          "fortune-cat"
+        ],
+        "soulSecondary": [],
+        "slot2": "SPD",
+        "slot4": "RES",
+        "slot6": "HP",
+        "statReq": "100%+ RES",
+        "indicator": "Support",
+        "skillReq": "max"
+      }
+    ],
+    "notes": "Flexible draft for PvP.",
+    "substitutePools": [],
+    "weaknesses": [
+      "Vulnerable to fast CC teams like SP Yuki Onna.",
+      "Susanoo can be easily locked down if Shiranui is banned."
+    ],
+    "pveScenarios": [],
+    "pvpMatchups": [
+      {
+        "scenarioName": "Against Meta B (Fast CC)",
+        "condition": "Enemy first picks Kamaitachi and SP Yuki Onna.",
+        "picks": [
+          {
+            "shikigamiId": "shishio",
+            "reason": "Push enemy CC down the move bar and gain immunity.",
+            "soulRecommended": "Tree Nymph OR Fortune Cat",
+            "soulStats": "If Tree Nymph: SPD>240. If Fortune Cat: SPD>260 to guarantee turn."
+          },
+          {
+            "shikigamiId": "sp-hana",
+            "reason": "Healing and debuff removal.",
+            "soulRecommended": "Pearl",
+            "soulStats": "SPD/HP/Crit with 100% Crit."
+          }
+        ]
+      },
+      {
+        "scenarioName": "Enemy Slot 4 Surprise SP Ootengu",
+        "condition": "Enemy attempts to counter with heavy AoE DPS.",
+        "picks": [
+          {
+            "shikigamiId": "sp-ren",
+            "reason": "Provides massive shields against AoE burst.",
+            "soulRecommended": "Sea Sprite",
+            "soulStats": "HP/HP/Crit with 100% Crit."
+          }
+        ]
+      }
+    ],
+    "beginnerFriendly": true
+  }
+]

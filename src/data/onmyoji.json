@@ -1,0 +1,32 @@
+[
+  {
+    "id": "seimei",
+    "name": "Seimei",
+    "skills": ["Basic Attack", "Spell: Bind", "Spell: Protect", "Spell: Purge", "Amulet: Death", "Amulet: Life", "Divine Lightning", "Spell: Star"]
+  },
+  {
+    "id": "kagura",
+    "name": "Kagura",
+    "skills": ["Umbrella", "Summon: Fish", "Channel: Storm", "Channel: Butterflies", "Channel: Cherry Blossoms", "Channel: Soul Drain", "Channel: Afterlife", "Divine Fire"]
+  },
+  {
+    "id": "hiromasa",
+    "name": "Hiromasa",
+    "skills": ["Triple Arrows", "Occult: Panther Eye", "Death Drop", "Multishot", "Occult: Double", "Occult: Roar", "Panther: Random", "Panther: Assist", "Panther: Counter"]
+  },
+  {
+    "id": "yao-bikuni",
+    "name": "Yao Bikuni",
+    "skills": ["Starlight", "Divination Sigil (Revive)", "Divination Sigil (HP Recovery)", "Divination Sigil (Reflect Damage)", "Star Curse", "Starlight Curse", "Starfall", "Purification"]
+  },
+  {
+    "id": "minamoto-no-yorimitsu",
+    "name": "Minamoto no Yorimitsu",
+    "skills": ["Basic Attack", "Onigiri", "Blood Pact", "Demon Soldiers"]
+  },
+  {
+    "id": "fujiwara-no-michinaga",
+    "name": "Fujiwara no Michinaga",
+    "skills": ["Basic Attack", "Celestial Decree", "Noble Authority"]
+  }
+]

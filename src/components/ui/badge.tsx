@@ -4,12 +4,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "",
+  "inline-flex items-center rounded-[var(--radius-small)] border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--accent-vermillion)] focus:ring-offset-2",
   {
     variants: {
       variant: {
-        default: "text-[var(--color-ink)] bg-[var(--color-bg)]",
-        accent: "text-[var(--color-accent)] bg-[var(--color-bg)]",
+        default: "border-[var(--border-ink)] bg-transparent text-[var(--foreground)]",
+        accent: "border-[var(--border-ink)] border-l-[3px] border-l-[var(--accent-vermillion)] bg-transparent text-[var(--foreground)] rounded-l-none",
       },
     },
     defaultVariants: {
@@ -19,21 +19,19 @@ const badgeVariants = cva(
 );
 
 export interface BadgeProps
-  extends React.ComponentProps<typeof Slot>,
+  extends React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeVariants> {
+  asChild?: boolean;
 }
 
 const Badge = React.forwardRef<
-  HTMLElement,
+  HTMLSpanElement,
   BadgeProps
->(({ className, variant, ...props }, ref) => {
+>(({ className, variant, asChild = false, ...props }, ref) => {
+  const Component = asChild ? Slot : "span";
   return (
-    <Slot
-      className={cn(
-        badgeVariants({ variant }),
-        "badge",
-        className
-      )}
+    <Component
+      className={cn(badgeVariants({ variant }), className)}
       ref={ref}
       {...props}
     />
@@ -42,4 +40,4 @@ const Badge = React.forwardRef<
 
 Badge.displayName = "Badge";
 
-export { Badge };
+export { Badge, badgeVariants };

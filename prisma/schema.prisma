@@ -1,0 +1,333 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// USER & AUTH (Supabase Auth Mapping)
+// ==========================================
+
+model User {
+  id        String   @id @default(uuid()) // Maps to Supabase auth.users.id
+  email     String   @unique
+  username  String?  @unique
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roster   UserRoster[]
+  projects UserProject[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// ==========================================
+// MASTER DATA (Shikigami, Onmyoji, Souls)
+// ==========================================
+
+model Rarity {
+  id          String      @id
+  name        String
+  sortOrder   Int
+  shikigamis  Shikigami[]
+}
+
+model Shikigami {
+  id          String           @id
+  name        String
+  rarity      String           // Keep the original string column
+  rarityId    String?          // Add optional foreign key
+  rarityRef   Rarity?          @relation(fields: [rarityId], references: [id])
+  icon        String?
+  beginnerFriendly Boolean @default(false)
+  availableGlobal  Boolean @default(true) // If false, means it's CN/Mainland only for now
+  strengths   String[]
+  weaknesses  String[]
+  skills      ShikigamiSkill[]
+  builds      ShikigamiBuild[]
+  
+  // Dynamic Tier & Roles
+  roles       ShikigamiRole[]
+  evaluations ShikigamiEvaluation[]
+  tags        String[]
+  
+  // Relations to User Roster and Lineups
+  userRosters UserRoster[]
+  lineupSlots LineupSlot[]
+}
+
+model ShikigamiBuild {
+  id          String    @id @default(uuid())
+  shikigamiId String
+  roleId      String
+  roleRef     ShikigamiRole @relation(fields: [roleId], references: [id])
+  typeId      String    @default("PvE")
+  type        LineupType @relation(fields: [typeId], references: [id])
+  categoryId  String?
+  category    LineupCategory? @relation(fields: [categoryId], references: [id])
+  beginnerFriendly Boolean @default(false)
+  soulChoices String[]
+  slotStats   String
+  substats    String
+  breakpoint  String
+  notes       String?
+  tags        String[]  // E.g., ["High-Speed CC", "Nuke Finisher"]
+
+  // Meta Status & Versioning
+  status            MetaStatus @default(CURRENT)
+  author            String     @default("System")
+  updatedBy         String?
+  referenceUrl      String?
+  becameHistoricalAt DateTime?
+  supersededById    String?
+  supersededBy      ShikigamiBuild?  @relation("BuildHistory", fields: [supersededById], references: [id])
+  historicalBuilds  ShikigamiBuild[] @relation("BuildHistory")
+  
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @default(now()) @updatedAt
+
+  shikigami   Shikigami @relation(fields: [shikigamiId], references: [id], onDelete: Cascade)
+  lineupSlots LineupSlot[]
+}
+
+model ShikigamiSkill {
+  id          String    @id @default(uuid())
+  shikigamiId String
+  name        String
+  icon        String?
+  type        String?   // E.g., "Normal", "Passive", "Special"
+  cost        Int?      // E.g., 0, 2, 3
+  cooldown    Int?      @default(0) // E.g., 0, 1, 2
+  description String
+  levelUpgrades String[] // E.g., ["Lv. 2: Damage increases to 105%.", "Lv. 3: Damage increases to 110%."]
+  levelReq    String?   // E.g., "max" or "Lv 5"
+  
+  shikigami   Shikigami @relation(fields: [shikigamiId], references: [id], onDelete: Cascade)
+}
+
+model ShikigamiRole {
+  id              String           @id // E.g., "aoe_dps", "healer"
+  name            String
+  description     String?
+  shikigamis      Shikigami[]
+  builds          ShikigamiBuild[]
+}
+
+model EvaluationCategory {
+  id          String                @id // E.g., "pvp_duel", "pve_farming"
+  name        String
+  group       String?               // E.g., "pve" or "pvp"
+  isOverall   Boolean               @default(false)
+  sortOrder   Int                   @default(0) // Higher number means displayed later
+  evaluations ShikigamiEvaluation[]
+}
+
+model ShikigamiEvaluation {
+  id          String             @id @default(uuid())
+  shikigamiId String
+  categoryId  String
+  score       String             // E.g., "SS", "S", "A", "1", "5"
+  notes       String?            // E.g., "Requires Max Crit"
+  
+  // Specific metrics for multi-dimensional radar charts (e.g. { "flexibility": 9, "counterResist": 7 })
+  metrics     Json?              
+
+  shikigami   Shikigami          @relation(fields: [shikigamiId], references: [id], onDelete: Cascade)
+  category    EvaluationCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([shikigamiId, categoryId])
+}
+
+model Onmyoji {
+  id          String         @id
+  name        String
+  icon        String?
+  role        String         @default("Onmyoji")
+  skills      OnmyojiSkill[]
+  
+  // Relations to User Roster and Lineups
+  userRosters UserRoster[]
+  lineupSlots LineupSlot[]
+}
+
+model OnmyojiSkill {
+  id          String   @id @default(uuid())
+  onmyojiId   String
+  name        String
+  icon        String?
+  type        String?
+  cooldown    Int?      @default(0)
+  description String
+  levelUpgrades String[]
+  
+  onmyoji     Onmyoji  @relation(fields: [onmyojiId], references: [id], onDelete: Cascade)
+}
+
+model Soul {
+  id              String  @id
+  name            String
+  twoPiece        String
+  fourPieceEffect String?
+  icon            String?
+}
+
+// ==========================================
+// META DATA (Lineups, Scenarios)
+// ==========================================
+
+model LineupType {
+  id          String   @id // "PvE" or "PvP"
+  name        String
+  categories  LineupCategory[]
+  builds      ShikigamiBuild[]
+}
+
+model LineupCategory {
+  id          String       @id @default(uuid())
+  typeId      String
+  type        LineupType   @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  name        String       // "Soul Zone", "Demon Encounter"
+  subcategories LineupSubcategory[]
+  builds      ShikigamiBuild[]
+}
+
+model LineupSubcategory {
+  id          String       @id @default(uuid())
+  categoryId  String
+  category    LineupCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name        String       // "S11/Moan", "S12/Judgement"
+  lineups     MetaLineup[]
+}
+
+enum MetaStatus {
+  CURRENT
+  OUTDATED
+  HISTORICAL
+}
+
+model MetaLineup {
+  id              String             @id @default(uuid())
+  name            String
+  category        String?          // E.g., "PvE - Soul Zone", "PvP - Duel"
+  subcategoryId   String?
+  subcategory     LineupSubcategory? @relation(fields: [subcategoryId], references: [id], onDelete: SetNull)
+
+  description String?
+  notes       String?
+  beginnerFriendly Boolean @default(false)
+  strengths   String[]
+  weaknesses  String[]         // Array of strings
+  author      String           @default("System")
+  status      MetaStatus     @default(CURRENT)
+  
+  updatedBy         String?
+  referenceUrl      String?
+  becameHistoricalAt DateTime?
+  supersededById    String?
+  supersededBy      MetaLineup?  @relation("LineupHistory", fields: [supersededById], references: [id])
+  historicalLineups MetaLineup[] @relation("LineupHistory")
+
+  slots       LineupSlot[]
+  scenarios   LineupScenario[]
+  
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model LineupSlot {
+  id          String      @id @default(uuid())
+  lineupId    String
+  slotNumber  Int         // 1-5 for Shikigami, 6 for Onmyoji
+  
+  // A slot can hold EITHER a Shikigami OR an Onmyoji
+  shikigamiId String?
+  onmyojiId   String?
+  buildId     String?     // Optional reference to a community build
+
+  // Stat requirements
+  slot2       String?     // E.g., "SPD", "ATK"
+  slot4       String?
+  slot6       String?
+  statReq     String?     // E.g., "100% Crit"
+  minSpeed    Int?
+  minEffectHit Float?
+  minEffectRes Float?
+  minCrit     Float?
+  minCritDmg  Float?
+  indicator   String?     // E.g., "DMG", "Support"
+  skillReq    String?     // E.g., "x-x-x"
+
+  // Souls stored as simple arrays of Soul IDs to simplify many-to-many
+  primarySouls   String[] 
+  secondarySouls String[] 
+  substituteIds  String[] // Array of alternative Shikigami IDs
+
+  lineup      MetaLineup @relation(fields: [lineupId], references: [id], onDelete: Cascade)
+  shikigami   Shikigami? @relation(fields: [shikigamiId], references: [id], onDelete: SetNull)
+  onmyoji     Onmyoji?   @relation(fields: [onmyojiId], references: [id], onDelete: SetNull)
+  build       ShikigamiBuild? @relation(fields: [buildId], references: [id])
+}
+
+model LineupScenario {
+  id           String      @id @default(uuid())
+  lineupId     String
+  type         ScenarioType
+  scenarioName String
+  condition    String
+  solution     String?     // Primarily for PvE
+
+  // For PvP Draft scenarios, store picks as JSON for simplicity, 
+  // or create a separate model if complex querying is needed.
+  // Using JSON here to quickly store { shikigamiId, reason, soulRecommended, soulStats }
+  picks        Json?       
+
+  lineup       MetaLineup @relation(fields: [lineupId], references: [id], onDelete: Cascade)
+}
+
+enum ScenarioType {
+  PVE
+  PVP
+}
+
+// ==========================================
+// USER PRIVATE DATA
+// ==========================================
+
+model UserRoster {
+  id          String   @id @default(uuid())
+  userId      String
+  shikigamiId String?
+  onmyojiId   String?
+  
+  isOwned     Boolean  @default(false)
+  level       Int?
+  grade       Int?     // Stars (1-6)
+  skillLevels String?  // E.g., "1-5-5"
+
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shikigami   Shikigami? @relation(fields: [shikigamiId], references: [id])
+  onmyoji     Onmyoji?   @relation(fields: [onmyojiId], references: [id])
+
+  @@unique([userId, shikigamiId])
+  @@unique([userId, onmyojiId])
+}
+
+model UserProject {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  description String?
+  targetDate  DateTime?
+  status      String   @default("IN_PROGRESS") // E.g., "IN_PROGRESS", "COMPLETED"
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

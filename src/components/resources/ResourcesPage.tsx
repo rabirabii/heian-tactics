@@ -1,25 +1,32 @@
-import { PageHeader } from '@/features/dashboard/dashboard-shell'; // We'll keep the PageHeader in dashboard-shell for now, but we can also move it to a shared location. For now, we import from dashboard-shell.
-import { ResourceAdjustmentForm } from './ResourceAdjustmentForm';
+import { PageHeader } from '@/features/dashboard/dashboard-shell';
 import { ResourceTable } from './ResourceTable';
-import { ResourceAllocationCard } from './ResourceAllocationCard';
-import { cn } from '@/lib/utils';
+import { ResourceHistoryLog } from './ResourceHistoryLog';
 
 export function ResourcesPage() {
   return (
-    <>
+    <div className="space-y-6">
       <PageHeader
         title="Resources"
-        description="Update current amounts, monthly income, adjustments, notes, and allocation mix."
+        description="Update current amounts, observed throughput, and track changes across your resource pools."
       />
-      <section className="grid gap-5 xl:grid-cols-[0.8fr_1.2fr]">
-        <ResourceAllocationCard />
-        <div className="border-2-black panel-bg shadow-hard rounded-none p-4">
-          <ResourceAdjustmentForm />
-          <div className="mt-4">
-            <ResourceTable />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="lg:col-span-2 border border-[var(--border-ink)] bg-[var(--surface)] rounded-[var(--radius-medium)] p-5 shadow-sm overflow-x-auto min-w-0">
+          <h3 className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-4">
+            Resource Inventory
+          </h3>
+          <ResourceTable />
+        </div>
+        
+        <div className="lg:col-span-1 space-y-4">
+          <h3 className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
+            Transaction History
+          </h3>
+          <div className="max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
+            <ResourceHistoryLog />
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }

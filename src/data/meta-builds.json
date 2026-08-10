@@ -1,0 +1,47 @@
+[
+  {
+    "shikigamiId": "aoandon",
+    "role": "Orbs / Support (PVP)",
+    "soulChoices": ["Dawn Fairy", "Broken", "CC Souls"],
+    "slotStats": "Spd / Hit or Def / Hp",
+    "substats": "Spd >>",
+    "breakpoint": "G6 | Max Skill 2, 3 | Prioritize Spd",
+    "notes": "Drain opponent orbs"
+  },
+  {
+    "shikigamiId": "aoandon",
+    "role": "Support (PvE)",
+    "soulChoices": ["Azure", "Others"],
+    "slotStats": "-",
+    "substats": "-",
+    "breakpoint": "G6 | Max Skill 2, 3 | Spd depends",
+    "notes": "Stats and souls depends"
+  },
+  {
+    "shikigamiId": "shishio",
+    "role": "Pusher, CC",
+    "soulChoices": ["Fortune Cat", "Tree Nymph", "Soultaker"],
+    "slotStats": "Spd / HP or Res / HP",
+    "substats": "Spd >> Res > Eff Hit > HP",
+    "breakpoint": "G6 | Max Skill 2, 3 | 220+ Speed, 20% Eff Hit. (If Res slot 4, 80+ Res)",
+    "notes": "Not recommended"
+  },
+  {
+    "shikigamiId": "asura",
+    "role": "AoE DPS",
+    "soulChoices": ["Kyokutsu", "Shadow"],
+    "slotStats": "Atk / Atk / Crit Dmg",
+    "substats": "Crit > Crit Dmg > Atk > Spd",
+    "breakpoint": "G6 | Max Skill 2, 3 | 100% Crit, 250%+ Crit Dmg",
+    "notes": "Top tier for fast farming and PvP cleave."
+  },
+  {
+    "shikigamiId": "susanoo",
+    "role": "Single Target DPS",
+    "soulChoices": ["Kyokutsu", "Seductress", "Wispzoa"],
+    "slotStats": "Atk / Atk / Crit Dmg",
+    "substats": "Crit > Crit Dmg > Atk > Spd",
+    "breakpoint": "G6 | Max Skill 2, 3 | 100% Crit",
+    "notes": "Core DPS for many PvP and PvE setups."
+  }
+]
