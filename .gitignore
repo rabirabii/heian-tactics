@@ -41,6 +41,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# docs and claude configs
+/docs/
+/.claude/
+
 # scratch and temp scripts (preventing messy repository)
 best_content.txt
 edits.txt
