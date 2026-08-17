@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Edit } from 'lucide-react';
 import BuildBuilderModal from '@/components/BuildBuilderModal';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { createClient } from '@/utils/supabase/client';
+import { User } from '@supabase/supabase-js';
 
 interface ShikiBuild {
   id: string;
@@ -47,6 +49,14 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBuild, setSelectedBuild] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+  }, []);
 
   const handleRarityChange = (r: string) => {
     setActiveRarity(r);
@@ -136,15 +146,17 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
             className="w-full bg-background border border-border-ink text-foreground pl-9 pr-4 py-2 font-mono text-sm focus:outline-none focus:border-accent-vermillion transition-colors"
           />
         </div>
-        <button 
-          onClick={() => {
-            setSelectedBuild(null);
-            setIsModalOpen(true);
-          }}
-          className="w-full sm:w-auto px-6 py-2 bg-accent-gold text-background font-bold font-mono text-sm hover:bg-accent-gold/90 transition-colors whitespace-nowrap"
-        >
-          + Create Build
-        </button>
+        {user && (
+          <button 
+            onClick={() => {
+              setSelectedBuild(null);
+              setIsModalOpen(true);
+            }}
+            className="w-full sm:w-auto px-6 py-2 bg-accent-gold text-background font-bold font-mono text-sm hover:bg-accent-gold/90 transition-colors whitespace-nowrap"
+          >
+            + Create Build
+          </button>
+        )}
       </div>
 
       <div className="overflow-x-auto bg-surface border border-border-ink">
@@ -216,16 +228,18 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
                             HISTORICAL
                           </span>
                         )}
-                        <button 
-                          onClick={() => {
-                            setSelectedBuild({ ...build, shikigamiId: shiki.id });
-                            setIsModalOpen(true);
-                          }}
-                          className="opacity-0 group-hover:opacity-100 text-text-secondary hover:text-accent-vermillion transition-opacity ml-auto"
-                          title="Edit Build"
-                        >
-                          <Edit className="w-3 h-3" />
-                        </button>
+                        {user && (
+                          <button 
+                            onClick={() => {
+                              setSelectedBuild({ ...build, shikigamiId: shiki.id });
+                              setIsModalOpen(true);
+                            }}
+                            className="opacity-0 group-hover:opacity-100 text-text-secondary hover:text-accent-vermillion transition-opacity ml-auto"
+                            title="Edit Build"
+                          >
+                            <Edit className="w-3 h-3" />
+                          </button>
+                        )}
                       </div>
                       {build.category && (
                         <div className="text-[10px] text-text-secondary font-normal">
