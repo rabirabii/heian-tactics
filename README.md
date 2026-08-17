@@ -1,50 +1,40 @@
-# Onmyoji Resource Planner
+# Heian Tactics
 
-A local-first planning dashboard for long-term resource allocation and roster forecasting in Onmyoji.
+**Heian Tactics** is an advanced Meta Lineup Builder, Matchup Simulator, and Roster Management tool for the mobile game *Onmyoji*.
 
-The app is not a wiki or game database. It is a personal decision tool for answering:
+## Features
+- **Meta Lineups:** Explore and build optimized team compositions for PvE and PvP (Zenith).
+- **Matchup Scenarios:** Visually simulate enemy drafts and plan your counter-responses (bans, flex picks, and onmyoji substitutions).
+- **Lineup Versioning:** Track historical versions of the meta as strategies evolve.
+- **Roster & Builds:** Manage your Shikigami pool, track their exact Soul builds, and evaluate their stats against the meta requirements.
+- **Tier List:** Interactive and dynamic tier lists based on current evaluations.
 
-- What should I build next?
-- How many resources do I need?
-- Is my current farming pace realistic?
-- When will I complete my PvP roster?
-- Which project gives the highest ROI?
+## Tech Stack
+- [Next.js](https://nextjs.org/) (App Router)
+- [Supabase](https://supabase.com/) (PostgreSQL & Auth)
+- [Prisma](https://www.prisma.io/) (ORM)
+- [Tailwind CSS v4](https://tailwindcss.com/) (Styling)
+- [Zustand](https://github.com/pmndrs/zustand) (State Management)
+- [Sonner](https://sonner.emilkowal.ski/) (Toast Notifications)
 
-## Stack
+## Getting Started
 
-- Next.js 16 App Router
-- TypeScript
-- Tailwind CSS
-- shadcn-style UI primitives
-- Zustand persistence
-- React Hook Form
-- Zod
-- Recharts
-- Lucide icons
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rabirabii/heian-tactics.git
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up your `.env.local` with your Supabase credentials:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+   ```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-## Run
-
-```bash
-npm run dev
-```
-
-Open `http://localhost:3000`.
-
-## Validate
-
-```bash
-npm run lint
-npm run build
-```
-
-## Current Scope
-
-- Dashboard metrics and readiness score
-- Resource management with amounts, income, adjustments, notes, and history
-- Project kanban with priority, progress, ROI, ETA, and opportunity cost
-- Forecast engine for monthly Black Daruma, Jade, and G6-equivalent projection
-- Allocation planner ranked by priority, ROI, affordability, and completion time
-- Shikigami planner with multiple soul presets per unit
-- Monthly goals, farming tracker, statistics, and forecast settings
-
-Data is persisted in browser localStorage under `onmyoji-resource-planner`.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

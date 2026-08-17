@@ -23,16 +23,21 @@ export default async function RosterPage() {
     .order('sortOrder', { ascending: true });
 
   // Fetch shikigami with their rarity relation
-  const { data: shikigamiData, error } = await supabase
+  const { data: shikigamis, error } = await supabase
     .from('Shikigami')
     .select(`
       id,
       name,
-      rarityId,
-      rarityRef:Rarity(*),
       icon,
+      rarityId,
       beginnerFriendly,
       availableGlobal,
+      rarityRef:Rarity(*),
+      roleAssignments:ShikigamiRoleAssignment(
+        roleId,
+        mode,
+        role:ShikigamiRole(*)
+      ),
       evaluations:ShikigamiEvaluation(
         *,
         category:EvaluationCategory(*)
@@ -40,34 +45,15 @@ export default async function RosterPage() {
       skills:ShikigamiSkill(*)
     `);
 
-  // Fetch role mappings
-  const { data: roleLinks } = await supabase
-    .from('_ShikigamiToShikigamiRole')
-    .select('A, B');
-
   if (error) {
     console.error('Error fetching Roster Shikigami:', error);
   }
 
-  // Map roles to shikigami
-  const mappedShikigami = (shikigamiData || []).map((shiki: any) => {
-    const shikiRoleIds = (roleLinks || [])
-      .filter((link: any) => link.A === shiki.id)
-      .map((link: any) => link.B);
-      
-    const shikiRoles = (roles || []).filter((r: any) => shikiRoleIds.includes(r.id));
-    
-    return {
-      ...shiki,
-      roles: shikiRoles
-    };
-  });
-
   return (
     <ShikigamiClient 
-      shikigamiData={mappedShikigami} 
-      roles={roles || []}
-      categories={categories || []}
+      shikigamiData={shikigamis || []} 
+      roles={roles || []} 
+      categories={categories || []} 
       rarities={rarities || []}
     />
   );

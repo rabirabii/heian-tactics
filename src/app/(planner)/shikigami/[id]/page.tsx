@@ -18,6 +18,11 @@ export default async function ShikigamiDetailPage({ params }: { params: Promise<
         *,
         category:EvaluationCategory(*)
       ),
+      roleAssignments:ShikigamiRoleAssignment(
+        roleId,
+        mode,
+        role:ShikigamiRole(*)
+      ),
       builds:ShikigamiBuild(
         *,
         roleRef:ShikigamiRole(*)
@@ -31,29 +36,5 @@ export default async function ShikigamiDetailPage({ params }: { params: Promise<
     notFound();
   }
 
-  // Fetch roles manually to construct full object if needed
-  // Note: Prisma many-to-many doesn't cleanly map to PostgREST single select for nested arrays easily without join tables, 
-  // so we fetch the join table _ShikigamiToShikigamiRole for this specific shikigami
-  const { data: roleLinks } = await supabase
-    .from('_ShikigamiToShikigamiRole')
-    .select('B')
-    .eq('A', id);
-
-  const roleIds = roleLinks?.map(link => link.B) || [];
-  
-  let roles = [];
-  if (roleIds.length > 0) {
-    const { data: rolesData } = await supabase
-      .from('ShikigamiRole')
-      .select('*')
-      .in('id', roleIds);
-    roles = rolesData || [];
-  }
-  
-  const fullShikigami = {
-    ...shikigami,
-    roles
-  };
-
-  return <ShikigamiDetailClient shikigami={fullShikigami} />;
+  return <ShikigamiDetailClient shikigami={shikigami} />;
 }

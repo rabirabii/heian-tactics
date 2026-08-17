@@ -6,6 +6,8 @@ import { Search, Edit } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
 import EditShikigamiModal from '@/components/EditShikigamiModal';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
 // Score weights for sorting (SS is highest, D is lowest)
@@ -23,6 +25,7 @@ export default function TierListClient({ shikigamis, roles, categories, rarities
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState<User | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const router = useRouter();
   const [selectedShikiForEdit, setSelectedShikiForEdit] = useState<any | null>(null);
 
   useEffect(() => {
@@ -61,12 +64,15 @@ export default function TierListClient({ shikigamis, roles, categories, rarities
   grouped['uncategorized'] = [];
 
   filteredShikigamis.forEach(shiki => {
-    if (!shiki.roles || shiki.roles.length === 0) {
+    // Filter role assignments by active mode
+    const modeRoles = shiki.roleAssignments?.filter((ra: any) => ra.mode.toLowerCase() === activeMode) || [];
+    
+    if (modeRoles.length === 0) {
       grouped['uncategorized'].push(shiki);
     } else {
-      shiki.roles.forEach((r: any) => {
-        if (grouped[r.id]) {
-          grouped[r.id].push(shiki);
+      modeRoles.forEach((ra: any) => {
+        if (grouped[ra.roleId]) {
+          grouped[ra.roleId].push(shiki);
         }
       });
     }
@@ -366,7 +372,8 @@ export default function TierListClient({ shikigamis, roles, categories, rarities
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSaveSuccess={() => {
-          window.location.reload();
+          toast.success("Shikigami saved successfully!");
+          router.refresh();
         }}
       />
     </div>

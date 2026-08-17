@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
-import pkg from '@next/env';
-const { loadEnvConfig } = pkg;
+import { loadEnvConfig } from '@next/env';
 import shikigamiData from '../src/data/shikigami.json' with { type: 'json' };
 import soulsData from '../src/data/souls.json' with { type: 'json' };
 import lineupsData from '../src/data/meta-lineups.json' with { type: 'json' };
@@ -168,13 +167,17 @@ async function main() {
       },
     });
 
-    // Link Roles
+    // Link Roles via RoleAssignments
     if ((shiki as any).roles && Array.isArray((shiki as any).roles)) {
+      const roleAssignments = (shiki as any).roles.flatMap((r: string) => [
+        { roleId: r, mode: 'PvE' },
+        { roleId: r, mode: 'PvP' }
+      ]);
       await prisma.shikigami.update({
         where: { id: shiki.id },
         data: {
-          roles: {
-            connect: (shiki as any).roles.map((r: string) => ({ id: r }))
+          roleAssignments: {
+            create: roleAssignments
           }
         }
       });
@@ -282,7 +285,9 @@ async function main() {
         shikigamiId: build.shikigamiId,
         roleId: matchedRoleId,
         soulChoices: build.soulChoices,
-        slotStats: build.slotStats,
+        slot2: build.slotStats ? build.slotStats.split('/')[0]?.trim() || null : null,
+        slot4: build.slotStats ? build.slotStats.split('/')[1]?.trim() || null : null,
+        slot6: build.slotStats ? build.slotStats.split('/')[2]?.trim() || null : null,
         substats: build.substats,
         breakpoint: build.breakpoint,
         notes: build.notes || null,

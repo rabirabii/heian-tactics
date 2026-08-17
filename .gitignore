@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files (SAFE! This prevents your Supabase URL & keys from leaking)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scratch and temp scripts (preventing messy repository)
+best_content.txt
+edits.txt
+capture_screenshots.js
+scrape_*.js
+test_*.ts
+fix_*.ts
+disable_*.ts
+truncate.ts
+/scratch/

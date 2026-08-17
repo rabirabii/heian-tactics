@@ -53,13 +53,14 @@ model Shikigami {
   builds      ShikigamiBuild[]
   
   // Dynamic Tier & Roles
-  roles       ShikigamiRole[]
+  roleAssignments ShikigamiRoleAssignment[]
   evaluations ShikigamiEvaluation[]
   tags        String[]
   
   // Relations to User Roster and Lineups
   userRosters UserRoster[]
   lineupSlots LineupSlot[]
+  bannedInLineups MetaLineup[] @relation("BannedShikigami")
 }
 
 model ShikigamiBuild {
@@ -72,9 +73,11 @@ model ShikigamiBuild {
   categoryId  String?
   category    LineupCategory? @relation(fields: [categoryId], references: [id])
   beginnerFriendly Boolean @default(false)
-  soulChoices String[]
-  slotStats   String
-  substats    String
+  soulChoices      String[]
+  slot2            String?
+  slot4            String?
+  slot6            String?
+  substats         String
   breakpoint  String
   notes       String?
   tags        String[]  // E.g., ["High-Speed CC", "Nuke Finisher"]
@@ -112,11 +115,23 @@ model ShikigamiSkill {
 }
 
 model ShikigamiRole {
-  id              String           @id // E.g., "aoe_dps", "healer"
-  name            String
-  description     String?
-  shikigamis      Shikigami[]
+  id          String   @id
+  name        String
+  description String?
+  
+  roleAssignments ShikigamiRoleAssignment[]
   builds          ShikigamiBuild[]
+}
+
+model ShikigamiRoleAssignment {
+  shikigamiId String
+  roleId      String
+  mode        String // e.g. "PvE" or "PvP"
+  
+  shikigami   Shikigami     @relation(fields: [shikigamiId], references: [id], onDelete: Cascade)
+  role        ShikigamiRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([shikigamiId, roleId, mode])
 }
 
 model EvaluationCategory {
@@ -209,6 +224,7 @@ enum MetaStatus {
   CURRENT
   OUTDATED
   HISTORICAL
+  DEPRECATED
 }
 
 model MetaLineup {
@@ -236,8 +252,13 @@ model MetaLineup {
   slots       LineupSlot[]
   scenarios   LineupScenario[]
   
+  banId       String?
+  bannedShikigami Shikigami? @relation("BannedShikigami", fields: [banId], references: [id], onDelete: SetNull)
+  
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+
+  @@index([supersededById])
 }
 
 model LineupSlot {
@@ -249,6 +270,7 @@ model LineupSlot {
   shikigamiId String?
   onmyojiId   String?
   buildId     String?     // Optional reference to a community build
+  slotType    String      @default("CORE") // E.g., "CORE", "SUB"
 
   // Stat requirements
   slot2       String?     // E.g., "SPD", "ATK"
@@ -266,7 +288,8 @@ model LineupSlot {
   // Souls stored as simple arrays of Soul IDs to simplify many-to-many
   primarySouls   String[] 
   secondarySouls String[] 
-  substituteIds  String[] // Array of alternative Shikigami IDs
+  substitutes    Json?    // Array of { shikigamiId, notes } objects
+  onmyojiSkills  String[] // Array of Skill IDs (up to 2)
 
   lineup      MetaLineup @relation(fields: [lineupId], references: [id], onDelete: Cascade)
   shikigami   Shikigami? @relation(fields: [shikigamiId], references: [id], onDelete: SetNull)
@@ -279,13 +302,18 @@ model LineupScenario {
   lineupId     String
   type         ScenarioType
   scenarioName String
-  condition    String
+  condition    String?
+  conditions   Json?
   solution     String?     // Primarily for PvE
 
   // For PvP Draft scenarios, store picks as JSON for simplicity, 
   // or create a separate model if complex querying is needed.
   // Using JSON here to quickly store { shikigamiId, reason, soulRecommended, soulStats }
-  picks        Json?       
+  picks        Json?
+  solutionSlots Json?
+  baseLineupId  String?
+  enemySlots    Json?
+  baseEnemyLineupId String?
 
   lineup       MetaLineup @relation(fields: [lineupId], references: [id], onDelete: Cascade)
 }
@@ -293,6 +321,9 @@ model LineupScenario {
 enum ScenarioType {
   PVE
   PVP
+  PVP_DRAFT
+  PVP_WIN_CON
+  PVE_ALTERNATIVE
 }
 
 // ==========================================

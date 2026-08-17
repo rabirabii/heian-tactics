@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap");
+
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -11,7 +12,7 @@
   --color-accent-vermillion: var(--accent-vermillion);
   --color-accent-gold: var(--accent-gold);
 
-  --font-sans: var(--font-sans);
+  --font-sans: "Yuji Syuku", serif;
   --font-display: "Yuji Syuku", serif;
   --font-mono: var(--font-mono);
 }
@@ -19,12 +20,12 @@
 :root {
   /* Only these 7 color tokens exist. No new hex values anywhere in the app. */
   --background: #151316;
-  --surface: #1E1B1D;
-  --foreground: #EDE7DA;
-  --text-secondary: #A39B8B;
-  --border-ink: #3A3430;
-  --accent-vermillion: #D9482E;
-  --accent-gold: #C9A66B;
+  --surface: #1e1b1d;
+  --foreground: #ede7da;
+  --text-secondary: #a39b8b;
+  --border-ink: #3a3430;
+  --accent-vermillion: #d9482e;
+  --accent-gold: #c9a66b;
 
   --radius-small: 2px;
   --radius-medium: 4px;
@@ -60,8 +61,12 @@
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 a,

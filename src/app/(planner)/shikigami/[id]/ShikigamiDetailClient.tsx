@@ -30,9 +30,14 @@ export default function ShikigamiDetailClient({ shikigami }: { shikigami: any })
         <div className="flex-1">
           <div className="flex gap-3 items-center mb-2">
             <span className="text-sm font-mono text-accent-gold border border-accent-gold px-2 py-1">{shikigami.rarityId}</span>
-            {shikigami.roles?.map((r: any) => (
-              <span key={r.id} className="text-xs font-mono bg-border-ink/30 text-text-secondary px-2 py-1">
-                {r.name}
+            {shikigami.roleAssignments?.filter((ra: any) => ra.mode === 'PvE').map((ra: any) => ra.role).map((r: any) => (
+              <span key={`pve-${r.id}`} className="text-xs bg-surface border border-accent-gold/30 text-accent-gold px-2 py-1 font-mono">
+                [PvE] {r.name}
+              </span>
+            ))}
+            {shikigami.roleAssignments?.filter((ra: any) => ra.mode === 'PvP').map((ra: any) => ra.role).map((r: any) => (
+              <span key={`pvp-${r.id}`} className="text-xs bg-surface border border-accent-vermillion/30 text-accent-vermillion px-2 py-1 font-mono">
+                [PvP] {r.name}
               </span>
             ))}
           </div>

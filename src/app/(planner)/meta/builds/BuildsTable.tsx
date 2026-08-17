@@ -3,13 +3,17 @@
 import { useState } from 'react';
 import { Search, Edit } from 'lucide-react';
 import BuildBuilderModal from '@/components/BuildBuilderModal';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 interface ShikiBuild {
   id: string;
   roleId: string;
   roleRef: { id: string, name: string };
   soulChoices: string[];
-  slotStats: string;
+  slot2: string | null;
+  slot4: string | null;
+  slot6: string | null;
   substats: string;
   breakpoint: string;
   notes: string | null;
@@ -39,6 +43,7 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
   const [activeRarity, setActiveRarity] = useState<string>('All');
   const [activeType, setActiveType] = useState<string>('All');
   const [visibleCount, setVisibleCount] = useState(10);
+  const router = useRouter();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBuild, setSelectedBuild] = useState<any>(null);
@@ -239,7 +244,9 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
                     </div>
                   </td>
                   <td className="p-4 text-accent-gold">{build.soulChoices.join(', ')}</td>
-                  <td className="p-4 text-foreground">{build.slotStats}</td>
+                  <td className="p-4 text-foreground text-xs">
+                    {[build.slot2, build.slot4, build.slot6].filter(Boolean).join(' / ')}
+                  </td>
                   <td className="p-4 text-foreground text-xs">{build.substats}</td>
                   <td className="p-4 text-text-secondary text-xs align-top">
                     <div 
@@ -286,7 +293,10 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
         soulsData={soulsData}
         lineupTypes={lineupTypes}
         lineupCategories={lineupCategories}
-        onSaveSuccess={() => window.location.reload()}
+        onSaveSuccess={() => {
+          toast.success("Build saved successfully!");
+          router.refresh();
+        }}
       />
     </div>
   );

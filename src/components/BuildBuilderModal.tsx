@@ -30,7 +30,9 @@ export default function BuildBuilderModal({
   const [shikigamiId, setShikigamiId] = useState('');
   const [roleId, setRoleId] = useState('');
   const [soulChoices, setSoulChoices] = useState<string[]>([]);
-  const [slotStats, setSlotStats] = useState('');
+  const [slot2, setSlot2] = useState('');
+  const [slot4, setSlot4] = useState('');
+  const [slot6, setSlot6] = useState('');
   const [substats, setSubstats] = useState('');
   const [breakpoint, setBreakpoint] = useState('');
   const [notes, setNotes] = useState('');
@@ -67,7 +69,9 @@ export default function BuildBuilderModal({
         setShikigamiId(build.shikigamiId || '');
         setRoleId(build.roleId || '');
         setSoulChoices(build.soulChoices || []);
-        setSlotStats(build.slotStats || '');
+        setSlot2(build.slot2 || '');
+        setSlot4(build.slot4 || '');
+        setSlot6(build.slot6 || '');
         setSubstats(build.substats || '');
         setBreakpoint(build.breakpoint || '');
         setNotes(build.notes || '');
@@ -82,7 +86,9 @@ export default function BuildBuilderModal({
         setShikigamiId('');
         setRoleId(rolesData[0]?.id || '');
         setSoulChoices([]);
-        setSlotStats('');
+        setSlot2('');
+        setSlot4('');
+        setSlot6('');
         setSubstats('');
         setBreakpoint('');
         setNotes('');
@@ -138,7 +144,9 @@ export default function BuildBuilderModal({
         categoryId: categoryId || null,
         beginnerFriendly,
         soulChoices,
-        slotStats,
+        slot2,
+        slot4,
+        slot6,
         substats,
         breakpoint,
         notes,
@@ -375,13 +383,63 @@ export default function BuildBuilderModal({
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-mono text-text-secondary">Slot Stats (2/4/6) e.g. SPD/RES/HP</label>
-                  <input 
-                    value={slotStats} 
-                    onChange={e => setSlotStats(e.target.value)}
-                    className="w-full bg-background border border-border-ink p-2 font-mono text-sm outline-none focus:border-accent-vermillion"
-                  />
+                <div className="space-y-2 col-span-1 md:col-span-2">
+                  <label className="text-xs font-mono text-text-secondary">Main Stats (Combo-box: type or select)</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="text-[10px] text-text-secondary">Slot 2</label>
+                      <input 
+                        list="slot2-options"
+                        value={slot2} 
+                        onChange={e => setSlot2(e.target.value)}
+                        className="w-full bg-background border border-border-ink p-2 font-mono text-sm outline-none focus:border-accent-vermillion"
+                        placeholder="e.g. SPD"
+                      />
+                      <datalist id="slot2-options">
+                        <option value="ATK Bonus" />
+                        <option value="SPD" />
+                        <option value="DEF Bonus" />
+                        <option value="HP Bonus" />
+                        <option value="SPD or ATK Bonus" />
+                      </datalist>
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-text-secondary">Slot 4</label>
+                      <input 
+                        list="slot4-options"
+                        value={slot4} 
+                        onChange={e => setSlot4(e.target.value)}
+                        className="w-full bg-background border border-border-ink p-2 font-mono text-sm outline-none focus:border-accent-vermillion"
+                        placeholder="e.g. Effect HIT"
+                      />
+                      <datalist id="slot4-options">
+                        <option value="Eff Hit" />
+                        <option value="Eff Res" />
+                        <option value="ATK Bonus" />
+                        <option value="DEF Bonus" />
+                        <option value="HP Bonus" />
+                        <option value="Eff Hit or Eff Res" />
+                      </datalist>
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-text-secondary">Slot 6</label>
+                      <input 
+                        list="slot6-options"
+                        value={slot6} 
+                        onChange={e => setSlot6(e.target.value)}
+                        className="w-full bg-background border border-border-ink p-2 font-mono text-sm outline-none focus:border-accent-vermillion"
+                        placeholder="e.g. CRIT or CDMG"
+                      />
+                      <datalist id="slot6-options">
+                        <option value="Crit DMG" />
+                        <option value="Crit" />
+                        <option value="ATK Bonus" />
+                        <option value="DEF Bonus" />
+                        <option value="HP Bonus" />
+                        <option value="Crit or Crit DMG" />
+                      </datalist>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-2">

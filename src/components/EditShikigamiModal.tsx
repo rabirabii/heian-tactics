@@ -40,8 +40,10 @@ export default function EditShikigamiModal({
   const [isBeginnerFriendly, setIsBeginnerFriendly] = useState(shikigami?.beginnerFriendly || false);
   const [availableGlobal, setAvailableGlobal] = useState(shikigami?.availableGlobal ?? true);
   
-  const initialRoleIds = shikigami?.roles?.map((r: any) => r.id) || [];
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(initialRoleIds);
+  const initialPveRoleIds = shikigami?.roleAssignments?.filter((ra: any) => ra.mode === 'PvE').map((ra: any) => ra.roleId) || [];
+  const initialPvpRoleIds = shikigami?.roleAssignments?.filter((ra: any) => ra.mode === 'PvP').map((ra: any) => ra.roleId) || [];
+  const [selectedPveRoles, setSelectedPveRoles] = useState<string[]>(initialPveRoleIds);
+  const [selectedPvpRoles, setSelectedPvpRoles] = useState<string[]>(initialPvpRoleIds);
   const [strengthsStr, setStrengthsStr] = useState(shikigami?.strengths?.join(', ') || '');
   const [weaknessesStr, setWeaknessesStr] = useState(shikigami?.weaknesses?.join(', ') || '');
 
@@ -59,7 +61,8 @@ export default function EditShikigamiModal({
       setIcon(shikigami?.icon || '');
       setIsBeginnerFriendly(shikigami?.beginnerFriendly || false);
       setAvailableGlobal(shikigami?.availableGlobal ?? true);
-      setSelectedRoles(shikigami?.roles?.map((r: any) => r.id) || []);
+      setSelectedPveRoles(shikigami?.roleAssignments?.filter((ra: any) => ra.mode === 'PvE').map((ra: any) => ra.roleId) || []);
+      setSelectedPvpRoles(shikigami?.roleAssignments?.filter((ra: any) => ra.mode === 'PvP').map((ra: any) => ra.roleId) || []);
       setStrengthsStr(shikigami?.strengths?.join('\n') || '');
       setWeaknessesStr(shikigami?.weaknesses?.join('\n') || '');
       
@@ -97,7 +100,8 @@ export default function EditShikigamiModal({
       const { id: newId } = await upsertShikigamiBase(
         isNew ? 'new' : shikigami.id,
         { name, rarityId, icon: finalIconUrl, beginnerFriendly: isBeginnerFriendly, availableGlobal, strengths, weaknesses },
-        selectedRoles
+        selectedPveRoles,
+        selectedPvpRoles
       );
 
       // 2. Save Evaluations
@@ -129,11 +133,19 @@ export default function EditShikigamiModal({
 
   if (!isOpen) return null;
 
-  const handleRoleToggle = (roleId: string) => {
-    if (selectedRoles.includes(roleId)) {
-      setSelectedRoles(selectedRoles.filter(r => r !== roleId));
+  const handlePveRoleToggle = (roleId: string) => {
+    if (selectedPveRoles.includes(roleId)) {
+      setSelectedPveRoles(selectedPveRoles.filter(r => r !== roleId));
     } else {
-      setSelectedRoles([...selectedRoles, roleId]);
+      setSelectedPveRoles([...selectedPveRoles, roleId]);
+    }
+  };
+
+  const handlePvpRoleToggle = (roleId: string) => {
+    if (selectedPvpRoles.includes(roleId)) {
+      setSelectedPvpRoles(selectedPvpRoles.filter(r => r !== roleId));
+    } else {
+      setSelectedPvpRoles([...selectedPvpRoles, roleId]);
     }
   };
 
@@ -269,20 +281,46 @@ export default function EditShikigamiModal({
                 </div>
               </div>
 
-              <div className="space-y-4 pt-6 border-t border-border-ink">
-                <h3 className="font-display text-lg">Roles</h3>
+              <div className="bg-surface p-4 border border-border-ink space-y-4">
+                <h3 className="font-display text-lg border-b border-border-ink pb-2">PvE Roles</h3>
                 <div className="flex flex-wrap gap-2">
                   {roles.map(r => {
-                    const isSelected = selectedRoles.includes(r.id);
+                    const isSelected = selectedPveRoles.includes(r.id);
                     return (
                       <button
-                        key={r.id}
-                        onClick={() => handleRoleToggle(r.id)}
-                        className={`px-3 py-1 font-mono text-xs border transition-colors ${isSelected ? 'bg-accent-vermillion text-background border-accent-vermillion font-bold' : 'bg-background text-text-secondary border-border-ink hover:border-text-secondary'}`}
+                        key={`pve-${r.id}`}
+                        type="button"
+                        onClick={() => handlePveRoleToggle(r.id)}
+                        className={`px-3 py-1.5 text-xs font-mono border transition-colors ${
+                          isSelected 
+                            ? 'bg-accent-vermillion text-white border-accent-vermillion' 
+                            : 'bg-background text-text-secondary border-border-ink hover:border-text-secondary hover:text-foreground'
+                        }`}
                       >
                         {r.name}
                       </button>
-                    );
+                    )
+                  })}
+                </div>
+
+                <h3 className="font-display text-lg border-b border-border-ink pb-2 mt-6">PvP Roles</h3>
+                <div className="flex flex-wrap gap-2">
+                  {roles.map(r => {
+                    const isSelected = selectedPvpRoles.includes(r.id);
+                    return (
+                      <button
+                        key={`pvp-${r.id}`}
+                        type="button"
+                        onClick={() => handlePvpRoleToggle(r.id)}
+                        className={`px-3 py-1.5 text-xs font-mono border transition-colors ${
+                          isSelected 
+                            ? 'bg-accent-vermillion text-white border-accent-vermillion' 
+                            : 'bg-background text-text-secondary border-border-ink hover:border-text-secondary hover:text-foreground'
+                        }`}
+                      >
+                        {r.name}
+                      </button>
+                    )
                   })}
                 </div>
               </div>
@@ -298,27 +336,44 @@ export default function EditShikigamiModal({
                 {/* PVE */}
                 <div className="space-y-4">
                   <h3 className="font-display text-lg text-accent-vermillion border-b border-border-ink pb-2">PvE Evaluations</h3>
-                  {categories.filter(c => c.group === 'pve').map(cat => (
-                    <div key={cat.id} className="flex items-center justify-between bg-background border border-border-ink p-3">
-                      <div className="flex items-center gap-2">
-                        {cat.isOverall && <span className="w-2 h-2 rounded-full bg-accent-gold" title="Overall Category" />}
-                        <span className="font-mono text-sm">{cat.name}</span>
+                  {categories.filter(c => c.group === 'pve').map(cat => {
+                    const evalData = evaluations[cat.id] || { score: '', metrics: {}, notes: '' };
+                    return (
+                      <div key={cat.id} className="bg-background border border-border-ink p-3 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {cat.isOverall && <span className="w-2 h-2 rounded-full bg-accent-gold" title="Overall Category" />}
+                            <span className="font-mono text-sm">{cat.name}</span>
+                          </div>
+                          <select 
+                            value={evalData.score} 
+                            onChange={e => handleEvalChange(cat.id, 'score', e.target.value)}
+                            className="bg-surface border border-border-ink p-1 font-mono text-sm w-24 outline-none focus:border-accent-vermillion"
+                          >
+                            <option value="">None</option>
+                            <option value="SS">SS</option>
+                            <option value="S">S</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                          </select>
+                        </div>
+                        
+                        {evalData.score && (
+                          <div className="border-t border-border-ink/50 pt-3 space-y-2">
+                            <label className="text-xs font-mono text-text-secondary">Evaluation Notes</label>
+                            <div className="border border-border-ink">
+                              <RichTextEditor 
+                                content={evalData.notes || ''} 
+                                onChange={(html) => handleEvalChange(cat.id, 'notes', html)} 
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <select 
-                        value={evaluations[cat.id]?.score || ''} 
-                        onChange={e => handleEvalChange(cat.id, 'score', e.target.value)}
-                        className="bg-surface border border-border-ink p-1 font-mono text-sm w-24 outline-none focus:border-accent-vermillion"
-                      >
-                        <option value="">None</option>
-                        <option value="SS">SS</option>
-                        <option value="S">S</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                      </select>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* PVP */}

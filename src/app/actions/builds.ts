@@ -20,7 +20,9 @@ export async function upsertShikigamiBuild(buildId: string | 'new', data: any) {
     categoryId: data.categoryId || null,
     beginnerFriendly: data.beginnerFriendly || false,
     soulChoices: data.soulChoices || [],
-    slotStats: data.slotStats || '',
+    slot2: data.slot2 || null,
+    slot4: data.slot4 || null,
+    slot6: data.slot6 || null,
     substats: data.substats || '',
     breakpoint: data.breakpoint || '',
     notes: data.notes || null,
@@ -35,21 +37,23 @@ export async function upsertShikigamiBuild(buildId: string | 'new', data: any) {
     return prisma.shikigamiBuild.create({ data: payload });
   } else {
     if (data.isNewVersion) {
-      // Auto-supersede logic
-      const newRecord = await prisma.shikigamiBuild.create({ 
-        data: { ...payload, status: 'CURRENT' } 
-      });
+      // Auto-supersede logic with transaction
+      return await prisma.$transaction(async (tx) => {
+        const newRecord = await tx.shikigamiBuild.create({ 
+          data: { ...payload, status: 'CURRENT' } 
+        });
 
-      await prisma.shikigamiBuild.update({
-        where: { id: buildId },
-        data: {
-          status: 'HISTORICAL',
-          becameHistoricalAt: new Date(),
-          supersededById: newRecord.id
-        }
-      });
+        await tx.shikigamiBuild.update({
+          where: { id: buildId },
+          data: {
+            status: 'HISTORICAL',
+            becameHistoricalAt: new Date(),
+            supersededById: newRecord.id
+          }
+        });
 
-      return newRecord;
+        return newRecord;
+      });
     } else {
       return prisma.shikigamiBuild.update({
         where: { id: buildId },

@@ -4,7 +4,12 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 // UPSERT SHIKIGAMI BASIC
-export async function upsertShikigamiBase(id: string | null, data: any, roleIds: string[]) {
+export async function upsertShikigamiBase(
+  id: string | null, 
+  data: any, 
+  pveRoleIds: string[],
+  pvpRoleIds: string[]
+) {
   const shikiId = id === 'new' || !id ? data.name.toLowerCase().replace(/[^a-z0-9]/g, '_') : id;
   
   await prisma.$transaction(async (tx) => {
@@ -35,14 +40,20 @@ export async function upsertShikigamiBase(id: string | null, data: any, roleIds:
     });
 
     // Sync Roles
-    await tx.shikigami.update({
-      where: { id: shikiId },
-      data: {
-        roles: {
-          set: roleIds.map(rid => ({ id: rid }))
-        }
-      }
+    await tx.shikigamiRoleAssignment.deleteMany({
+      where: { shikigamiId: shikiId }
     });
+
+    const newAssignments = [
+      ...pveRoleIds.map(rid => ({ shikigamiId: shikiId, roleId: rid, mode: 'PvE' })),
+      ...pvpRoleIds.map(rid => ({ shikigamiId: shikiId, roleId: rid, mode: 'PvP' }))
+    ];
+
+    if (newAssignments.length > 0) {
+      await tx.shikigamiRoleAssignment.createMany({
+        data: newAssignments
+      });
+    }
   });
 
   revalidatePath('/admin/shikigami');

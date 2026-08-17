@@ -27,27 +27,16 @@ export default async function TierListPage() {
       beginnerFriendly,
       availableGlobal,
       rarityRef:Rarity(*),
+      roleAssignments:ShikigamiRoleAssignment(
+        roleId,
+        mode,
+        role:ShikigamiRole(*)
+      ),
       evaluations:ShikigamiEvaluation(
         *,
         category:EvaluationCategory(*)
       )
     `);
-
-  // We need to fetch the Shikigami Roles via the join table manually, as Prisma implicit many-to-many 
-  // isn't nested seamlessly in PostgREST without an explicit join entity.
-  const { data: roleLinks } = await supabase
-    .from('_ShikigamiToShikigamiRole')
-    .select('A, B');
-
-  // Map Shikigamis to their roles
-  const mappedShikigamis = shikigamis?.map(shiki => {
-    const shikiRoleIds = roleLinks?.filter(link => link.A === shiki.id).map(link => link.B) || [];
-    const shikiRoles = roles?.filter(r => shikiRoleIds.includes(r.id)) || [];
-    return {
-      ...shiki,
-      roles: shikiRoles
-    };
-  }) || [];
 
   // Fetch rarities
   const { data: rarities } = await supabase
@@ -57,7 +46,7 @@ export default async function TierListPage() {
 
   return (
     <TierListClient 
-      shikigamis={mappedShikigamis} 
+      shikigamis={shikigamis || []} 
       roles={roles || []} 
       categories={categories || []} 
       rarities={rarities || []}

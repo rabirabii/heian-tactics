@@ -23,7 +23,8 @@ export async function upsertMetaLineup(lineupId: string, data: any) {
     strengths,
     weaknesses,
     status,
-    slots
+    slots,
+    scenarios
   } = data;
 
   const payload = {
@@ -39,6 +40,7 @@ export async function upsertMetaLineup(lineupId: string, data: any) {
     author: data.author || 'System',
     updatedBy: dbUser?.username || null,
     referenceUrl: data.referenceUrl || null,
+    banId: data.banId || null,
     slots: {
       create: slots.map((s: any) => ({
         slotNumber: s.slotNumber,
@@ -58,9 +60,25 @@ export async function upsertMetaLineup(lineupId: string, data: any) {
         skillReq: s.skillReq || null,
         primarySouls: s.primarySouls || [],
         secondarySouls: s.secondarySouls || [],
-        substituteIds: s.substituteIds || []
+        onmyojiSkills: s.onmyojiSkills || [],
+        slotType: s.slotType || 'CORE',
+        substitutes: s.substitutes || null
       }))
-    }
+    },
+    scenarios: scenarios?.length ? {
+      create: scenarios.map((sc: any) => ({
+        type: sc.type || 'PVE',
+        scenarioName: sc.scenarioName,
+        condition: sc.condition || undefined,
+        conditions: sc.conditions || undefined,
+        solution: sc.solution || undefined,
+        picks: sc.picks || undefined,
+        solutionSlots: sc.solutionSlots || undefined,
+        baseLineupId: sc.baseLineupId || undefined,
+        enemySlots: sc.enemySlots || undefined,
+        baseEnemyLineupId: sc.baseEnemyLineupId || undefined
+      }))
+    } : undefined
   };
 
   const isNew = lineupId === 'new';
@@ -88,6 +106,7 @@ export async function upsertMetaLineup(lineupId: string, data: any) {
     } else {
       return await prisma.$transaction(async (tx) => {
         await tx.lineupSlot.deleteMany({ where: { lineupId } });
+        await tx.lineupScenario.deleteMany({ where: { lineupId } });
         return await tx.metaLineup.update({
           where: { id: lineupId },
           data: payload

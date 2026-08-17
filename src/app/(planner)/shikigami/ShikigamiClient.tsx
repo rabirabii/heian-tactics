@@ -11,6 +11,8 @@ import { toast } from 'sonner';
 import { createClient } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
 import EditShikigamiModal from '@/components/EditShikigamiModal';
+import { useRouter } from "next/navigation";
+import { stripHtml } from '@/lib/utils';
 
 interface Rarity {
   id: string;
@@ -35,6 +37,7 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
   const [selectedShiki, setSelectedShiki] = useState<any | null>(null);
   const [visibleCount, setVisibleCount] = useState(24);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const router = useRouter();
   const [sortBy, setSortBy] = useState<'rarity' | 'nameAsc' | 'nameDesc'>('rarity');
   const [user, setUser] = useState<User | null>(null);
 
@@ -103,7 +106,7 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
     if (searchQuery && !s.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (activeRarity !== 'All' && s.rarityId !== activeRarity) return false;
     if (showBeginnerOnly && !s.beginnerFriendly) return false;
-    if (activeRole !== 'All' && !s.roles?.some((r: any) => r.id === activeRole)) return false;
+    if (activeRole !== 'All' && !s.roleAssignments?.some((ra: any) => ra.roleId === activeRole)) return false;
     return true;
   });
 
@@ -340,8 +343,8 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
                 </h3>
                 <div className="flex gap-2 items-center mt-1">
                   <span className="text-xs font-mono text-accent-gold border border-accent-gold px-1 py-0.5">{selectedShiki.rarityId}</span>
-                  {selectedShiki.roles?.map((r: any) => (
-                    <span key={r.id} className="text-[10px] font-mono bg-border-ink/30 text-text-secondary px-1.5 py-0.5">
+                  {selectedShiki.roleAssignments?.map((ra: any) => ra.role).filter((value: any, index: number, self: any[]) => self.findIndex((r: any) => r.id === value.id) === index).map((r: any) => (
+                    <span key={r.id} className="text-xs bg-surface border border-border-ink px-2 py-1 font-mono text-text-secondary">
                       {r.name}
                     </span>
                   ))}
@@ -368,7 +371,14 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
                       <div className="flex justify-between items-end mt-1">
                         <span className="text-lg font-display text-accent-gold">{ev.score}</span>
                       </div>
-                      {ev.notes && <span className="text-[10px] text-text-secondary mt-1 block truncate" title={ev.notes}>{ev.notes}</span>}
+                      {ev.notes && (
+                        <span 
+                          className="text-[10px] text-text-secondary mt-1 block truncate" 
+                          title={stripHtml(ev.notes)}
+                        >
+                          {stripHtml(ev.notes)}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -481,7 +491,9 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
                   if (confirm(`Are you sure you want to hard delete ${selectedShiki.name}? This will turn any slot using them into a Flex slot.`)) {
                     const { deleteShikigami } = await import('@/app/actions/admin');
                     await deleteShikigami(selectedShiki.id);
-                    window.location.reload();
+                    toast.success(`${selectedShiki.name} deleted successfully!`);
+                    setSelectedShiki(null);
+                    router.refresh();
                   }
                 }}
                 title="Delete"
@@ -511,8 +523,8 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSaveSuccess={() => {
-          // Re-fetch or rely on Next.js revalidation
-          window.location.reload();
+          toast.success("Shikigami saved successfully!");
+          router.refresh();
         }}
       />
     </div>

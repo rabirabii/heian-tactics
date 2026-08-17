@@ -14,7 +14,7 @@ export default async function MetaLineupsPage() {
     { data: rolesData }
   ] = await Promise.all([
     supabase.from('Shikigami').select('id, name, rarityId, rarityRef:Rarity(*), icon, strengths, weaknesses, builds:ShikigamiBuild(*)'),
-    supabase.from('Onmyoji').select('*'),
+    supabase.from('Onmyoji').select('*, skills:OnmyojiSkill(*)'),
     supabase.from('Soul').select('*'),
     supabase.from('MetaLineup').select(`
       id,
@@ -27,14 +27,16 @@ export default async function MetaLineupsPage() {
           type:LineupType(id, name)
         )
       ),
-      description,
-      strengths,
-      weaknesses,
       author,
+      status,
+      referenceUrl,
       createdAt,
       updatedAt,
-      slots:LineupSlot(*)
-    `),
+      banId,
+      version_count,
+      slots:LineupSlot(*),
+      scenarios:LineupScenario(id)
+    `).is('supersededById', null),
     supabase.from('LineupType').select(`
       id, name,
       categories:LineupCategory(
