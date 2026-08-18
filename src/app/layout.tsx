@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 import { Toaster } from 'sonner';
+import NextTopLoader from 'nextjs-toploader';
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${ibmPlexMono.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col">
+        <NextTopLoader color="#FFD700" showSpinner={false} height={3} />
         {children}
         <Toaster theme="dark" position="bottom-right" richColors />
       </body>

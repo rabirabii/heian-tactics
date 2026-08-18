@@ -112,6 +112,7 @@ model ShikigamiSkill {
   levelReq    String?   // E.g., "max" or "Lv 5"
   
   shikigami   Shikigami @relation(fields: [shikigamiId], references: [id], onDelete: Cascade)
+  userRosterSkills UserRosterSkill[]
 }
 
 model ShikigamiRole {
@@ -339,11 +340,14 @@ model UserRoster {
   isOwned     Boolean  @default(false)
   level       Int?
   grade       Int?     // Stars (1-6)
-  skillLevels String?  // E.g., "1-5-5"
+
+  projectId   String?
+  project     UserProject? @relation(fields: [projectId], references: [id])
 
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   shikigami   Shikigami? @relation(fields: [shikigamiId], references: [id])
   onmyoji     Onmyoji?   @relation(fields: [onmyojiId], references: [id])
+  skills      UserRosterSkill[]
 
   @@unique([userId, shikigamiId])
   @@unique([userId, onmyojiId])
@@ -361,4 +365,18 @@ model UserProject {
   updatedAt   DateTime @updatedAt
 
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rosterItems UserRoster[]
+}
+
+
+model UserRosterSkill {
+  id             String         @id @default(uuid())
+  userRosterId   String
+  skillId        String
+  level          Int            @default(1)
+
+  userRoster     UserRoster     @relation(fields: [userRosterId], references: [id], onDelete: Cascade)
+  skill          ShikigamiSkill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  
+  @@unique([userRosterId, skillId])
 }

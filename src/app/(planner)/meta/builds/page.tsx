@@ -1,16 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import { BuildsTable } from './BuildsTable';
+import { unstable_cache } from 'next/cache';
 
-export default async function MetaBuildsPage() {
-  try {
-    const [
-      rarities,
-      shikigamiData,
-      rolesData,
-      soulsData,
-      lineupTypes,
-      lineupCategories
-    ] = await Promise.all([
+const getCachedBuildsData = unstable_cache(
+  async () => {
+    return Promise.all([
       prisma.rarity.findMany({ orderBy: { sortOrder: 'asc' } }),
       prisma.shikigami.findMany({
         select: {
@@ -33,6 +27,21 @@ export default async function MetaBuildsPage() {
       prisma.lineupType.findMany(),
       prisma.lineupCategory.findMany()
     ]);
+  },
+  ['meta-builds-data'],
+  { tags: ['meta-builds'] }
+);
+
+export default async function MetaBuildsPage() {
+  try {
+    const [
+      rarities,
+      shikigamiData,
+      rolesData,
+      soulsData,
+      lineupTypes,
+      lineupCategories
+    ] = await getCachedBuildsData();
 
     // Filter out shikigami that have no builds
     const dataWithBuilds = shikigamiData.filter(s => s.builds && s.builds.length > 0);

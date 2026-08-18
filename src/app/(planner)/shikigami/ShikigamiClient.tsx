@@ -13,6 +13,7 @@ import { User } from '@supabase/supabase-js';
 import EditShikigamiModal from '@/components/EditShikigamiModal';
 import { useRouter } from "next/navigation";
 import { stripHtml } from '@/lib/utils';
+import QuickPresetModal, { ShikigamiPresetData, PresetResult } from '@/components/roster/QuickPresetModal';
 
 interface Rarity {
   id: string;
@@ -40,6 +41,8 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
   const router = useRouter();
   const [sortBy, setSortBy] = useState<'rarity' | 'nameAsc' | 'nameDesc'>('rarity');
   const [user, setUser] = useState<User | null>(null);
+  const [presetModalTarget, setPresetModalTarget] = useState<ShikigamiPresetData | null>(null);
+  const [userProjects, setUserProjects] = useState<{ id: string; title: string }[]>([]);
 
   const handleRarityChange = (r: string) => {
     setActiveRarity(r);
@@ -56,26 +59,43 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
     supabase.auth.getUser().then(async ({ data }) => {
       setUser(data.user);
       if (data.user) {
-        const { data: rosterData } = await supabase
-          .from('UserRoster')
-          .select('shikigamiId')
-          .eq('userId', data.user.id);
+        const [rosterRes, projectsRes] = await Promise.all([
+          supabase
+            .from('UserRoster')
+            .select('shikigamiId, grade, level, skills:UserRosterSkill(skillId, level)')
+            .eq('userId', data.user.id),
+          supabase
+            .from('UserProject')
+            .select('id, title')
+            .eq('userId', data.user.id)
+            .neq('status', 'COMPLETED')
+            .order('createdAt', { ascending: false })
+        ]);
           
-        if (rosterData) {
-          const dbOwned = rosterData.reduce((acc: Record<string, OwnedShikigami>, curr) => {
+        if (rosterRes.data) {
+          const dbOwned = rosterRes.data.reduce((acc: Record<string, OwnedShikigami>, curr) => {
             if (curr.shikigamiId) {
-              acc[curr.shikigamiId] = { id: curr.shikigamiId, grade: 6, skills: [1, 1, 1], level: 40 };
+              acc[curr.shikigamiId] = { 
+                id: curr.shikigamiId, 
+                grade: curr.grade || 6, 
+                level: curr.level || 40,
+                skills: (curr.skills as any[]) || []
+              };
             }
             return acc;
           }, {});
           useRosterStore.setState({ owned: dbOwned });
+        }
+
+        if (projectsRes.data) {
+          setUserProjects(projectsRes.data);
         }
       }
     });
   }, [supabase]);
 
 
-  const handleToggle = async (id: string, name: string) => {
+  const handleToggle = async (shiki: any) => {
     if (!user) {
       toast.error('Gagal Menyimpan!', {
         description: 'Kamu harus Login terlebih dahulu untuk menyimpan data Roster.',
@@ -84,21 +104,40 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
       return;
     }
     
-    // Optimistic UI update
-    toggleOwnership(id);
-    const isNowOwned = !owned[id];
+    const isOwned = !!owned[shiki.id];
     
-    try {
-      await toggleShikigamiOwnership(id, isNowOwned);
-      if (isNowOwned) {
-        toast.success(`${name} ditambahkan ke Roster!`);
-      } else {
-        toast(`${name} dihapus dari Roster.`);
+    if (!isOwned) {
+      setPresetModalTarget({
+        id: shiki.id,
+        name: shiki.name,
+        icon: shiki.icon,
+        skills: shiki.skills || []
+      });
+    } else {
+      // If already owned, remove it immediately (like before)
+      toggleOwnership(shiki.id);
+      try {
+        await toggleShikigamiOwnership(shiki.id, false);
+        toast(`${shiki.name} dihapus dari Roster.`);
+      } catch (error) {
+        toggleOwnership(shiki.id);
+        toast.error('Gagal menghapus data.');
       }
+    }
+  };
+
+  const confirmAddPreset = async (preset: PresetResult) => {
+    if (!presetModalTarget) return;
+    const { id, name } = presetModalTarget;
+    setPresetModalTarget(null);
+
+    toggleOwnership(id, preset);
+    try {
+      await toggleShikigamiOwnership(id, true, preset);
+      toast.success(`${name} ditambahkan ke Roster!`);
     } catch (error) {
-      // Revert on failure
-      toggleOwnership(id);
-      toast.error(`Gagal menyimpan ${name} ke database.`);
+      toggleOwnership(id); // Revert
+      toast.error('Gagal menyimpan data.');
     }
   };
 
@@ -240,7 +279,7 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
                 {/* Avatar area to toggle ownership */}
                 <div 
                   className="group/avatar relative w-16 h-16 bg-surface overflow-hidden border border-border-ink cursor-pointer transition-all"
-                  onClick={() => handleToggle(shiki.id, shiki.name)}
+                  onClick={() => handleToggle(shiki)}
                   title={isVisitor ? "Log in to manage roster" : "Click to toggle ownership"}
                 >
                   {shiki.icon ? (
@@ -453,7 +492,7 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-mono text-foreground">Owned</span>
                     <button 
-                      onClick={() => handleToggle(selectedShiki.id, selectedShiki.name)}
+                      onClick={() => handleToggle(selectedShiki)}
                       className={`px-3 py-1 text-xs font-mono border transition-colors ${owned[selectedShiki.id] ? 'bg-accent-vermillion text-surface border-accent-vermillion' : 'bg-transparent text-text-secondary border-border-ink'}`}
                     >
                       {owned[selectedShiki.id] ? 'Yes' : 'No'}
@@ -527,6 +566,15 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
           router.refresh();
         }}
       />
+      {/* Quick Preset Modal */}
+      {presetModalTarget && (
+        <QuickPresetModal
+          shikigami={presetModalTarget}
+          userProjects={userProjects}
+          onClose={() => setPresetModalTarget(null)}
+          onConfirm={confirmAddPreset}
+        />
+      )}
     </div>
   );
 }

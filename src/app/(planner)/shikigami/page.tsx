@@ -1,53 +1,43 @@
-import { createClient } from '@/utils/supabase/server';
+import { prisma } from '@/lib/prisma';
 import ShikigamiClient from './ShikigamiClient';
+import { unstable_cache } from 'next/cache';
+
+const getCachedRosterData = unstable_cache(
+  async () => {
+    return Promise.all([
+      prisma.rarity.findMany({ orderBy: { sortOrder: 'asc' } }),
+      prisma.shikigamiRole.findMany({ orderBy: { name: 'asc' } }),
+      prisma.evaluationCategory.findMany({ orderBy: { sortOrder: 'asc' } }),
+      prisma.shikigami.findMany({
+        select: {
+          id: true,
+          name: true,
+          icon: true,
+          rarityId: true,
+          beginnerFriendly: true,
+          availableGlobal: true,
+          rarityRef: true,
+          roleAssignments: {
+            select: {
+              roleId: true,
+              mode: true,
+              role: true
+            }
+          },
+          evaluations: {
+            include: { category: true }
+          },
+          skills: true
+        }
+      })
+    ]);
+  },
+  ['shikigami-data'],
+  { tags: ['shikigami'] }
+);
 
 export default async function RosterPage() {
-  const supabase = await createClient();
-
-  // Fetch rarities ordered by sortOrder
-  const { data: rarities } = await supabase
-    .from('Rarity')
-    .select('*')
-    .order('sortOrder', { ascending: true });
-
-  // Fetch roles
-  const { data: roles } = await supabase
-    .from('ShikigamiRole')
-    .select('*')
-    .order('name', { ascending: true });
-
-  // Fetch categories
-  const { data: categories } = await supabase
-    .from('EvaluationCategory')
-    .select('*')
-    .order('sortOrder', { ascending: true });
-
-  // Fetch shikigami with their rarity relation
-  const { data: shikigamis, error } = await supabase
-    .from('Shikigami')
-    .select(`
-      id,
-      name,
-      icon,
-      rarityId,
-      beginnerFriendly,
-      availableGlobal,
-      rarityRef:Rarity(*),
-      roleAssignments:ShikigamiRoleAssignment(
-        roleId,
-        mode,
-        role:ShikigamiRole(*)
-      ),
-      evaluations:ShikigamiEvaluation(
-        *,
-        category:EvaluationCategory(*)
-      ),
-      skills:ShikigamiSkill(*)
-    `);
-
-  if (error) {
-    console.error('Error fetching Roster Shikigami:', error);
-  }
+  const [rarities, roles, categories, shikigamis] = await getCachedRosterData();
 
   return (
     <ShikigamiClient 

@@ -3,8 +3,10 @@
 import { useEffect } from 'react';
 import { X, ArrowRight } from 'lucide-react';
 import { useLineupBuilderStore } from '@/store/lineup-builder-store';
+import { revalidateMetaCache } from '@/app/actions/revalidate';
 import { upsertMetaLineup } from '@/app/actions/lineups';
-
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import BuilderSidebar from './BuilderSidebar';
 import LineupPlacementPanel from './LineupPlacementPanel';
 import LineupMetadataForm from './LineupMetadataForm';
@@ -127,6 +129,8 @@ export default function LineupBuilderModal({
       };
 
       await upsertMetaLineup(isNew ? 'new' : lineup.id, payload);
+      await revalidateMetaCache('meta-lineups');
+      toast.success(isNew ? 'Lineup created successfully' : 'Lineup updated successfully');
       
       onSaveSuccess();
       onClose();

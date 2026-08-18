@@ -4,13 +4,14 @@ import { persist } from 'zustand/middleware';
 export interface OwnedShikigami {
   id: string;
   grade: number; // e.g. 6 for G6
-  skills: [number, number, number]; // e.g. [5, 5, 5]
+  skills: { skillId: string; level: number }[];
   level: number;
+  projectId?: string;
 }
 
 interface RosterState {
   owned: Record<string, OwnedShikigami>;
-  toggleOwnership: (id: string) => void;
+  toggleOwnership: (id: string, preset?: Omit<OwnedShikigami, 'id'>) => void;
   updateShikigami: (id: string, updates: Partial<OwnedShikigami>) => void;
 }
 
@@ -18,13 +19,13 @@ export const useRosterStore = create<RosterState>()(
   persist(
     (set) => ({
       owned: {},
-      toggleOwnership: (id) =>
+      toggleOwnership: (id, preset) =>
         set((state) => {
           const newOwned = { ...state.owned };
           if (newOwned[id]) {
             delete newOwned[id];
           } else {
-            newOwned[id] = { id, grade: 6, skills: [1, 1, 1], level: 40 };
+            newOwned[id] = { id, ...(preset || { grade: 6, skills: [], level: 40 }) };
           }
           return { owned: newOwned };
         }),

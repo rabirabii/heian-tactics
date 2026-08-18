@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { X, Search, Trash2 } from 'lucide-react';
 import { upsertShikigamiBuild, deleteShikigamiBuild } from '@/app/actions/builds';
+import { revalidateMetaCache } from '@/app/actions/revalidate';
 import RichTextEditor from '@/components/RichTextEditor';
 
 export default function BuildBuilderModal({
@@ -155,6 +156,7 @@ export default function BuildBuilderModal({
         referenceUrl,
         isNewVersion
       });
+      await revalidateMetaCache('meta-builds');
       onSaveSuccess();
       onClose();
     } catch (e) {
@@ -169,6 +171,7 @@ export default function BuildBuilderModal({
     setIsSaving(true);
     try {
       await deleteShikigamiBuild(build.id);
+      await revalidateMetaCache('meta-builds');
       onSaveSuccess();
       onClose();
     } catch(e) {

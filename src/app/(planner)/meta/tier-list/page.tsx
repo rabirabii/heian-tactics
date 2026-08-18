@@ -1,48 +1,44 @@
-import { createClient } from '@/utils/supabase/server';
+import { prisma } from '@/lib/prisma';
 import TierListClient from './TierListClient';
+import { unstable_cache } from 'next/cache';
+
+const getCachedTierListData = unstable_cache(
+  async () => {
+    return Promise.all([
+      prisma.shikigamiRole.findMany({ orderBy: { name: 'asc' } }),
+      prisma.evaluationCategory.findMany({ orderBy: { sortOrder: 'asc' } }),
+      prisma.shikigami.findMany({
+        select: {
+          id: true,
+          name: true,
+          icon: true,
+          rarityId: true,
+          beginnerFriendly: true,
+          availableGlobal: true,
+          rarityRef: true,
+          roleAssignments: {
+            select: {
+              roleId: true,
+              mode: true,
+              role: true
+            }
+          },
+          evaluations: {
+            include: {
+              category: true
+            }
+          }
+        }
+      }),
+      prisma.rarity.findMany({ orderBy: { sortOrder: 'asc' } })
+    ]);
+  },
+  ['meta-tier-list-data'],
+  { tags: ['meta-tier-list'] }
+);
 
 export default async function TierListPage() {
-  const supabase = await createClient();
-
-  // Fetch roles
-  const { data: roles } = await supabase
-    .from('ShikigamiRole')
-    .select('*')
-    .order('name');
-
-  // Fetch evaluation categories
-  const { data: categories } = await supabase
-    .from('EvaluationCategory')
-    .select('*')
-    .order('sortOrder');
-
-  // Fetch Shikigamis with their roles and evaluations
-  const { data: shikigamis } = await supabase
-    .from('Shikigami')
-    .select(`
-      id,
-      name,
-      icon,
-      rarityId,
-      beginnerFriendly,
-      availableGlobal,
-      rarityRef:Rarity(*),
-      roleAssignments:ShikigamiRoleAssignment(
-        roleId,
-        mode,
-        role:ShikigamiRole(*)
-      ),
-      evaluations:ShikigamiEvaluation(
-        *,
-        category:EvaluationCategory(*)
-      )
-    `);
-
-  // Fetch rarities
-  const { data: rarities } = await supabase
-    .from('Rarity')
-    .select('*')
-    .order('sortOrder');
+  const [roles, categories, shikigamis, rarities] = await getCachedTierListData();
 
   return (
     <TierListClient 

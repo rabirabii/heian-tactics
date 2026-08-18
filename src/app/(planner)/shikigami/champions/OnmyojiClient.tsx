@@ -1,22 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import EditOnmyojiModal from '@/components/EditOnmyojiModal';
 import { deleteOnmyoji } from '@/app/actions/onmyoji';
 import { Plus, Trash2, Edit, X } from 'lucide-react';
+import { createClient } from '@/utils/supabase/client';
 
 export default function OnmyojiClient({
-  onmyojiData,
-  user
+  onmyojiData
 }: {
   onmyojiData: any[];
-  user: User | null;
 }) {
   const [selectedChamp, setSelectedChamp] = useState<any | null>(null);
   const [editingChamp, setEditingChamp] = useState<any | null>(null);
   const [isAddingChamp, setIsAddingChamp] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+  }, []);
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').substring(0, 2);

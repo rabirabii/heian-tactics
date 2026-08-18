@@ -6,47 +6,33 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [otp, setOtp] = useState('');
-  const [showOtpInput, setShowOtpInput] = useState(false);
   const supabase = createClient();
   const router = useRouter();
-
-  const handleVerifyOtp = async () => {
-    setLoading(true);
-    setMessage('');
-    const { error } = await supabase.auth.verifyOtp({
-      email,
-      token: otp,
-      type: 'email',
-    });
-
-    if (error) {
-      setMessage(`Error: ${error.message}`);
-      setLoading(false);
-    } else {
-      router.push('/dashboard');
-    }
-  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage('');
 
-    const { error } = await supabase.auth.signInWithOtp({
+    if (!password) {
+      setMessage('Password is required.');
+      setLoading(false);
+      return;
+    }
+
+    // Password Login for test accounts
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        emailRedirectTo: `${location.origin}/auth/callback`,
-      },
+      password,
     });
 
     if (error) {
       setMessage(`Error: ${error.message}`);
     } else {
-      setMessage('Check your email for the magic link or 6-digit OTP code!');
-      setShowOtpInput(true);
+      router.push('/dashboard');
     }
     setLoading(false);
   };
@@ -84,47 +70,26 @@ export default function LoginPage() {
               className="w-full bg-background border border-border-ink px-4 py-2 text-foreground font-mono focus:outline-none focus:border-accent-gold transition-colors"
               placeholder="seimei@heian.kyo"
               required
-              disabled={showOtpInput}
             />
           </div>
-          {!showOtpInput ? (
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-accent-gold text-background font-mono font-bold py-2 hover:bg-yellow-600 transition-colors disabled:opacity-50"
-            >
-              {loading ? 'Sending...' : 'Send Magic Link / OTP'}
-            </button>
-          ) : (
-            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
-              <div>
-                <label className="block text-xs font-mono text-text-secondary mb-1">6-DIGIT OTP CODE (From Email)</label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  className="w-full bg-background border border-border-ink px-4 py-2 text-foreground font-mono tracking-[0.5em] text-center focus:outline-none focus:border-accent-gold transition-colors"
-                  placeholder="123456"
-                  maxLength={6}
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleVerifyOtp}
-                disabled={loading || otp.length < 6}
-                className="w-full bg-accent-vermillion text-background font-mono font-bold py-2 hover:bg-red-600 transition-colors disabled:opacity-50"
-              >
-                {loading ? 'Verifying...' : 'Verify OTP'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowOtpInput(false)}
-                className="w-full text-xs font-mono text-text-secondary hover:text-foreground mt-2"
-              >
-                Use a different email
-              </button>
-            </div>
-          )}
+          <div>
+            <label className="block text-xs font-mono text-text-secondary mb-1">PASSWORD</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-background border border-border-ink px-4 py-2 text-foreground font-mono focus:outline-none focus:border-accent-gold transition-colors"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-accent-gold text-background font-mono font-bold py-2 hover:bg-yellow-600 transition-colors disabled:opacity-50"
+          >
+            {loading ? 'Processing...' : 'Log In'}
+          </button>
         </form>
 
         {message && (

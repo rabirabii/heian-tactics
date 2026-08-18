@@ -1,52 +1,65 @@
-import { createClient } from '@/utils/supabase/server';
+import { prisma } from '@/lib/prisma';
 import LineupsClient from './LineupsClient';
+import { unstable_cache } from 'next/cache';
+
+const getCachedLineupsData = unstable_cache(
+  async () => {
+    return Promise.all([
+      prisma.shikigami.findMany({
+        select: {
+          id: true,
+          name: true,
+          rarityId: true,
+          rarityRef: true,
+          icon: true,
+          strengths: true,
+          weaknesses: true,
+          builds: true
+        }
+      }),
+      prisma.onmyoji.findMany({ include: { skills: true } }),
+      prisma.soul.findMany(),
+      prisma.metaLineup.findMany({
+        where: { supersededById: null },
+        include: {
+          subcategory: {
+            include: {
+              category: {
+                include: { type: true }
+              }
+            }
+          },
+          slots: true,
+          scenarios: { select: { id: true } }
+        }
+      }),
+      prisma.lineupType.findMany({
+        include: {
+          categories: {
+            include: {
+              subcategories: true
+            }
+          }
+        }
+      }),
+      prisma.rarity.findMany({ orderBy: { sortOrder: 'asc' } }),
+      prisma.shikigamiRole.findMany()
+    ]);
+  },
+  ['meta-lineups-data'],
+  { tags: ['meta-lineups'] }
+);
 
 export default async function MetaLineupsPage() {
-  const supabase = await createClient();
-
   const [
-    { data: shikigamiData },
-    { data: onmyojiData },
-    { data: soulsData },
-    { data: lineupsData },
-    { data: lineupTypesData },
-    { data: raritiesData },
-    { data: rolesData }
-  ] = await Promise.all([
-    supabase.from('Shikigami').select('id, name, rarityId, rarityRef:Rarity(*), icon, strengths, weaknesses, builds:ShikigamiBuild(*)'),
-    supabase.from('Onmyoji').select('*, skills:OnmyojiSkill(*)'),
-    supabase.from('Soul').select('*'),
-    supabase.from('MetaLineup').select(`
-      id,
-      name,
-      subcategoryId,
-      subcategory:LineupSubcategory(
-        id, name,
-        category:LineupCategory(
-          id, name,
-          type:LineupType(id, name)
-        )
-      ),
-      author,
-      status,
-      referenceUrl,
-      createdAt,
-      updatedAt,
-      banId,
-      version_count,
-      slots:LineupSlot(*),
-      scenarios:LineupScenario(id)
-    `).is('supersededById', null),
-    supabase.from('LineupType').select(`
-      id, name,
-      categories:LineupCategory(
-        id, name,
-        subcategories:LineupSubcategory(id, name)
-      )
-    `),
-    supabase.from('Rarity').select('*').order('sortOrder', { ascending: true }),
-    supabase.from('ShikigamiRole').select('*')
-  ]);
+    shikigamiData,
+    onmyojiData,
+    soulsData,
+    lineupsData,
+    lineupTypesData,
+    raritiesData,
+    rolesData
+  ] = await getCachedLineupsData();
 
   return (
     <LineupsClient 
