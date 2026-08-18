@@ -71,13 +71,16 @@ export function SidebarNav({ className, user }: { className?: string, user?: Use
         { href: '/meta/lineups', label: 'Meta Lineups', icon: ListTodo },
       ]
     },
-    ...(user ? [{
-      title: "OTHERS",
+    {
+      title: "RESOURCES",
       items: [
-        { href: '/planner', label: 'Planner', icon: CalendarDays },
-        { href: '/settings', label: 'Settings', icon: Settings },
+        { href: '/changelog', label: 'Changelog', icon: CalendarDays },
+        ...(user ? [
+          { href: '/planner', label: 'Planner', icon: CalendarDays },
+          { href: '/settings', label: 'Settings', icon: Settings },
+        ] : []),
       ]
-    }] : [])
+    }
   ];
 
   return (

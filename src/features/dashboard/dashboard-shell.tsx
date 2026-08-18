@@ -402,6 +402,8 @@ function SummonGoalsCard() {
   );
 }
 
+import Link from 'next/link';
+
 export function DashboardOverviewPage() {
   const resources = useInventoryStore((state) => state.resources);
   const projectsMap = useProjectStore((state) => state.projects);
@@ -410,10 +412,22 @@ export function DashboardOverviewPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Dashboard"
-        description="Account readiness, monthly forecast, and upcoming build priorities."
-      />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <PageHeader
+          title="Dashboard"
+          description="Account readiness, monthly forecast, and upcoming build priorities."
+        />
+        <Link href="/changelog" className="group flex flex-col sm:items-end p-3 border border-accent-gold/30 bg-accent-gold/5 hover:bg-accent-gold/10 transition-colors">
+          <div className="flex items-center gap-2 text-accent-gold font-mono text-sm font-bold">
+            <span className="w-2 h-2 rounded-full bg-accent-gold animate-pulse"></span>
+            v1.2.0 is live!
+          </div>
+          <p className="text-xs text-text-secondary font-mono group-hover:text-foreground transition-colors mt-1">
+            Community Builds are now available →
+          </p>
+        </Link>
+      </div>
+
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           label="Current Black Daruma"
