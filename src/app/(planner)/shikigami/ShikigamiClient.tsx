@@ -501,13 +501,13 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
                   
                   {owned[selectedShiki.id] && (
                     <>
-                      <div className="flex justify-between items-center mt-2">
+                      <div className="flex justify-between items-center mt-2 border-t border-border-ink pt-2">
                         <span className="text-sm font-mono text-text-secondary">Grade</span>
-                        <span className="text-sm font-mono text-foreground">G6</span>
+                        <span className="text-sm font-mono text-foreground font-bold text-accent-gold">G{owned[selectedShiki.id].grade || 6}</span>
                       </div>
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center mt-1">
                         <span className="text-sm font-mono text-text-secondary">Level</span>
-                        <span className="text-sm font-mono text-foreground">40</span>
+                        <span className="text-sm font-mono text-foreground font-bold">{owned[selectedShiki.id].level || 40}</span>
                       </div>
                     </>
                   )}

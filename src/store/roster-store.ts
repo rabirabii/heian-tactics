@@ -21,11 +21,19 @@ export const useRosterStore = create<RosterState>()(
       owned: {},
       toggleOwnership: (id, preset) =>
         set((state) => {
+          console.log("toggleOwnership CALLED FOR ID:", id, "PRESET:", preset);
           const newOwned = { ...state.owned };
           if (newOwned[id]) {
             delete newOwned[id];
           } else {
-            newOwned[id] = { id, ...(preset || { grade: 6, skills: [], level: 40 }) };
+            newOwned[id] = { 
+              id, 
+              grade: preset?.grade ?? 6, 
+              level: preset?.level ?? 40, 
+              skills: preset?.skills ?? [], 
+              projectId: preset?.projectId 
+            };
+            console.log("SAVED TO NEW OWNED:", newOwned[id]);
           }
           return { owned: newOwned };
         }),
