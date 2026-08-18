@@ -100,35 +100,35 @@ export default function QuickPresetModal({
               
               <button 
                 onClick={handleCombatReady}
-                className="group relative overflow-hidden p-4 border border-accent-gold/50 bg-accent-gold/5 hover:bg-accent-gold/10 transition-all flex items-center gap-4 text-left"
+                className="group relative overflow-hidden p-4 border border-border-ink bg-background hover:border-accent-gold hover:bg-accent-gold/5 transition-all flex items-center gap-4 text-left"
               >
-                <div className="w-10 h-10 rounded-full bg-accent-gold/20 flex items-center justify-center flex-shrink-0">
-                  <Sword className="w-5 h-5 text-accent-gold" />
+                <div className="w-10 h-10 rounded-full bg-border-ink/20 group-hover:bg-accent-gold/20 transition-colors flex items-center justify-center flex-shrink-0">
+                  <Sword className="w-5 h-5 text-text-secondary group-hover:text-accent-gold transition-colors" />
                 </div>
                 <div>
-                  <div className="font-display text-lg text-accent-gold">Combat Ready</div>
+                  <div className="font-display text-lg text-foreground group-hover:text-accent-gold transition-colors">Combat Ready</div>
                   <div className="text-sm font-mono text-text-secondary mt-1">G6 • Lv. 40 • Max Skills</div>
                 </div>
               </button>
 
               <button 
                 onClick={handleFodder}
-                className="group p-4 border border-border-ink bg-background hover:bg-surface transition-all flex items-center gap-4 text-left"
+                className="group p-4 border border-border-ink bg-background hover:border-green-500/50 hover:bg-green-500/5 transition-all flex items-center gap-4 text-left"
               >
-                <div className="w-10 h-10 rounded-full bg-border-ink/30 flex items-center justify-center flex-shrink-0">
-                  <Leaf className="w-5 h-5 text-text-secondary" />
+                <div className="w-10 h-10 rounded-full bg-border-ink/20 group-hover:bg-green-500/20 transition-colors flex items-center justify-center flex-shrink-0">
+                  <Leaf className="w-5 h-5 text-text-secondary group-hover:text-green-500 transition-colors" />
                 </div>
                 <div>
-                  <div className="font-display text-lg text-foreground">Work in Progress / Fodder</div>
+                  <div className="font-display text-lg text-foreground group-hover:text-green-400 transition-colors">Work in Progress / Fodder</div>
                   <div className="text-sm font-mono text-text-secondary mt-1">G2 • Lv. 1 • Base Skills</div>
                 </div>
               </button>
 
               <button 
                 onClick={() => setMode('CUSTOM')}
-                className="mt-2 p-3 border border-dashed border-border-ink text-text-secondary hover:text-foreground hover:border-text-secondary transition-colors flex items-center justify-center gap-2 font-mono text-sm"
+                className="group mt-2 p-3 border border-dashed border-border-ink text-text-secondary hover:text-accent-vermillion hover:border-accent-vermillion hover:bg-accent-vermillion/5 transition-all flex items-center justify-center gap-2 font-mono text-sm"
               >
-                <Settings className="w-4 h-4" /> Custom Configuration
+                <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" /> Custom Configuration
               </button>
             </div>
           ) : (
