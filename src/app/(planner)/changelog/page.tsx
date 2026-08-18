@@ -8,7 +8,7 @@ const changelogData = [
     description: 'We have introduced the highly requested Community Builds feature!',
     changes: [
       { type: 'NEW', text: 'You can now toggle your builds between Private ("My Builds") and Public ("Community Builds").' },
-      { type: 'NEW', text: 'Published builds will now show the author\\'s username.' },
+      { type: 'NEW', text: "Published builds will now show the author's username." },
       { type: 'NEW', text: 'Changelog page added so you never miss an update.' },
       { type: 'IMPROVEMENT', text: 'Removed the legacy Author input field when creating a build.' },
     ]
