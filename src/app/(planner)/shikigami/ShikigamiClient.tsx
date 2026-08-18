@@ -162,24 +162,47 @@ export default function ShikigamiClient({ shikigamiData, roles = [], categories 
 
   return (
     <div className="space-y-6 relative flex h-full">
-      <div className={`flex-1 transition-all ${selectedShiki ? 'pr-80' : ''}`}>
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-display text-foreground tracking-wide">Roster Manager</h1>
-            <p className="text-text-secondary mt-1 font-mono text-sm">
+      <div className={`flex-1 min-w-0 transition-all ${selectedShiki ? 'xl:pr-80' : ''}`}>
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between mb-6 gap-4">
+          <div className="min-w-0">
+            <h1 className="text-3xl font-display text-foreground tracking-wide truncate">Roster Manager</h1>
+            <p className="text-text-secondary mt-1 font-mono text-sm truncate">
               Manage your personal Shikigami collection.
             </p>
           </div>
           {user && (
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 flex-wrap sm:flex-nowrap shrink-0">
+              <button 
+                onClick={async () => {
+                  const confirmed = window.confirm("Are you sure you want to own all currently filtered Shikigami? This will add them as G6 Level 40.");
+                  if (confirmed) {
+                    const ids = filteredShikigami.map((s: any) => s.id);
+                    const { ownAllShikigami } = await import('@/app/actions/roster');
+                    const addedCount = await ownAllShikigami(ids);
+                    if (addedCount > 0) {
+                      const newOwned = { ...useRosterStore.getState().owned };
+                      ids.forEach((id: string) => {
+                        if (!newOwned[id]) newOwned[id] = { id, grade: 6, level: 40, skills: [] };
+                      });
+                      useRosterStore.setState({ owned: newOwned });
+                      import('sonner').then(m => m.toast.success(`${addedCount} Shikigami added to your Roster!`));
+                    } else {
+                      import('sonner').then(m => m.toast('You already own all these Shikigami.'));
+                    }
+                  }
+                }}
+                className="text-sm font-mono text-text-secondary border border-border-ink px-3 py-1 hover:text-foreground hover:bg-surface transition-colors"
+              >
+                Own All Filtered
+              </button>
               <button 
                 onClick={() => {
                   setSelectedShiki(null);
                   setIsEditModalOpen(true);
                 }}
-                className="hidden sm:flex text-sm font-mono text-accent-gold border border-accent-gold px-3 py-1 hover:bg-accent-gold hover:text-background transition-colors"
+                className="text-sm font-mono text-accent-gold border border-accent-gold px-3 py-1 hover:bg-accent-gold hover:text-background transition-colors"
               >
-                + Add Shikigami
+                + Add Custom
               </button>
               <div className="text-right">
                 <div className="text-2xl font-display text-accent-vermillion">

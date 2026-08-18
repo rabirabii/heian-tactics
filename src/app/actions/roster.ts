@@ -73,3 +73,36 @@ export async function toggleShikigamiOwnership(
   revalidatePath('/shikigami');
   return true;
 }
+
+export async function ownAllShikigami(allShikigamiIds: string[]) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('Unauthorized');
+  }
+
+  // Get current owned
+  const currentOwned = await prisma.userRoster.findMany({
+    where: { userId: user.id, shikigamiId: { in: allShikigamiIds } },
+    select: { shikigamiId: true }
+  });
+  
+  const ownedSet = new Set(currentOwned.map(o => o.shikigamiId));
+  const toAdd = allShikigamiIds.filter(id => !ownedSet.has(id));
+
+  if (toAdd.length > 0) {
+    await prisma.userRoster.createMany({
+      data: toAdd.map(shikigamiId => ({
+        userId: user.id,
+        shikigamiId,
+        isOwned: true,
+        grade: 6,
+        level: 40,
+      }))
+    });
+  }
+
+  revalidatePath('/shikigami');
+  return toAdd.length;
+}

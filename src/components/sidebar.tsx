@@ -51,6 +51,7 @@ export function SidebarNav({ className, user }: { className?: string, user?: Use
       title: "GENERAL",
       items: [
         { href: '/dashboard', label: 'Dashboard', icon: Gauge },
+        { href: '/ledger', label: 'Ledger (Resources)', icon: Factory },
         { href: '/projects', label: 'Projects', icon: FolderKanban },
         { href: '/fodder', label: 'Fodder', icon: Factory },
       ]

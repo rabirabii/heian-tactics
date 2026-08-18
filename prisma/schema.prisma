@@ -18,8 +18,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  roster   UserRoster[]
-  projects UserProject[]
+  roster            UserRoster[]
+  projects          UserProject[]
+  storage           UserStorage[]
+  ledgerTransactions LedgerTransaction[]
 }
 
 enum Role {
@@ -379,4 +381,45 @@ model UserRosterSkill {
   skill          ShikigamiSkill @relation(fields: [skillId], references: [id], onDelete: Cascade)
   
   @@unique([userRosterId, skillId])
+}
+
+// ==========================================
+// LEDGER & STORAGE (Resource Management)
+// ==========================================
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model UserStorage {
+  id         String   @id @default(uuid())
+  userId     String
+  resourceId String   // e.g., "JADE", "AP", "COIN", "MYSTERY_AMULET"
+  amount     Int      @default(0)
+  
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, resourceId])
+}
+
+model LedgerTransaction {
+  id             String   @id @default(uuid())
+  userId         String
+  resourceId     String   // e.g., "JADE"
+  amount         Int      // Always positive absolute value
+  type           TransactionType
+  
+  source         String   // e.g., "MANUAL", "EVENT_REWARD", "SUMMON"
+  
+  // Future-proofing for "Activities" and "Projects"
+  referenceType  String?  // e.g., "ACTIVITY", "PROJECT_ALLOCATION"
+  referenceId    String?  // The ID of the activity/project
+  metadata       Json?    // Any additional context { banner: "SP_YOUTOU", pulls: 10 }
+  
+  createdAt      DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
