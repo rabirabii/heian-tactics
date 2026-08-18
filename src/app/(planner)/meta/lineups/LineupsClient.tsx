@@ -246,9 +246,9 @@ export default function LineupsClient({
 
       <div className="space-y-8">
         {filteredLineups.slice(0, visibleCount).map((lineup) => {
-          const onmyojiSlots = lineup.slots?.filter((s: any) => s.slotType === 'ONMYOJI' || s.onmyojiId).sort((a, b) => a.slotNumber - b.slotNumber) || [];
-          const coreSlots = lineup.slots?.filter((s: any) => s.slotType === 'CORE' && !s.onmyojiId).sort((a, b) => a.slotNumber - b.slotNumber) || [];
-          const flexSlots = lineup.slots?.filter((s: any) => s.slotType === 'FLEX').sort((a, b) => a.slotNumber - b.slotNumber) || [];
+          const onmyojiSlots = lineup.slots?.filter((s: any) => s.slotType === 'ONMYOJI' || s.onmyojiId).sort((a: any, b: any) => a.slotNumber - b.slotNumber) || [];
+          const coreSlots = lineup.slots?.filter((s: any) => s.slotType === 'CORE' && !s.onmyojiId).sort((a: any, b: any) => a.slotNumber - b.slotNumber) || [];
+          const flexSlots = lineup.slots?.filter((s: any) => s.slotType === 'FLEX').sort((a: any, b: any) => a.slotNumber - b.slotNumber) || [];
 
           const mapSlotToCol = (slot: any, type: string) => {
             const isFlex = !slot.shikigamiId && slot.indicator?.toUpperCase().includes("FLEX") || slot.shikigamiId === 'flex';
@@ -356,10 +356,10 @@ export default function LineupsClient({
               {/* Card-based tactical layout */}
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                  {coreColumns.map((col, idx) => (
+                  {coreColumns.map((col: any, idx: number) => (
                     <LineupSlotCard
                       key={`core-${idx}`}
-                      col={col as any}
+                      col={col}
                       getSoul={getSoul}
                       getOnmyoji={getOnmyoji}
                       setSubsModal={setSubsModal}
@@ -369,10 +369,10 @@ export default function LineupsClient({
                   {onmyojiColumns.length > 0 && (
                     <>
                       <div className="w-px bg-border-ink mx-2 shrink-0"></div>
-                      {onmyojiColumns.map((col, idx) => (
+                      {onmyojiColumns.map((col: any, idx: number) => (
                         <LineupSlotCard
                           key={`onm-${idx}`}
-                          col={col as any}
+                          col={col}
                           getSoul={getSoul}
                           getOnmyoji={getOnmyoji}
                           setSubsModal={setSubsModal}
@@ -387,10 +387,10 @@ export default function LineupsClient({
                   <div>
                     <h4 className="text-xs font-mono font-bold text-blue-400 mb-2 uppercase tracking-wider">Flex / Situational:</h4>
                     <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                      {flexColumns.map((col, idx) => (
+                      {flexColumns.map((col: any, idx: number) => (
                         <LineupSlotCard
                           key={`flex-${idx}`}
-                          col={col as any}
+                          col={col}
                           getSoul={getSoul}
                           getOnmyoji={getOnmyoji}
                           setSubsModal={setSubsModal}
