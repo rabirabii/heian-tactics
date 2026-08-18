@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
-export default function ShikigamiDetailClient({ shikigami }: { shikigami: any }) {
+export default function ShikigamiDetailClient({ shikigami, currentUserId }: { shikigami: any, currentUserId?: string }) {
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500 pb-12">
       {/* Navigation */}

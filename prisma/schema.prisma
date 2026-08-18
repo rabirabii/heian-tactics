@@ -22,6 +22,7 @@ model User {
   projects          UserProject[]
   storage           UserStorage[]
   ledgerTransactions LedgerTransaction[]
+  builds            ShikigamiBuild[]
 }
 
 enum Role {
@@ -86,7 +87,11 @@ model ShikigamiBuild {
 
   // Meta Status & Versioning
   status            MetaStatus @default(CURRENT)
-  author            String     @default("System")
+  author            String     @default("System") // Legacy text author
+  authorId          String?    // Foreign key to User
+  userAuthor        User?      @relation(fields: [authorId], references: [id])
+  isPublic          Boolean    @default(false)
+  
   updatedBy         String?
   referenceUrl      String?
   becameHistoricalAt DateTime?

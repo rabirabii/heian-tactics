@@ -40,10 +40,14 @@ interface ShikigamiWithBuilds {
   builds: ShikiBuild[];
 }
 
-export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData, lineupTypes, lineupCategories }: any) {
+import { toggleBuildVisibility } from '@/app/actions/builds';
+import { Globe, Lock } from 'lucide-react';
+
+export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData, lineupTypes, lineupCategories, currentUserId }: any) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeRarity, setActiveRarity] = useState<string>('All');
   const [activeType, setActiveType] = useState<string>('All');
+  const [activeTab, setActiveTab] = useState<'COMMUNITY' | 'MINE'>('COMMUNITY');
   const [visibleCount, setVisibleCount] = useState(10);
   const router = useRouter();
   
@@ -57,6 +61,16 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
       setUser(user);
     });
   }, []);
+
+  const handleTogglePublish = async (buildId: string, currentPublicState: boolean) => {
+    try {
+      await toggleBuildVisibility(buildId, !currentPublicState);
+      toast.success(currentPublicState ? 'Build changed to Private' : 'Build published to Community');
+      router.refresh();
+    } catch (e: any) {
+      toast.error(e.message || 'Failed to change build visibility');
+    }
+  };
 
   const handleRarityChange = (r: string) => {
     setActiveRarity(r);
@@ -73,16 +87,22 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
     setVisibleCount(10);
   };
 
-  // Filter shikigami based on search (name OR role), rarity, and type
+  // Filter shikigami based on search (name OR role), rarity, type, and activeTab
   const filteredData = data.map((shiki: any) => {
-    // 1. Filter the builds themselves first based on Type
+    // 1. Filter the builds based on Type and Tab
     let filteredBuilds = shiki.builds;
     if (activeType !== 'All') {
       filteredBuilds = filteredBuilds.filter((b: any) => b.typeId === activeType);
     }
+    if (activeTab === 'COMMUNITY') {
+      filteredBuilds = filteredBuilds.filter((b: any) => b.isPublic);
+    } else {
+      // My Builds
+      filteredBuilds = filteredBuilds.filter((b: any) => b.authorId === currentUserId);
+    }
     return { ...shiki, builds: filteredBuilds };
   }).filter((shiki: any) => {
-    // Drop shiki if no builds match the Type filter
+    // Drop shiki if no builds match the filters
     if (shiki.builds.length === 0) return false;
 
     // 2. Rarity check
@@ -101,6 +121,29 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
 
   return (
     <div className="space-y-6">
+      <div className="flex gap-4 border-b border-border-ink">
+        <button
+          onClick={() => { setActiveTab('COMMUNITY'); setVisibleCount(10); }}
+          className={`px-4 py-2 font-mono text-sm transition-colors border-b-2 ${
+            activeTab === 'COMMUNITY' ? 'border-accent-gold text-accent-gold' : 'border-transparent text-text-secondary hover:text-foreground'
+          }`}
+        >
+          <Globe className="w-4 h-4 inline mr-2" />
+          Community Builds
+        </button>
+        {currentUserId && (
+          <button
+            onClick={() => { setActiveTab('MINE'); setVisibleCount(10); }}
+            className={`px-4 py-2 font-mono text-sm transition-colors border-b-2 ${
+              activeTab === 'MINE' ? 'border-accent-vermillion text-accent-vermillion' : 'border-transparent text-text-secondary hover:text-foreground'
+            }`}
+          >
+            <Lock className="w-4 h-4 inline mr-2" />
+            My Builds
+          </button>
+        )}
+      </div>
+
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-surface p-4 border-l-2 border-border-ink">
         <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 hide-scrollbar max-w-full">
           <select 
@@ -228,24 +271,40 @@ export function BuildsTable({ data, rarities, allShikigami, rolesData, soulsData
                             HISTORICAL
                           </span>
                         )}
-                        {user && (
-                          <button 
-                            onClick={() => {
-                              setSelectedBuild({ ...build, shikigamiId: shiki.id });
-                              setIsModalOpen(true);
-                            }}
-                            className="opacity-0 group-hover:opacity-100 text-text-secondary hover:text-accent-vermillion transition-opacity ml-auto"
-                            title="Edit Build"
-                          >
-                            <Edit className="w-3 h-3" />
-                          </button>
+                        {user && (build.authorId === user.id || user.user_metadata?.role === 'ADMIN') && (
+                          <div className="ml-auto opacity-0 group-hover:opacity-100 flex gap-2">
+                            {build.authorId === user.id && (
+                              <button
+                                onClick={() => handleTogglePublish(build.id, build.isPublic)}
+                                className={`px-2 py-0.5 text-[10px] border transition-colors ${
+                                  build.isPublic 
+                                    ? 'border-green-500 text-green-500 hover:bg-green-500/10' 
+                                    : 'border-border-ink text-text-secondary hover:text-foreground'
+                                }`}
+                                title={build.isPublic ? "Public - Click to make Private" : "Private - Click to Publish"}
+                              >
+                                {build.isPublic ? "PUBLISHED" : "PUBLISH"}
+                              </button>
+                            )}
+                            <button 
+                              onClick={() => {
+                                setSelectedBuild({ ...build, shikigamiId: shiki.id });
+                                setIsModalOpen(true);
+                              }}
+                              className="text-text-secondary hover:text-accent-vermillion transition-colors"
+                              title="Edit Build"
+                            >
+                              <Edit className="w-3 h-3" />
+                            </button>
+                          </div>
                         )}
                       </div>
-                      {build.category && (
-                        <div className="text-[10px] text-text-secondary font-normal">
-                          For: {build.category.name}
-                        </div>
-                      )}
+                      <div className="flex gap-2 items-center text-[10px] text-text-secondary font-normal mt-1">
+                        <span>By @{build.userAuthor?.username || build.author}</span>
+                        {build.category && (
+                          <span>• {build.category.name}</span>
+                        )}
+                      </div>
                       {build.tags && build.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1">
                           {build.tags.map((tag: string, i: number) => (

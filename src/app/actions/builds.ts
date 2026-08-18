@@ -13,7 +13,7 @@ export async function upsertShikigamiBuild(buildId: string | 'new', data: any) {
 
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
 
-  const payload = {
+  const payload: any = {
     shikigamiId: data.shikigamiId,
     roleId: data.roleId,
     typeId: data.typeId || 'PvE',
@@ -27,17 +27,36 @@ export async function upsertShikigamiBuild(buildId: string | 'new', data: any) {
     breakpoint: data.breakpoint || '',
     notes: data.notes || null,
     tags: data.tags || [],
-    author: data.author || 'System',
-    updatedBy: dbUser?.username || null,
-    referenceUrl: data.referenceUrl || null,
     status: data.status || 'CURRENT',
+    referenceUrl: data.referenceUrl || null,
   };
 
   if (buildId === 'new') {
+    // For new builds, the creator is the author, and it's private by default.
+    payload.authorId = user.id;
+    payload.isPublic = false; 
+    payload.author = dbUser?.username || 'Anonymous_Player'; // Keep legacy field populated
     return prisma.shikigamiBuild.create({ data: payload });
   } else {
+    // Check ownership or admin rights for editing
+    const existingBuild = await prisma.shikigamiBuild.findUnique({ where: { id: buildId } });
+    if (!existingBuild) throw new Error('Build not found');
+
+    if (existingBuild.authorId !== user.id && dbUser?.role !== 'ADMIN') {
+      throw new Error('You do not have permission to edit this build');
+    }
+
+    // Only set updatedBy if an Admin edits someone else's build (or a System build)
+    if (existingBuild.authorId !== user.id) {
+      payload.updatedBy = dbUser?.username || 'Admin';
+    }
+
     if (data.isNewVersion) {
       // Auto-supersede logic with transaction
+      payload.authorId = existingBuild.authorId;
+      payload.isPublic = existingBuild.isPublic;
+      payload.author = existingBuild.author;
+
       return await prisma.$transaction(async (tx) => {
         const newRecord = await tx.shikigamiBuild.create({ 
           data: { ...payload, status: 'CURRENT' } 
@@ -61,6 +80,28 @@ export async function upsertShikigamiBuild(buildId: string | 'new', data: any) {
       });
     }
   }
+}
+
+export async function toggleBuildVisibility(buildId: string, isPublic: boolean) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('Unauthorized');
+  }
+
+  const existingBuild = await prisma.shikigamiBuild.findUnique({ where: { id: buildId } });
+  if (!existingBuild) throw new Error('Build not found');
+
+  const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+  if (existingBuild.authorId !== user.id && dbUser?.role !== 'ADMIN') {
+    throw new Error('You do not have permission to change visibility of this build');
+  }
+
+  return prisma.shikigamiBuild.update({
+    where: { id: buildId },
+    data: { isPublic }
+  });
 }
 
 export async function deleteShikigamiBuild(buildId: string) {
