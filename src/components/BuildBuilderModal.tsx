@@ -464,17 +464,7 @@ export default function BuildBuilderModal({
                   />
                 </div>
 
-                <div className="space-y-2 md:col-span-1">
-                  <label className="text-xs font-mono text-text-secondary">Author</label>
-                  <input 
-                    value={author} 
-                    onChange={e => setAuthor(e.target.value)}
-                    className="w-full bg-background border border-border-ink p-2 font-mono text-sm outline-none focus:border-accent-vermillion"
-                    placeholder="e.g. System, NGA, or Player Name"
-                  />
-                </div>
-                
-                <div className="space-y-2 md:col-span-1">
+                <div className="space-y-2 md:col-span-2">
                   <label className="text-xs font-mono text-text-secondary">Reference URL (Optional)</label>
                   <input 
                     value={referenceUrl} 
