@@ -242,8 +242,8 @@ export default function ScenarioBuilderPanel({
                     <div className="flex flex-wrap gap-2">
                       {sc.enemySlots.map((slot: any, slIdx: number) => {
                         const isFlex = slot.shikigamiId === 'flex' || slot.indicator?.toUpperCase().includes('FLEX');
-                        const isSlot6 = slot.slotNumber === 6 || slIdx === 5;
-                        const shiki = isSlot6 && slot.onmyojiId
+                        const isOnmyoji = slot.slotType === 'ONMYOJI' || slot.onmyojiId;
+                        const shiki = isOnmyoji
                           ? onmyojiData?.find((o: any) => o.id === slot.onmyojiId)
                           : shikigamiData.find((s: any) => s.id === slot.shikigamiId);
                         
@@ -300,8 +300,8 @@ export default function ScenarioBuilderPanel({
                     <div className="flex flex-wrap gap-2">
                       {sc.solutionSlots.map((slot: any, slIdx: number) => {
                         const isFlex = slot.shikigamiId === 'flex' || slot.indicator?.toUpperCase().includes('FLEX');
-                        const isSlot6 = slot.slotNumber === 6 || slIdx === 5;
-                        const shiki = isSlot6 && slot.onmyojiId
+                        const isOnmyoji = slot.slotType === 'ONMYOJI' || slot.onmyojiId;
+                        const shiki = isOnmyoji
                           ? onmyojiData?.find((o: any) => o.id === slot.onmyojiId)
                           : shikigamiData.find((s: any) => s.id === slot.shikigamiId);
                         

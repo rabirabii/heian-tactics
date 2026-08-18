@@ -246,43 +246,30 @@ export default function LineupsClient({
 
       <div className="space-y-8">
         {filteredLineups.slice(0, visibleCount).map((lineup) => {
-          const shikiSlots = [...(lineup.slots || [])]
-            .filter((s: any) => s.slotNumber >= 1 && s.slotNumber <= 5)
-            .sort((a, b) => a.slotNumber - b.slotNumber);
+          const onmyojiSlots = lineup.slots?.filter((s: any) => s.slotType === 'ONMYOJI' || s.onmyojiId).sort((a, b) => a.slotNumber - b.slotNumber) || [];
+          const coreSlots = lineup.slots?.filter((s: any) => s.slotType === 'CORE' && !s.onmyojiId).sort((a, b) => a.slotNumber - b.slotNumber) || [];
+          const flexSlots = lineup.slots?.filter((s: any) => s.slotType === 'FLEX').sort((a, b) => a.slotNumber - b.slotNumber) || [];
 
-          const onmyojiSlot = lineup.slots?.find(
-            (s: any) => s.slotNumber === 6,
-          );
-          const champ = onmyojiSlot?.onmyojiId
-            ? getOnmyoji(onmyojiSlot.onmyojiId)
-            : null;
+          const mapSlotToCol = (slot: any, type: string) => {
+            const isFlex = !slot.shikigamiId && slot.indicator?.toUpperCase().includes("FLEX") || slot.shikigamiId === 'flex';
+            const entity = type === 'onmyoji' 
+              ? (slot.onmyojiId ? getOnmyoji(slot.onmyojiId) : null)
+              : (slot.shikigamiId && !isFlex ? getShiki(slot.shikigamiId) : null);
+            
+            return {
+              type,
+              data: slot,
+              displayHero: entity,
+              isPrimaryOwned: type === 'onmyoji' ? true : (entity ? owned[slot.shikigamiId] : false),
+              isMissing: type === 'onmyoji' || isFlex ? false : !owned[slot.shikigamiId],
+              isFlex,
+              subUsed: null,
+            };
+          };
 
-          const columns = [
-            ...shikiSlots.map((slot: any) => {
-              const primary = slot.shikigamiId
-                ? getShiki(slot.shikigamiId)
-                : null;
-              const isMissing = !owned[slot.shikigamiId];
-              const isFlex =
-                !slot.shikigamiId &&
-                slot.indicator?.toUpperCase().includes("FLEX");
-
-              return {
-                type: "shikigami",
-                data: slot,
-                displayHero: primary,
-                isPrimaryOwned: owned[slot.shikigamiId],
-                isMissing: isFlex ? false : isMissing,
-                isFlex,
-                subUsed: null,
-              };
-            }),
-            {
-              type: "onmyoji",
-              data: onmyojiSlot || {},
-              displayHero: champ,
-            },
-          ];
+          const coreColumns = coreSlots.map((s: any) => mapSlotToCol(s, 'shikigami'));
+          const onmyojiColumns = onmyojiSlots.map((s: any) => mapSlotToCol(s, 'onmyoji'));
+          const flexColumns = flexSlots.map((s: any) => mapSlotToCol(s, 'shikigami'));
 
           return (
             <div
@@ -367,17 +354,52 @@ export default function LineupsClient({
                 })()}
 
               {/* Card-based tactical layout */}
-              <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                {columns.map((col, idx) => (
-                  <LineupSlotCard
-                    key={idx}
-                    col={col as any}
-                    getSoul={getSoul}
-                    getOnmyoji={getOnmyoji}
-                    setSubsModal={setSubsModal}
-                    lineup={lineup}
-                  />
-                ))}
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                  {coreColumns.map((col, idx) => (
+                    <LineupSlotCard
+                      key={`core-${idx}`}
+                      col={col as any}
+                      getSoul={getSoul}
+                      getOnmyoji={getOnmyoji}
+                      setSubsModal={setSubsModal}
+                      lineup={lineup}
+                    />
+                  ))}
+                  {onmyojiColumns.length > 0 && (
+                    <>
+                      <div className="w-px bg-border-ink mx-2 shrink-0"></div>
+                      {onmyojiColumns.map((col, idx) => (
+                        <LineupSlotCard
+                          key={`onm-${idx}`}
+                          col={col as any}
+                          getSoul={getSoul}
+                          getOnmyoji={getOnmyoji}
+                          setSubsModal={setSubsModal}
+                          lineup={lineup}
+                        />
+                      ))}
+                    </>
+                  )}
+                </div>
+                
+                {flexColumns.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-mono font-bold text-blue-400 mb-2 uppercase tracking-wider">Flex / Situational:</h4>
+                    <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                      {flexColumns.map((col, idx) => (
+                        <LineupSlotCard
+                          key={`flex-${idx}`}
+                          col={col as any}
+                          getSoul={getSoul}
+                          getOnmyoji={getOnmyoji}
+                          setSubsModal={setSubsModal}
+                          lineup={lineup}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-6 border-t border-border-ink pt-6 flex justify-between items-center">

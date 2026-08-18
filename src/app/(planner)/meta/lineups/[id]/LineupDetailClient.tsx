@@ -207,15 +207,15 @@ export default function LineupDetailClient({
                         <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
                           {getMergedSlots(matchup.solutionSlots, matchup.baseLineupId).map((slot: any, slIdx: number) => {
                             const isFlex = slot.shikigamiId === 'flex' || (!slot.shikigamiId && slot.indicator?.toUpperCase().includes('FLEX'));
-                            const isSlot6 = slot.slotNumber === 6 || slIdx === 5;
-                            const entity = isSlot6 && slot.onmyojiId ? getOnmyoji(slot.onmyojiId) : getShiki(slot.shikigamiId);
+                            const isOnmyoji = slot.slotType === 'ONMYOJI' || slot.onmyojiId; // Fallback to onmyojiId if slotType is missing from old data
+                            const entity = isOnmyoji ? getOnmyoji(slot.onmyojiId) : getShiki(slot.shikigamiId);
                             
                             const col = {
-                              type: isSlot6 ? 'onmyoji' : 'shikigami',
+                              type: isOnmyoji ? 'onmyoji' : 'shikigami',
                               data: slot,
                               displayHero: entity,
                               isFlex,
-                              isPrimaryOwned: isSlot6 ? true : (entity ? !!owned[entity.id] : false),
+                              isPrimaryOwned: isOnmyoji ? true : (entity ? !!owned[entity.id] : false),
                               isMissing: false
                             };
 
@@ -242,15 +242,15 @@ export default function LineupDetailClient({
                         <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
                           {getMergedSlots(matchup.enemySlots, matchup.baseEnemyLineupId).map((slot: any, slIdx: number) => {
                             const isFlex = slot.shikigamiId === 'flex' || (!slot.shikigamiId && slot.indicator?.toUpperCase().includes('FLEX'));
-                            const isSlot6 = slot.slotNumber === 6 || slIdx === 5;
-                            const entity = isSlot6 && slot.onmyojiId ? getOnmyoji(slot.onmyojiId) : getShiki(slot.shikigamiId);
+                            const isOnmyoji = slot.slotType === 'ONMYOJI' || slot.onmyojiId;
+                            const entity = isOnmyoji ? getOnmyoji(slot.onmyojiId) : getShiki(slot.shikigamiId);
                             
                             const col = {
-                              type: isSlot6 ? 'onmyoji' : 'shikigami',
+                              type: isOnmyoji ? 'onmyoji' : 'shikigami',
                               data: slot,
                               displayHero: entity,
                               isFlex,
-                              isPrimaryOwned: isSlot6 ? true : (entity ? !!owned[entity.id] : false),
+                              isPrimaryOwned: isOnmyoji ? true : (entity ? !!owned[entity.id] : false),
                               isMissing: false
                             };
 

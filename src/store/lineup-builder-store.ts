@@ -56,8 +56,9 @@ export interface LineupBuilderState {
   // Metadata Actions
   setMetadata: (updates: Partial<LineupBuilderState>) => void;
   
-  // Slot Actions
   updateSlot: (index: number, updates: any) => void;
+  addSlot: (slotType: string) => void;
+  removeSlot: (index: number) => void;
   fillUnoccupiedToFlex: () => void;
   applyConfigSlot: () => void;
   
@@ -120,17 +121,19 @@ export const useLineupBuilderStore = create<LineupBuilderState>((set, get) => ({
     }
 
     const initialSlots = [];
-    for (let i = 1; i <= 6; i++) {
-      const existingSlot = lineup?.slots?.find((s: any) => s.slotNumber === i);
-      let parsedSlot;
-      
-      if (existingSlot) {
-        parsedSlot = { ...existingSlot };
+    if (lineup?.slots && lineup.slots.length > 0) {
+      // Map existing slots
+      for (const existingSlot of lineup.slots) {
+        const parsedSlot = { ...existingSlot };
         if (parsedSlot.shikigamiId === null && parsedSlot.indicator?.toUpperCase().includes('FLEX')) {
           parsedSlot.shikigamiId = 'flex';
         }
-      } else {
-        parsedSlot = {
+        initialSlots.push(parsedSlot);
+      }
+    } else {
+      // Default to 5 Core + 1 Onmyoji
+      for (let i = 1; i <= 6; i++) {
+        initialSlots.push({
           slotNumber: i,
           shikigamiId: null,
           onmyojiId: null,
@@ -138,10 +141,9 @@ export const useLineupBuilderStore = create<LineupBuilderState>((set, get) => ({
           secondarySouls: [],
           substitutes: [],
           onmyojiSkills: [],
-          slotType: i === 6 ? 'CORE' : 'CORE'
-        };
+          slotType: i === 6 ? 'ONMYOJI' : 'CORE'
+        });
       }
-      initialSlots.push(parsedSlot);
     }
 
     set({
@@ -196,13 +198,35 @@ export const useLineupBuilderStore = create<LineupBuilderState>((set, get) => ({
       return { slots: newSlots };
     }),
 
+  addSlot: (slotType) => 
+    set((state) => {
+      const newSlotNumber = state.slots.length > 0 ? Math.max(...state.slots.map(s => s.slotNumber)) + 1 : 1;
+      const newSlot = {
+        slotNumber: newSlotNumber,
+        shikigamiId: null,
+        onmyojiId: null,
+        primarySouls: [],
+        secondarySouls: [],
+        substitutes: [],
+        onmyojiSkills: [],
+        slotType
+      };
+      return { slots: [...state.slots, newSlot] };
+    }),
+
+  removeSlot: (index) =>
+    set((state) => {
+      const newSlots = [...state.slots];
+      newSlots.splice(index, 1);
+      return { slots: newSlots };
+    }),
+
   fillUnoccupiedToFlex: () =>
     set((state) => {
       const newSlots = [...state.slots];
-      for (let i = 0; i < 5; i++) {
-        if (!newSlots[i].shikigamiId) {
+      for (let i = 0; i < state.slots.length; i++) {
+        if (newSlots[i].slotType === 'CORE' && !newSlots[i].shikigamiId) {
           newSlots[i].shikigamiId = 'flex';
-          newSlots[i].slotType = 'SUB';
         }
       }
       return { slots: newSlots };

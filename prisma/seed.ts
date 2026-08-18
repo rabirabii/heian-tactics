@@ -55,7 +55,7 @@ async function main() {
   const subCatMap: Record<string, string[]> = {
     'Soul Zone': ['S11 / Moan', 'S12 / Judgement'],
     'Demon Encounter': ['Ghostly Songstress', 'Odokuro', 'Namazu', 'Tsuchigumo'],
-    'Duel': ['Low Tier (Tier 1-4)', 'Mid Tier (Tier 5-7)', 'High Tier (Tier 8-9)', 'Celebrity'],
+    'Duel': ['Under Celeb (Tier 1-9)', 'Celebrity'],
   };
 
   for (const [fullCat, catName] of Object.entries(catMap)) {
