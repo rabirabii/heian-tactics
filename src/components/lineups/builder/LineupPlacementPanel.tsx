@@ -104,16 +104,6 @@ export default function LineupPlacementPanel({
     <div className="space-y-6">
       <div className="flex justify-between items-end mb-2">
         <h3 className="font-display text-lg text-accent-gold">Lineup Placement</h3>
-        <button 
-          onClick={() => {
-            if (window.confirm("Are you sure you want to fill unoccupied core slots with Flex?")) {
-              fillUnoccupiedToFlex();
-            }
-          }}
-          className="text-[10px] font-mono px-2 py-1 bg-surface border border-border-ink hover:text-accent-vermillion hover:border-accent-vermillion transition-colors"
-        >
-          Fill unoccupied to flex
-        </button>
       </div>
       
       {/* Core + Onmyoji Row */}

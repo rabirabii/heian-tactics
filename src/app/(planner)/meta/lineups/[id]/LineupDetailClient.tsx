@@ -64,6 +64,31 @@ export default function LineupDetailClient({
     });
   };
 
+  const onmyojiSlots = lineup.slots?.filter((s: any) => s.slotType === 'ONMYOJI' || s.onmyojiId).sort((a: any, b: any) => a.slotNumber - b.slotNumber) || [];
+  const coreSlots = lineup.slots?.filter((s: any) => s.slotType === 'CORE' && !s.onmyojiId).sort((a: any, b: any) => a.slotNumber - b.slotNumber) || [];
+  const flexSlots = lineup.slots?.filter((s: any) => s.slotType === 'FLEX').sort((a: any, b: any) => a.slotNumber - b.slotNumber) || [];
+
+  const mapSlotToCol = (slot: any, type: string) => {
+    const isFlex = !slot.shikigamiId && slot.indicator?.toUpperCase().includes("FLEX") || slot.shikigamiId === 'flex';
+    const entity = type === 'onmyoji' 
+      ? (slot.onmyojiId ? getOnmyoji(slot.onmyojiId) : null)
+      : (slot.shikigamiId && !isFlex ? getShiki(slot.shikigamiId) : null);
+    
+    return {
+      type,
+      data: slot,
+      displayHero: entity,
+      isPrimaryOwned: type === 'onmyoji' ? true : (entity ? owned[slot.shikigamiId] : false),
+      isMissing: type === 'onmyoji' || isFlex ? false : !owned[slot.shikigamiId],
+      isFlex,
+      subUsed: null,
+    };
+  };
+
+  const coreColumns = coreSlots.map((s: any) => mapSlotToCol(s, 'shikigami'));
+  const onmyojiColumns = onmyojiSlots.map((s: any) => mapSlotToCol(s, 'onmyoji'));
+  const flexColumns = flexSlots.map((s: any) => mapSlotToCol(s, 'shikigami'));
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -76,6 +101,58 @@ export default function LineupDetailClient({
           <span className="px-3 py-1 bg-surface border border-border-ink text-xs font-mono text-text-secondary">
             {lineup.subcategory?.category?.type?.name} / {lineup.subcategory?.category?.name} / {lineup.subcategory?.name}
           </span>
+        </div>
+      </div>
+
+      {/* Full Lineup Roster */}
+      <div className="bg-surface border border-border-ink p-6 mb-8">
+        <h2 className="text-xl font-display text-accent-gold mb-6 border-b border-border-ink pb-2">Full Draft Pool</h2>
+        <div className="flex flex-col gap-6">
+          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+            {coreColumns.map((col: any, idx: number) => (
+              <LineupSlotCard 
+                key={`core-${idx}`}
+                col={col}
+                getSoul={getSoul}
+                getOnmyoji={getOnmyoji}
+                getOnmyojiSkill={getOnmyojiSkill}
+                lineup={lineup}
+              />
+            ))}
+            {onmyojiColumns.length > 0 && (
+              <>
+                <div className="w-px bg-border-ink mx-2 shrink-0"></div>
+                {onmyojiColumns.map((col: any, idx: number) => (
+                  <LineupSlotCard 
+                    key={`onm-${idx}`}
+                    col={col}
+                    getSoul={getSoul}
+                    getOnmyoji={getOnmyoji}
+                    getOnmyojiSkill={getOnmyojiSkill}
+                    lineup={lineup}
+                  />
+                ))}
+              </>
+            )}
+          </div>
+          
+          {flexColumns.length > 0 && (
+            <div>
+              <h4 className="text-xs font-mono font-bold text-blue-400 mb-2 uppercase tracking-wider">Flex / Situational:</h4>
+              <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                {flexColumns.map((col: any, idx: number) => (
+                  <LineupSlotCard 
+                    key={`flex-${idx}`}
+                    col={col}
+                    getSoul={getSoul}
+                    getOnmyoji={getOnmyoji}
+                    getOnmyojiSkill={getOnmyojiSkill}
+                    lineup={lineup}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

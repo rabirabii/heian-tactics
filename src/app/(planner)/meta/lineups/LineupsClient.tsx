@@ -383,25 +383,8 @@ export default function LineupsClient({
                   )}
                 </div>
                 
-                {flexColumns.length > 0 && (
-                  <div>
-                    <h4 className="text-xs font-mono font-bold text-blue-400 mb-2 uppercase tracking-wider">Flex / Situational:</h4>
-                    <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                      {flexColumns.map((col: any, idx: number) => (
-                        <LineupSlotCard
-                          key={`flex-${idx}`}
-                          col={col}
-                          getSoul={getSoul}
-                          getOnmyoji={getOnmyoji}
-                          setSubsModal={setSubsModal}
-                          lineup={lineup}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
-
+              
               <div className="mt-6 border-t border-border-ink pt-6 flex justify-between items-center">
                 <div>
                   {lineup.version_count > 1 && (
@@ -417,9 +400,7 @@ export default function LineupsClient({
                   href={`/meta/lineups/${lineup.id}`}
                   className="px-6 py-2 bg-accent-vermillion text-surface font-mono font-bold hover:bg-accent-gold transition-colors"
                 >
-                  {lineup.subcategory?.category?.type?.name === "PvP"
-                    ? "View Draft Scenarios & Match-ups →"
-                    : "View Details & PvE Scenarios →"}
+                  View Flex Options & Scenarios →
                 </a>
               </div>
             </div>
