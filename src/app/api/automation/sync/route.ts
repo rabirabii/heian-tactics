@@ -3,23 +3,41 @@ import { prisma } from '@/lib/prisma';
 import { defaultActivityRates } from '@/domain/activity-rates';
 import { calculateActivityYield } from '@/domain/production-pipeline';
 import { ActivityType } from '@/types/domain/activity';
-
-// Temporary auth: Bot must send userId and a secret token in headers or body.
-// In a real production scenario, use a proper API key system.
-const BOT_SECRET = process.env.BOT_SECRET || 'heian_tactics_bot_secret';
+import { createHash } from 'crypto';
 
 export async function POST(req: Request) {
   try {
     const authHeader = req.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.split(' ')[1] !== BOT_SECRET) {
-      return NextResponse.json({ error: 'Unauthorized bot access' }, { status: 401 });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Missing or invalid Authorization header' }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { userId, activity, runs_completed, metadata } = body;
+    const tokenString = authHeader.split(' ')[1];
+    const tokenHash = createHash('sha256').update(tokenString).digest('hex');
 
-    if (!userId || !activity || typeof runs_completed !== 'number') {
-      return NextResponse.json({ error: 'Missing required fields (userId, activity, runs_completed)' }, { status: 400 });
+    // Find the token in the database
+    const apiToken = await prisma.apiToken.findUnique({
+      where: { tokenHash },
+      include: { user: true }
+    });
+
+    if (!apiToken) {
+      return NextResponse.json({ error: 'Invalid or revoked token' }, { status: 401 });
+    }
+
+    // Update last used at (fire and forget)
+    prisma.apiToken.update({
+      where: { id: apiToken.id },
+      data: { lastUsedAt: new Date() }
+    }).catch(console.error);
+
+    const userId = apiToken.userId;
+
+    const body = await req.json();
+    const { activity, runs_completed, metadata } = body;
+
+    if (!activity || typeof runs_completed !== 'number') {
+      return NextResponse.json({ error: 'Missing required fields (activity, runs_completed)' }, { status: 400 });
     }
 
     // Map bot's snake_case activity name to our Domain ActivityType

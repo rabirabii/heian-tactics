@@ -24,6 +24,18 @@ model User {
   ledgerTransactions LedgerTransaction[]
   builds             ShikigamiBuild[]
   tierLists          TierList[]
+  apiTokens          ApiToken[]
+}
+
+model ApiToken {
+  id          String   @id @default(uuid())
+  userId      String
+  name        String   @default("Default Token")
+  tokenHash   String   @unique // Hashed version of the token for security
+  lastUsedAt  DateTime?
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Role {
