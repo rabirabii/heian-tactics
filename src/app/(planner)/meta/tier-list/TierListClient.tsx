@@ -250,18 +250,19 @@ export default function TierListClient({
                     >
                       {/* Edit Button */}
                       {user && (
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setSelectedShikiForEdit(shiki);
-                            setIsEditModalOpen(true);
-                          }}
-                          className="absolute top-2 right-2 p-1.5 bg-background/80 border border-border-ink text-text-secondary hover:text-accent-vermillion hover:border-accent-vermillion z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-                          title="Edit Shikigami"
-                        >
-                          <Edit className="w-3 h-3" />
-                        </button>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setSelectedShikiForEdit(shiki);
+                              setIsEditModalOpen(true);
+                            }}
+                            className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 bg-background/90 border border-border-ink text-text-secondary hover:text-accent-vermillion hover:border-accent-vermillion z-10 transition-colors shadow-sm"
+                            title="Edit Shikigami"
+                          >
+                            <Edit className="w-3 h-3" />
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Edit</span>
+                          </button>
                       )}
                       
                       <Link href={`/shikigami/${shiki.id}`} className="flex items-start p-4 gap-4 border-b border-border-ink/50">

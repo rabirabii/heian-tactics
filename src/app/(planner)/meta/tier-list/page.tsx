@@ -1,8 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import TierListClient from './TierListClient';
 
-export default async function TierListPage({ searchParams }: { searchParams: { tierListId?: string } }) {
-  const selectedTierListId = searchParams.tierListId || null;
+export default async function TierListPage(props: { searchParams: Promise<{ tierListId?: string }> }) {
+  const searchParams = await props.searchParams;
+  const selectedTierListId = searchParams?.tierListId || null;
 
   const [roles, categories, shikigamis, rarities, publicTierLists] = await Promise.all([
     prisma.shikigamiRole.findMany({ orderBy: { name: 'asc' } }),
