@@ -26,6 +26,7 @@ export default function TierListClient({
   categories, 
   rarities = [],
   publicTierLists = [],
+  myTierLists = [],
   currentTierListId = null
 }: { 
   shikigamis: any[], 
@@ -33,6 +34,7 @@ export default function TierListClient({
   categories: any[], 
   rarities?: any[],
   publicTierLists?: any[],
+  myTierLists?: any[],
   currentTierListId?: string | null
 }) {
   const [activeMode, setActiveMode] = useState<'pve' | 'pvp' | 'uncategorized'>('pve');
@@ -78,8 +80,19 @@ export default function TierListClient({
   grouped['uncategorized'] = [];
 
   filteredShikigamis.forEach(shiki => {
-    // Filter role assignments by active mode
-    const modeRoles = shiki.roleAssignments?.filter((ra: any) => ra.mode.toLowerCase() === activeMode) || [];
+    // Role Fallback Logic:
+    // 1. Try to get roles assigned specifically in the current tier list
+    // 2. If none exist (or if we're on the global tier list), fallback to global roles (tierListId === null)
+    
+    let modeRoles = shiki.roleAssignments?.filter((ra: any) => 
+      ra.mode.toLowerCase() === activeMode && ra.tierListId === currentTierListId
+    ) || [];
+
+    if (modeRoles.length === 0) {
+      modeRoles = shiki.roleAssignments?.filter((ra: any) => 
+        ra.mode.toLowerCase() === activeMode && ra.tierListId === null
+      ) || [];
+    }
     
     if (modeRoles.length === 0) {
       grouped['uncategorized'].push(shiki);
@@ -138,39 +151,94 @@ export default function TierListClient({
           <p className="text-text-secondary mt-1 font-mono text-sm">
             Discover the best Shikigami across different roles.
           </p>
-          <div className="mt-4 flex items-center gap-2">
-            <select 
-              className="bg-surface border border-border-ink text-foreground px-3 py-1.5 font-mono text-sm w-full md:w-auto"
-              value={currentTierListId || ''}
-              onChange={(e) => {
-                const val = e.target.value;
-                router.push(val ? `/meta/tier-list?tierListId=${val}` : '/meta/tier-list');
-              }}
-            >
-              <option value="">System Default (Global)</option>
-              {publicTierLists.map((tl: any) => (
-                <option key={tl.id} value={tl.id}>{tl.title} by {tl.author?.username || 'Unknown'}</option>
-              ))}
-            </select>
-            {user && (
-              <button 
-                onClick={async () => {
-                  const title = prompt("Enter new Tier List title:");
-                  if (title) {
-                    const { upsertTierList } = await import('@/app/actions/tierlists');
-                    try {
-                      const newList = await upsertTierList({ title, isPublic: true });
-                      router.push(`/meta/tier-list?tierListId=${newList.id}`);
-                    } catch(e) {
-                      toast.error("Failed to create Tier List");
-                    }
-                  }
+          <div className="mt-4 flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex items-center gap-2">
+              <select 
+                className="bg-surface border border-border-ink text-foreground px-3 py-1.5 font-mono text-sm w-full md:w-auto"
+                value={currentTierListId || ''}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  router.push(val ? `/meta/tier-list?tierListId=${val}` : '/meta/tier-list');
                 }}
-                className="bg-accent-gold/20 text-accent-gold border border-accent-gold px-3 py-1.5 font-mono text-sm hover:bg-accent-gold hover:text-background transition-colors"
               >
-                + New Tier List
-              </button>
-            )}
+                <option value="">System Default (Global)</option>
+                {myTierLists.length > 0 && (
+                  <optgroup label="My Tier Lists">
+                    {myTierLists.map((tl: any) => (
+                      <option key={tl.id} value={tl.id}>
+                        {tl.title} [{tl.status}]
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+                {publicTierLists.length > 0 && (
+                  <optgroup label="Community Tier Lists">
+                    {publicTierLists.map((tl: any) => (
+                      <option key={tl.id} value={tl.id}>{tl.title} by {tl.author?.username || 'Unknown'}</option>
+                    ))}
+                  </optgroup>
+                )}
+              </select>
+              {user && (
+                <button 
+                  onClick={async () => {
+                    const title = prompt("Enter new Tier List title:");
+                    if (title) {
+                      const { upsertTierList } = await import('@/app/actions/tierlists');
+                      try {
+                        const newList = await upsertTierList({ title, status: 'PRIVATE' });
+                        router.push(`/meta/tier-list?tierListId=${newList.id}`);
+                      } catch(e) {
+                        toast.error("Failed to create Tier List");
+                      }
+                    }
+                  }}
+                  className="bg-accent-gold/20 text-accent-gold border border-accent-gold px-3 py-1.5 font-mono text-sm hover:bg-accent-gold hover:text-background transition-colors"
+                >
+                  + New Tier List
+                </button>
+              )}
+            </div>
+            
+            {/* Status & Review Controls */}
+            {currentTierListId && myTierLists.find((tl: any) => tl.id === currentTierListId) && (() => {
+              const tl = myTierLists.find((tl: any) => tl.id === currentTierListId);
+              
+              if (tl.status === 'PRIVATE' || tl.status === 'REJECTED') {
+                return (
+                  <button
+                    onClick={async () => {
+                      if (confirm("Submit this Tier List for public community review?")) {
+                        const { upsertTierList } = await import('@/app/actions/tierlists');
+                        try {
+                          await upsertTierList({ id: tl.id, title: tl.title, status: 'PENDING_REVIEW' });
+                          toast.success("Submitted for review!");
+                          router.refresh();
+                        } catch(e) {
+                          toast.error("Failed to submit");
+                        }
+                      }
+                    }}
+                    className="bg-blue-500/20 text-blue-400 border border-blue-500 px-3 py-1.5 font-mono text-sm hover:bg-blue-500 hover:text-background transition-colors"
+                  >
+                    {tl.status === 'REJECTED' ? 'Revise & Resubmit' : 'Submit for Review'}
+                  </button>
+                );
+              } else if (tl.status === 'PENDING_REVIEW') {
+                return (
+                  <span className="px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/50 text-yellow-500 font-mono text-sm">
+                    Awaiting Approval
+                  </span>
+                );
+              } else if (tl.status === 'PUBLISHED') {
+                return (
+                  <span className="px-3 py-1.5 bg-green-500/10 border border-green-500/50 text-green-500 font-mono text-sm">
+                    Published
+                  </span>
+                );
+              }
+              return null;
+            })()}
           </div>
         </div>
         

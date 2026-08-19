@@ -34,22 +34,21 @@ export default function EditShikigamiModal({
   currentTierListName?: string | null
 }) {
   const isNew = !shikigami;
-  const [activeTab, setActiveTab] = useState<'basic' | 'skills' | 'evaluations'>('basic');
+  const [activeTab, setActiveTab] = useState<'basic' | 'skills' | 'evaluations' | 'custom_roles'>('basic');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Form States - Basic
   const [name, setName] = useState(shikigami?.name || '');
-  const [rarityId, setRarityId] = useState(shikigami?.rarityId || 'SSR');
+  const [rarity, setRarity] = useState(shikigami?.rarityId || '');
   const [icon, setIcon] = useState(shikigami?.icon || '');
-  const [isBeginnerFriendly, setIsBeginnerFriendly] = useState(shikigami?.beginnerFriendly || false);
+  const [beginnerFriendly, setBeginnerFriendly] = useState(shikigami?.beginnerFriendly || false);
   const [availableGlobal, setAvailableGlobal] = useState(shikigami?.availableGlobal ?? true);
-  
-  const initialPveRoleIds = shikigami?.roleAssignments?.filter((ra: any) => ra.mode === 'PvE').map((ra: any) => ra.roleId) || [];
-  const initialPvpRoleIds = shikigami?.roleAssignments?.filter((ra: any) => ra.mode === 'PvP').map((ra: any) => ra.roleId) || [];
-  const [selectedPveRoles, setSelectedPveRoles] = useState<string[]>(initialPveRoleIds);
-  const [selectedPvpRoles, setSelectedPvpRoles] = useState<string[]>(initialPvpRoleIds);
-  const [strengthsStr, setStrengthsStr] = useState(shikigami?.strengths?.join(', ') || '');
-  const [weaknessesStr, setWeaknessesStr] = useState(shikigami?.weaknesses?.join(', ') || '');
+  const [strengthsStr, setStrengthsStr] = useState(shikigami?.strengths?.join('\n') || '');
+  const [weaknessesStr, setWeaknessesStr] = useState(shikigami?.weaknesses?.join('\n') || '');
+
+  // Use the same state for roles regardless of global/custom
+  const [pveRoles, setPveRoles] = useState<string[]>([]);
+  const [pvpRoles, setPvpRoles] = useState<string[]>([]);
 
   // Form States - Evaluations
   const [evaluations, setEvaluations] = useState<Record<string, EvalData>>({});
@@ -61,14 +60,24 @@ export default function EditShikigamiModal({
   useEffect(() => {
     if (isOpen) {
       setName(shikigami?.name || '');
-      setRarityId(shikigami?.rarityId || 'SSR');
+      setRarity(shikigami?.rarityId || '');
       setIcon(shikigami?.icon || '');
-      setIsBeginnerFriendly(shikigami?.beginnerFriendly || false);
+      setBeginnerFriendly(shikigami?.beginnerFriendly || false);
       setAvailableGlobal(shikigami?.availableGlobal ?? true);
-      setSelectedPveRoles(shikigami?.roleAssignments?.filter((ra: any) => ra.mode === 'PvE').map((ra: any) => ra.roleId) || []);
-      setSelectedPvpRoles(shikigami?.roleAssignments?.filter((ra: any) => ra.mode === 'PvP').map((ra: any) => ra.roleId) || []);
       setStrengthsStr(shikigami?.strengths?.join('\n') || '');
       setWeaknessesStr(shikigami?.weaknesses?.join('\n') || '');
+
+      // Filter roles based on tierListId
+      let myPve = shikigami?.roleAssignments
+        ?.filter((ra: any) => ra.mode === 'PvE' && ra.tierListId === (currentTierListId || null))
+        ?.map((ra: any) => ra.roleId) || [];
+        
+      let myPvp = shikigami?.roleAssignments
+        ?.filter((ra: any) => ra.mode === 'PvP' && ra.tierListId === (currentTierListId || null))
+        ?.map((ra: any) => ra.roleId) || [];
+        
+      setPveRoles(myPve);
+      setPvpRoles(myPvp);
       
       const evals: Record<string, EvalData> = {};
       if (shikigami?.evaluations) {
@@ -97,10 +106,14 @@ export default function EditShikigamiModal({
         finalIconUrl = await uploadImageToSupabase(selectedFile, 'shikigami');
       }
 
-      // If we are editing a specific tier list, ONLY save evaluations via a different action
+      // If we are editing a specific tier list, save evaluations and roles
       if (currentTierListId) {
-        // We need to import upsertShikigamiEvaluation from tierlists actions
-        const { upsertShikigamiEvaluation } = await import('@/app/actions/tierlists');
+        const { upsertShikigamiEvaluation, upsertShikigamiRoles } = await import('@/app/actions/tierlists');
+        
+        // 1. Save Roles
+        await upsertShikigamiRoles(shikigami.id, pveRoles, pvpRoles, currentTierListId);
+
+        // 2. Save Evaluations
         const evalsToSave = Object.entries(evaluations);
         
         for (const [categoryId, data] of evalsToSave) {
@@ -110,21 +123,21 @@ export default function EditShikigamiModal({
       }
 
       // 1. Save Basic
-      const strengths = strengthsStr.split('\n').map((s: string) => s.trim()).filter(Boolean);
-      const weaknesses = weaknessesStr.split('\n').map((s: string) => s.trim()).filter(Boolean);
+      const strengthsArr = strengthsStr.split('\n').map((s: string) => s.trim()).filter(Boolean);
+      const weaknessesArr = weaknessesStr.split('\n').map((s: string) => s.trim()).filter(Boolean);
       
       const { id: newId } = await upsertShikigamiBase(
         isNew ? 'new' : shikigami.id,
-        { name, rarityId, icon: finalIconUrl, beginnerFriendly: isBeginnerFriendly, availableGlobal, strengths, weaknesses },
-        selectedPveRoles,
-        selectedPvpRoles
+        { name, rarityId: rarity, icon: finalIconUrl, beginnerFriendly: beginnerFriendly, availableGlobal, strengths: strengthsArr, weaknesses: weaknessesArr },
+        pveRoles,
+        pvpRoles
       );
 
       // 2. Save Evaluations
-      const evalsToSave = Object.entries(evaluations)
+      const globalEvalsToSave = Object.entries(evaluations)
         .filter(([_, data]) => data.score !== '') // Only save non-empty
         .map(([categoryId, data]) => ({ categoryId, score: data.score, metrics: data.metrics, notes: data.notes }));
-      await upsertShikigamiEvaluations(newId, evalsToSave);
+      await upsertShikigamiEvaluations(newId, globalEvalsToSave);
 
       // 3. Save Skills
       const finalSkills = skills.map(s => ({
@@ -150,18 +163,18 @@ export default function EditShikigamiModal({
   if (!isOpen) return null;
 
   const handlePveRoleToggle = (roleId: string) => {
-    if (selectedPveRoles.includes(roleId)) {
-      setSelectedPveRoles(selectedPveRoles.filter(r => r !== roleId));
+    if (pveRoles.includes(roleId)) {
+      setPveRoles(pveRoles.filter(r => r !== roleId));
     } else {
-      setSelectedPveRoles([...selectedPveRoles, roleId]);
+      setPveRoles([...pveRoles, roleId]);
     }
   };
 
   const handlePvpRoleToggle = (roleId: string) => {
-    if (selectedPvpRoles.includes(roleId)) {
-      setSelectedPvpRoles(selectedPvpRoles.filter(r => r !== roleId));
+    if (pvpRoles.includes(roleId)) {
+      setPvpRoles(pvpRoles.filter(r => r !== roleId));
     } else {
-      setSelectedPvpRoles([...selectedPvpRoles, roleId]);
+      setPvpRoles([...pvpRoles, roleId]);
     }
   };
 
@@ -260,6 +273,18 @@ export default function EditShikigamiModal({
           >
             Tier Evaluations
           </button>
+          {currentTierListId && (
+            <button
+              onClick={() => setActiveTab('custom_roles')}
+              className={`px-6 py-3 font-mono text-sm transition-colors whitespace-nowrap ${
+                activeTab === 'custom_roles'
+                  ? 'text-blue-500 border-b-2 border-blue-500 bg-blue-500/5'
+                  : 'text-text-secondary hover:text-foreground'
+              }`}
+            >
+              Custom Roles
+            </button>
+          )}
           {!currentTierListId && (
             <button
               onClick={() => setActiveTab('skills')}
@@ -286,7 +311,7 @@ export default function EditShikigamiModal({
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-mono text-text-secondary">Rarity</label>
-                  <select value={rarityId} onChange={e => setRarityId(e.target.value)} className="w-full bg-background border border-border-ink p-2 font-mono text-sm focus:border-accent-vermillion outline-none">
+                  <select value={rarity} onChange={e => setRarity(e.target.value)} className="w-full bg-surface border border-border-ink p-2 font-mono text-sm focus:border-accent-vermillion outline-none">
                     {rarities.map(r => (
                       <option key={r.id} value={r.id}>{r.id}</option>
                     ))}
@@ -311,8 +336,8 @@ export default function EditShikigamiModal({
                 
                 <div className="space-y-2 col-span-2 flex items-center gap-8">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={isBeginnerFriendly} onChange={e => setIsBeginnerFriendly(e.target.checked)} className="accent-accent-vermillion" />
-                    <span className="font-mono text-sm">Is Beginner Friendly?</span>
+                    <input type="checkbox" checked={beginnerFriendly} onChange={e => setBeginnerFriendly(e.target.checked)} className="w-4 h-4 accent-accent-vermillion" />
+                    <span className="font-mono text-sm">Beginner Friendly</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -332,10 +357,10 @@ export default function EditShikigamiModal({
               </div>
 
               <div className="bg-surface p-4 border border-border-ink space-y-4">
-                <h3 className="font-display text-lg border-b border-border-ink pb-2">PvE Roles</h3>
+                <h3 className="font-display text-lg border-b border-border-ink pb-2 mt-6">PvE Roles</h3>
                 <div className="flex flex-wrap gap-2">
                   {roles.map(r => {
-                    const isSelected = selectedPveRoles.includes(r.id);
+                    const isSelected = pveRoles.includes(r.id);
                     return (
                       <button
                         key={`pve-${r.id}`}
@@ -356,7 +381,7 @@ export default function EditShikigamiModal({
                 <h3 className="font-display text-lg border-b border-border-ink pb-2 mt-6">PvP Roles</h3>
                 <div className="flex flex-wrap gap-2">
                   {roles.map(r => {
-                    const isSelected = selectedPvpRoles.includes(r.id);
+                    const isSelected = pvpRoles.includes(r.id);
                     return (
                       <button
                         key={`pvp-${r.id}`}
@@ -520,6 +545,19 @@ export default function EditShikigamiModal({
           {/* Skills Tab */}
           {activeTab === 'skills' && (
             <div className="space-y-6 animate-in fade-in">
+              <div className="flex justify-between items-center border-b border-border-ink pb-4">
+                <div>
+                  <h3 className="font-display text-lg">Skills</h3>
+                  <p className="text-xs font-mono text-text-secondary mt-1">Add and modify Shikigami skills.</p>
+                </div>
+                <button 
+                  onClick={handleAddSkill}
+                  className="flex items-center gap-2 px-3 py-1.5 border border-border-ink hover:border-foreground hover:bg-surface transition-all font-mono text-xs"
+                >
+                  <Plus className="w-3 h-3" /> Add Skill
+                </button>
+              </div>
+
               {skills.map((skill, idx) => (
                 <div key={idx} className="bg-background border border-border-ink p-4 space-y-4 relative">
                   <button 
@@ -611,6 +649,62 @@ export default function EditShikigamiModal({
                 <Plus className="w-4 h-4" />
                 <span className="font-mono text-sm">Add New Skill</span>
               </button>
+            </div>
+          )}
+          {/* Custom Roles Tab */}
+          {activeTab === 'custom_roles' && (
+            <div className="space-y-8 animate-in fade-in">
+              <p className="font-mono text-sm text-text-secondary">
+                Override the global roles for this specific Tier List. If you do not assign any roles here, the Shikigami will fallback to its globally assigned roles.
+              </p>
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-display text-lg border-b border-border-ink pb-2 mt-6">PvE Roles</h3>
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {roles.map(r => {
+                      const isSelected = pveRoles.includes(r.id);
+                      return (
+                        <button
+                          key={`custom-pve-${r.id}`}
+                          type="button"
+                          onClick={() => handlePveRoleToggle(r.id)}
+                          className={`px-3 py-1.5 text-xs font-mono border transition-colors ${
+                            isSelected 
+                              ? 'bg-accent-vermillion text-white border-accent-vermillion' 
+                              : 'bg-background text-text-secondary border-border-ink hover:border-text-secondary hover:text-foreground'
+                          }`}
+                        >
+                          {r.name}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-display text-lg border-b border-border-ink pb-2 mt-6">PvP Roles</h3>
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {roles.map(r => {
+                      const isSelected = pvpRoles.includes(r.id);
+                      return (
+                        <button
+                          key={`custom-pvp-${r.id}`}
+                          type="button"
+                          onClick={() => handlePvpRoleToggle(r.id)}
+                          className={`px-3 py-1.5 text-xs font-mono border transition-colors ${
+                            isSelected 
+                              ? 'bg-accent-vermillion text-white border-accent-vermillion' 
+                              : 'bg-background text-text-secondary border-border-ink hover:border-text-secondary hover:text-foreground'
+                          }`}
+                        >
+                          {r.name}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>

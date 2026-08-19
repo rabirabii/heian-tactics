@@ -133,14 +133,25 @@ model ShikigamiRole {
 }
 
 model ShikigamiRoleAssignment {
+  id          String        @id @default(uuid())
   shikigamiId String
   roleId      String
-  mode        String // e.g. "PvE" or "PvP"
+  mode        String        // e.g. "PvE" or "PvP"
+  tierListId  String?
   
   shikigami   Shikigami     @relation(fields: [shikigamiId], references: [id], onDelete: Cascade)
   role        ShikigamiRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  tierList    TierList?     @relation(fields: [tierListId], references: [id], onDelete: Cascade)
 
-  @@id([shikigamiId, roleId, mode])
+  // Using a unique constraint instead of compound ID because Prisma doesn't allow optional fields in @@id
+  @@unique([shikigamiId, roleId, mode, tierListId])
+}
+
+enum PublicationStatus {
+  PRIVATE
+  PENDING_REVIEW
+  PUBLISHED
+  REJECTED
 }
 
 model TierList {
@@ -148,12 +159,13 @@ model TierList {
   title       String
   description String?
   authorId    String?
-  isPublic    Boolean  @default(false)
+  status      PublicationStatus @default(PRIVATE)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
   author      User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
   evaluations ShikigamiEvaluation[]
+  roleAssignments ShikigamiRoleAssignment[]
 }
 
 model EvaluationCategory {

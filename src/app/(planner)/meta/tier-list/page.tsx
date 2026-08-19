@@ -1,11 +1,16 @@
 import { prisma } from '@/lib/prisma';
 import TierListClient from './TierListClient';
 
+import { createClient } from '@/utils/supabase/server';
+
 export default async function TierListPage(props: { searchParams: Promise<{ tierListId?: string }> }) {
   const searchParams = await props.searchParams;
   const selectedTierListId = searchParams?.tierListId || null;
 
-  const [roles, categories, shikigamis, rarities, publicTierLists] = await Promise.all([
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const [roles, categories, shikigamis, rarities, publicTierLists, myTierLists] = await Promise.all([
     prisma.shikigamiRole.findMany({ orderBy: { name: 'asc' } }),
     prisma.evaluationCategory.findMany({ orderBy: { sortOrder: 'asc' } }),
     prisma.shikigami.findMany({
@@ -18,10 +23,16 @@ export default async function TierListPage(props: { searchParams: Promise<{ tier
         availableGlobal: true,
         rarityRef: true,
         roleAssignments: {
+          where: {
+            OR: [
+              { tierListId: null },
+              ...(selectedTierListId ? [{ tierListId: selectedTierListId }] : [])
+            ]
+          },
           select: {
             roleId: true,
             mode: true,
-            role: true
+            tierListId: true
           }
         },
         evaluations: {
@@ -34,10 +45,14 @@ export default async function TierListPage(props: { searchParams: Promise<{ tier
     }),
     prisma.rarity.findMany({ orderBy: { sortOrder: 'asc' } }),
     prisma.tierList.findMany({ 
-      where: { isPublic: true },
+      where: { status: 'PUBLISHED' },
       include: { author: { select: { username: true } } },
       orderBy: { updatedAt: 'desc' }
-    })
+    }),
+    user ? prisma.tierList.findMany({
+      where: { authorId: user.id },
+      orderBy: { updatedAt: 'desc' }
+    }) : Promise.resolve([])
   ]);
 
   return (
@@ -47,6 +62,7 @@ export default async function TierListPage(props: { searchParams: Promise<{ tier
       categories={categories || []} 
       rarities={rarities || []}
       publicTierLists={publicTierLists || []}
+      myTierLists={myTierLists || []}
       currentTierListId={selectedTierListId}
     />
   );

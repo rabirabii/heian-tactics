@@ -17,23 +17,26 @@ export async function getMyTierLists() {
 
 export async function getPublicTierLists() {
   return await prisma.tierList.findMany({
-    where: { isPublic: true },
+    where: { status: 'PUBLISHED' },
     include: { author: { select: { username: true } } },
     orderBy: { updatedAt: 'desc' }
   });
 }
 
-export async function upsertTierList(data: { id?: string; title: string; description?: string; isPublic: boolean }) {
+export async function upsertTierList(data: { id?: string; title: string; description?: string; status?: 'PRIVATE' | 'PENDING_REVIEW' }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Unauthorized');
 
-  const payload = {
+  const payload: any = {
     title: data.title,
     description: data.description || null,
-    isPublic: data.isPublic,
     authorId: user.id
   };
+  
+  if (data.status) {
+    payload.status = data.status;
+  }
 
   let result;
   if (data.id) {
@@ -117,6 +120,58 @@ export async function upsertShikigamiEvaluation(
       create: { shikigamiId, categoryId, tierListId, score, notes: notes || null, metrics: metrics || null }
     });
   }
+
+  revalidatePath('/meta/tier-list');
+}
+
+export async function adminUpdateTierListStatus(tierListId: string, status: 'PUBLISHED' | 'REJECTED') {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Unauthorized');
+  
+  const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+  if (dbUser?.role !== 'ADMIN') throw new Error('Unauthorized');
+
+  await prisma.tierList.update({
+    where: { id: tierListId },
+    data: { status }
+  });
+  
+  revalidatePath('/meta/tier-list');
+}
+
+export async function upsertShikigamiRoles(
+  shikigamiId: string,
+  pveRoleIds: string[],
+  pvpRoleIds: string[],
+  tierListId: string
+) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Unauthorized');
+
+  const tierList = await prisma.tierList.findUnique({ where: { id: tierListId } });
+  if (!tierList || tierList.authorId !== user.id) {
+    throw new Error('Unauthorized to modify this tier list roles');
+  }
+
+  await prisma.$transaction(async (tx) => {
+    // Delete existing roles for this tier list
+    await tx.shikigamiRoleAssignment.deleteMany({
+      where: { shikigamiId, tierListId }
+    });
+
+    const newAssignments = [
+      ...pveRoleIds.map(rid => ({ shikigamiId, roleId: rid, mode: 'PvE', tierListId })),
+      ...pvpRoleIds.map(rid => ({ shikigamiId, roleId: rid, mode: 'PvP', tierListId }))
+    ];
+
+    if (newAssignments.length > 0) {
+      await tx.shikigamiRoleAssignment.createMany({
+        data: newAssignments
+      });
+    }
+  });
 
   revalidatePath('/meta/tier-list');
 }

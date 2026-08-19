@@ -39,14 +39,14 @@ export async function upsertShikigamiBase(
       } as any
     });
 
-    // Sync Roles
+    // Sync Roles (Global only)
     await tx.shikigamiRoleAssignment.deleteMany({
-      where: { shikigamiId: shikiId }
+      where: { shikigamiId: shikiId, tierListId: null }
     });
 
     const newAssignments = [
-      ...pveRoleIds.map(rid => ({ shikigamiId: shikiId, roleId: rid, mode: 'PvE' })),
-      ...pvpRoleIds.map(rid => ({ shikigamiId: shikiId, roleId: rid, mode: 'PvP' }))
+      ...pveRoleIds.map(rid => ({ shikigamiId: shikiId, roleId: rid, mode: 'PvE', tierListId: null })),
+      ...pvpRoleIds.map(rid => ({ shikigamiId: shikiId, roleId: rid, mode: 'PvP', tierListId: null }))
     ];
 
     if (newAssignments.length > 0) {
