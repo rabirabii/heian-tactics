@@ -442,6 +442,7 @@ export default function TierListClient({
           router.refresh();
         }}
         currentTierListId={currentTierListId}
+        currentTierListName={publicTierLists.find(t => t.id === currentTierListId)?.title}
       />
     </div>
   );

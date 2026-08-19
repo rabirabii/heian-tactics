@@ -61,7 +61,8 @@ export async function upsertShikigamiEvaluation(
   categoryId: string,
   score: string,
   notes?: string,
-  tierListId?: string | null
+  tierListId?: string | null,
+  metrics?: any
 ) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -81,8 +82,8 @@ export async function upsertShikigamiEvaluation(
           tierListId: null // use Prisma's logic or we have to use raw query?
         }
       } as any, // fallback needed because prisma schema might not fully map nulls correctly in unique constraints
-      update: { score, notes: notes || null },
-      create: { shikigamiId, categoryId, score, notes: notes || null }
+      update: { score, notes: notes || null, metrics: metrics || null },
+      create: { shikigamiId, categoryId, score, notes: notes || null, metrics: metrics || null }
     });
   } else {
     // Modify user tier list
@@ -99,8 +100,8 @@ export async function upsertShikigamiEvaluation(
           tierListId
         }
       },
-      update: { score, notes: notes || null },
-      create: { shikigamiId, categoryId, tierListId, score, notes: notes || null }
+      update: { score, notes: notes || null, metrics: metrics || null },
+      create: { shikigamiId, categoryId, tierListId, score, notes: notes || null, metrics: metrics || null }
     });
   }
 

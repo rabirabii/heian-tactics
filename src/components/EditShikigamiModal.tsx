@@ -20,7 +20,8 @@ export default function EditShikigamiModal({
   isOpen,
   onClose,
   onSaveSuccess,
-  currentTierListId
+  currentTierListId,
+  currentTierListName
 }: {
   shikigami: any,
   roles: any[],
@@ -29,7 +30,8 @@ export default function EditShikigamiModal({
   isOpen: boolean,
   onClose: () => void,
   onSaveSuccess: () => void,
-  currentTierListId?: string | null
+  currentTierListId?: string | null,
+  currentTierListName?: string | null
 }) {
   const isNew = !shikigami;
   const [activeTab, setActiveTab] = useState<'basic' | 'skills' | 'evaluations'>('basic');
@@ -76,11 +78,11 @@ export default function EditShikigamiModal({
       }
       setEvaluations(evals);
       setSkills(shikigami?.skills || []);
-      setActiveTab('basic');
+      setActiveTab(currentTierListId ? 'evaluations' : 'basic');
       setSelectedFile(null);
       setSkillFiles({});
     }
-  }, [isOpen, shikigami]);
+  }, [isOpen, shikigami, currentTierListId]);
 
   const { handleSubmit: handleSave, isSubmitting: isSaving } = useSubmit({
     action: async () => {
@@ -98,13 +100,12 @@ export default function EditShikigamiModal({
       // If we are editing a specific tier list, ONLY save evaluations via a different action
       if (currentTierListId) {
         // We need to import upsertShikigamiEvaluation from tierlists actions
-        // Wait, we need a batch upsert for tier lists, or we loop through them.
         const { upsertShikigamiEvaluation } = await import('@/app/actions/tierlists');
         const evalsToSave = Object.entries(evaluations)
           .filter(([_, data]) => data.score !== '');
         
         for (const [categoryId, data] of evalsToSave) {
-          await upsertShikigamiEvaluation(shikigami.id, categoryId, data.score, data.notes, currentTierListId);
+          await upsertShikigamiEvaluation(shikigami.id, categoryId, data.score, data.notes, currentTierListId, data.metrics);
         }
         return;
       }
@@ -208,15 +209,24 @@ export default function EditShikigamiModal({
         
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border-ink shrink-0">
-          <h2 className="text-xl font-display text-foreground">
-            {isNew ? 'Create New Shikigami' : `Edit: ${shikigami.name}`}
-          </h2>
+          <div>
+            <h2 className="text-xl font-display text-foreground">
+              {isNew ? 'New Shikigami' : `Edit: ${shikigami.rarityId} ${shikigami.name}`}
+            </h2>
+            <p className="text-xs font-mono mt-1">
+              {currentTierListId ? (
+                <span className="text-accent-gold">Editing Personal Tier List: {currentTierListName}</span>
+              ) : (
+                <span className="text-accent-vermillion">Editing Global Default Tier List</span>
+              )}
+            </p>
+          </div>
           
           <div className="flex items-center gap-4">
             <button 
               onClick={() => handleSave()}
               disabled={isSaving}
-              className="flex items-center gap-2 px-4 py-1.5 bg-accent-gold text-background font-bold font-mono text-sm hover:bg-accent-gold/90 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-accent-gold/20 text-accent-gold border border-accent-gold hover:bg-accent-gold hover:text-background transition-colors disabled:opacity-50 font-mono text-sm"
             >
               <Save className="w-4 h-4" />
               {isSaving ? 'Saving...' : 'Save'}
@@ -228,16 +238,41 @@ export default function EditShikigamiModal({
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-border-ink shrink-0 bg-background/50">
-          <button onClick={() => setActiveTab('basic')} className={`px-6 py-3 font-mono text-sm ${activeTab === 'basic' ? 'border-b-2 border-accent-vermillion text-foreground bg-surface' : 'text-text-secondary hover:text-foreground'}`}>
-            Basic Info
-          </button>
-          <button onClick={() => setActiveTab('evaluations')} className={`px-6 py-3 font-mono text-sm ${activeTab === 'evaluations' ? 'border-b-2 border-accent-vermillion text-foreground bg-surface' : 'text-text-secondary hover:text-foreground'}`}>
+        <div className="flex border-b border-border-ink shrink-0 overflow-x-auto">
+          {!currentTierListId && (
+            <button
+              onClick={() => setActiveTab('basic')}
+              className={`px-6 py-3 font-mono text-sm transition-colors whitespace-nowrap ${
+                activeTab === 'basic'
+                  ? 'text-accent-vermillion border-b-2 border-accent-vermillion bg-accent-vermillion/5'
+                  : 'text-text-secondary hover:text-foreground'
+              }`}
+            >
+              Basic Info
+            </button>
+          )}
+          <button
+            onClick={() => setActiveTab('evaluations')}
+            className={`px-6 py-3 font-mono text-sm transition-colors whitespace-nowrap ${
+              activeTab === 'evaluations'
+                ? 'text-accent-gold border-b-2 border-accent-gold bg-accent-gold/5'
+                : 'text-text-secondary hover:text-foreground'
+            }`}
+          >
             Tier Evaluations
           </button>
-          <button onClick={() => setActiveTab('skills')} className={`px-6 py-3 font-mono text-sm ${activeTab === 'skills' ? 'border-b-2 border-accent-vermillion text-foreground bg-surface' : 'text-text-secondary hover:text-foreground'}`}>
-            Skills
-          </button>
+          {!currentTierListId && (
+            <button
+              onClick={() => setActiveTab('skills')}
+              className={`px-6 py-3 font-mono text-sm transition-colors whitespace-nowrap ${
+                activeTab === 'skills'
+                  ? 'text-blue-500 border-b-2 border-blue-500 bg-blue-500/5'
+                  : 'text-text-secondary hover:text-foreground'
+              }`}
+            >
+              Skills
+            </button>
+          )}
         </div>
 
         {/* Scrollable Content */}
