@@ -380,28 +380,44 @@ export default function TierListClient({
             {grouped['uncategorized'].length > 0 ? (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
                 {grouped['uncategorized'].map(shiki => (
-                  <Link 
-                    href={`/shikigami/${shiki.id}`}
+                  <div 
                     key={shiki.id} 
                     className="relative group flex flex-col items-center gap-2 p-2 border border-border-ink hover:border-text-secondary bg-background transition-all"
                   >
-                    <div className="relative w-16 h-16 bg-surface overflow-hidden border border-border-ink">
-                      {shiki.icon ? (
-                        <img src={shiki.icon} alt={shiki.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-text-secondary font-mono text-xs bg-border-ink/10">?</div>
-                      )}
-                      <span className="absolute -top-1 -left-1 text-[8px] font-mono text-accent-gold bg-surface border border-accent-gold px-1">
-                        {shiki.rarityId}
-                      </span>
-                    </div>
-                    
-                    <div className="w-full text-center mt-1">
-                      <div className="text-sm font-bold text-foreground font-display truncate">
-                        {shiki.name}
+                    {user && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSelectedShikiForEdit(shiki);
+                          setIsEditModalOpen(true);
+                        }}
+                        className="absolute top-1 right-1 flex items-center gap-1 px-1.5 py-0.5 bg-background/90 border border-border-ink text-text-secondary hover:text-accent-vermillion hover:border-accent-vermillion z-10 transition-colors shadow-sm"
+                        title="Edit Shikigami"
+                      >
+                        <Edit className="w-3 h-3" />
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Edit</span>
+                      </button>
+                    )}
+                    <Link href={`/shikigami/${shiki.id}`} className="w-full h-full flex flex-col items-center">
+                      <div className="relative w-16 h-16 bg-surface overflow-hidden border border-border-ink">
+                        {shiki.icon ? (
+                          <img src={shiki.icon} alt={shiki.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-text-secondary font-mono text-xs bg-border-ink/10">?</div>
+                        )}
+                        <span className="absolute -top-1 -left-1 text-[8px] font-mono text-accent-gold bg-surface border border-accent-gold px-1">
+                          {shiki.rarityId}
+                        </span>
                       </div>
-                    </div>
-                  </Link>
+                      
+                      <div className="w-full text-center mt-1">
+                        <div className="text-sm font-bold text-foreground font-display truncate">
+                          {shiki.name}
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
                 ))}
               </div>
             ) : (
