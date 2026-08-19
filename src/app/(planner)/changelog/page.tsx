@@ -2,6 +2,18 @@ import React from 'react';
 
 const changelogData = [
   {
+    version: '1.3.0',
+    date: 'August 19, 2026',
+    title: 'Community Tier Lists',
+    description: 'Tier Lists are now entirely community-driven! You can now create, customize, and share your own Tier Lists.',
+    changes: [
+      { type: 'NEW', text: 'You can now create Personal Tier Lists and submit them for review to be published to the community.' },
+      { type: 'NEW', text: 'Shikigami Roles can now be scoped per Tier List (e.g., set a Shikigami as Core DPS for your list, while the Global list uses Flex).' },
+      { type: 'IMPROVEMENT', text: 'Tier List selection dropdown separates My Tier Lists and Community Tier Lists.' },
+      { type: 'FIX', text: 'Fixed bug where the Edit button was visible on other players\' Tier Lists.' },
+    ]
+  },
+  {
     version: '1.2.0',
     date: 'August 19, 2026',
     title: 'Community Builds Phase 1',
