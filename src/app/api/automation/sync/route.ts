@@ -12,7 +12,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing or invalid Authorization header' }, { status: 401 });
     }
 
-    const tokenString = authHeader.split(' ')[1];
+    const tokenString = authHeader.split('Bearer ')[1]?.trim();
+    
+    if (!tokenString) {
+      return NextResponse.json({ error: 'Token is missing' }, { status: 401 });
+    }
+
     const tokenHash = createHash('sha256').update(tokenString).digest('hex');
 
     // Find the token in the database
