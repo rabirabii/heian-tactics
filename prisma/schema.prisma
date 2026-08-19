@@ -18,11 +18,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  roster            UserRoster[]
-  projects          UserProject[]
-  storage           UserStorage[]
+  roster             UserRoster[]
+  projects           UserProject[]
+  storage            UserStorage[]
   ledgerTransactions LedgerTransaction[]
-  builds            ShikigamiBuild[]
+  builds             ShikigamiBuild[]
+  tierLists          TierList[]
 }
 
 enum Role {
@@ -142,6 +143,19 @@ model ShikigamiRoleAssignment {
   @@id([shikigamiId, roleId, mode])
 }
 
+model TierList {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  authorId    String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  author      User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  evaluations ShikigamiEvaluation[]
+}
+
 model EvaluationCategory {
   id          String                @id // E.g., "pvp_duel", "pve_farming"
   name        String
@@ -155,6 +169,7 @@ model ShikigamiEvaluation {
   id          String             @id @default(uuid())
   shikigamiId String
   categoryId  String
+  tierListId  String?
   score       String             // E.g., "SS", "S", "A", "1", "5"
   notes       String?            // E.g., "Requires Max Crit"
   
@@ -163,8 +178,11 @@ model ShikigamiEvaluation {
 
   shikigami   Shikigami          @relation(fields: [shikigamiId], references: [id], onDelete: Cascade)
   category    EvaluationCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tierList    TierList?          @relation(fields: [tierListId], references: [id], onDelete: Cascade)
 
-  @@unique([shikigamiId, categoryId])
+  // Note: Prisma unique constraints with optional fields allow multiple nulls in Postgres.
+  // We'll enforce the logic in the backend.
+  @@unique([shikigamiId, categoryId, tierListId])
 }
 
 model Onmyoji {

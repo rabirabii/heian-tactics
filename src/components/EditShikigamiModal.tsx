@@ -19,7 +19,8 @@ export default function EditShikigamiModal({
   rarities,
   isOpen,
   onClose,
-  onSaveSuccess
+  onSaveSuccess,
+  currentTierListId
 }: {
   shikigami: any,
   roles: any[],
@@ -27,7 +28,8 @@ export default function EditShikigamiModal({
   rarities: any[],
   isOpen: boolean,
   onClose: () => void,
-  onSaveSuccess: () => void
+  onSaveSuccess: () => void,
+  currentTierListId?: string | null
 }) {
   const isNew = !shikigami;
   const [activeTab, setActiveTab] = useState<'basic' | 'skills' | 'evaluations'>('basic');
@@ -91,6 +93,20 @@ export default function EditShikigamiModal({
       let finalIconUrl = icon;
       if (selectedFile) {
         finalIconUrl = await uploadImageToSupabase(selectedFile, 'shikigami');
+      }
+
+      // If we are editing a specific tier list, ONLY save evaluations via a different action
+      if (currentTierListId) {
+        // We need to import upsertShikigamiEvaluation from tierlists actions
+        // Wait, we need a batch upsert for tier lists, or we loop through them.
+        const { upsertShikigamiEvaluation } = await import('@/app/actions/tierlists');
+        const evalsToSave = Object.entries(evaluations)
+          .filter(([_, data]) => data.score !== '');
+        
+        for (const [categoryId, data] of evalsToSave) {
+          await upsertShikigamiEvaluation(shikigami.id, categoryId, data.score, data.notes, currentTierListId);
+        }
+        return;
       }
 
       // 1. Save Basic

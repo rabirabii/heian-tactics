@@ -76,8 +76,12 @@ export async function upsertShikigamiEvaluations(shikigamiId: string, evaluation
 
       await tx.shikigamiEvaluation.upsert({
         where: {
-          shikigamiId_categoryId: { shikigamiId, categoryId: ev.categoryId }
-        },
+          shikigamiId_categoryId_tierListId: { 
+            shikigamiId, 
+            categoryId: ev.categoryId,
+            tierListId: null 
+          }
+        } as any,
         update: { 
           score: ev.score,
           metrics: ev.metrics ?? null,
@@ -86,6 +90,7 @@ export async function upsertShikigamiEvaluations(shikigamiId: string, evaluation
         create: {
           shikigamiId,
           categoryId: ev.categoryId,
+          tierListId: null,
           score: ev.score,
           metrics: ev.metrics ?? null,
           notes: ev.notes ?? null

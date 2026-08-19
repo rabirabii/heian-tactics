@@ -198,24 +198,26 @@ async function main() {
     ];
     
     for (const ev of dummyEvals) {
-      const existing = await prisma.shikigamiEvaluation.findUnique({
+      await prisma.shikigamiEvaluation.upsert({
         where: {
-          shikigamiId_categoryId: {
-            shikigamiId: shiki.id,
-            categoryId: ev.categoryId
-          }
-        }
-      });
-      if (!existing) {
-        await prisma.shikigamiEvaluation.create({
-          data: {
+          shikigamiId_categoryId_tierListId: {
             shikigamiId: shiki.id,
             categoryId: ev.categoryId,
-            score: ev.score,
-            notes: "Dummy evaluation"
+            tierListId: 'default'
           }
-        });
-      }
+        },
+        update: {
+          score: ev.score,
+          notes: "Dummy evaluation"
+        },
+        create: {
+          shikigamiId: shiki.id,
+          categoryId: ev.categoryId,
+          tierListId: 'default',
+          score: ev.score,
+          notes: "Dummy evaluation"
+        }
+      });
     }
   }
 

@@ -20,7 +20,21 @@ const SCORE_WEIGHTS: Record<string, number> = {
   'D': 1,
 };
 
-export default function TierListClient({ shikigamis, roles, categories, rarities = [] }: { shikigamis: any[], roles: any[], categories: any[], rarities?: any[] }) {
+export default function TierListClient({ 
+  shikigamis, 
+  roles, 
+  categories, 
+  rarities = [],
+  publicTierLists = [],
+  currentTierListId = null
+}: { 
+  shikigamis: any[], 
+  roles: any[], 
+  categories: any[], 
+  rarities?: any[],
+  publicTierLists?: any[],
+  currentTierListId?: string | null
+}) {
   const [activeMode, setActiveMode] = useState<'pve' | 'pvp' | 'uncategorized'>('pve');
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState<User | null>(null);
@@ -124,6 +138,40 @@ export default function TierListClient({ shikigamis, roles, categories, rarities
           <p className="text-text-secondary mt-1 font-mono text-sm">
             Discover the best Shikigami across different roles.
           </p>
+          <div className="mt-4 flex items-center gap-2">
+            <select 
+              className="bg-surface border border-border-ink text-foreground px-3 py-1.5 font-mono text-sm w-full md:w-auto"
+              value={currentTierListId || ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                router.push(val ? `/meta/tier-list?tierListId=${val}` : '/meta/tier-list');
+              }}
+            >
+              <option value="">System Default (Global)</option>
+              {publicTierLists.map((tl: any) => (
+                <option key={tl.id} value={tl.id}>{tl.title} by {tl.author?.username || 'Unknown'}</option>
+              ))}
+            </select>
+            {user && (
+              <button 
+                onClick={async () => {
+                  const title = prompt("Enter new Tier List title:");
+                  if (title) {
+                    const { upsertTierList } = await import('@/app/actions/tierlists');
+                    try {
+                      const newList = await upsertTierList({ title, isPublic: true });
+                      router.push(`/meta/tier-list?tierListId=${newList.id}`);
+                    } catch(e) {
+                      toast.error("Failed to create Tier List");
+                    }
+                  }
+                }}
+                className="bg-accent-gold/20 text-accent-gold border border-accent-gold px-3 py-1.5 font-mono text-sm hover:bg-accent-gold hover:text-background transition-colors"
+              >
+                + New Tier List
+              </button>
+            )}
+          </div>
         </div>
         
         <div className="flex items-center gap-4">
@@ -372,9 +420,11 @@ export default function TierListClient({ shikigamis, roles, categories, rarities
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSaveSuccess={() => {
+          setSelectedShikiForEdit(null);
           toast.success("Shikigami saved successfully!");
           router.refresh();
         }}
+        currentTierListId={currentTierListId}
       />
     </div>
   );
