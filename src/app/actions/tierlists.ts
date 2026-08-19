@@ -70,6 +70,19 @@ export async function upsertShikigamiEvaluation(
 
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
 
+  if (!score) {
+    if (tierListId && tierListId !== 'system') {
+      await prisma.shikigamiEvaluation.deleteMany({
+        where: { shikigamiId, categoryId, tierListId }
+      });
+    } else {
+      await prisma.shikigamiEvaluation.deleteMany({
+        where: { shikigamiId, categoryId, tierListId: null }
+      });
+    }
+    return;
+  }
+
   // If modifying a global evaluation (tierListId is null or "system"), must be ADMIN
   if (!tierListId || tierListId === 'system') {
     if (dbUser?.role !== 'ADMIN') throw new Error('Only admins can modify the global tier list');
@@ -79,9 +92,9 @@ export async function upsertShikigamiEvaluation(
         shikigamiId_categoryId_tierListId: {
           shikigamiId,
           categoryId,
-          tierListId: null // use Prisma's logic or we have to use raw query?
+          tierListId: null
         }
-      } as any, // fallback needed because prisma schema might not fully map nulls correctly in unique constraints
+      } as any,
       update: { score, notes: notes || null, metrics: metrics || null },
       create: { shikigamiId, categoryId, score, notes: notes || null, metrics: metrics || null }
     });

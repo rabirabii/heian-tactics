@@ -101,8 +101,7 @@ export default function EditShikigamiModal({
       if (currentTierListId) {
         // We need to import upsertShikigamiEvaluation from tierlists actions
         const { upsertShikigamiEvaluation } = await import('@/app/actions/tierlists');
-        const evalsToSave = Object.entries(evaluations)
-          .filter(([_, data]) => data.score !== '');
+        const evalsToSave = Object.entries(evaluations);
         
         for (const [categoryId, data] of evalsToSave) {
           await upsertShikigamiEvaluation(shikigami.id, categoryId, data.score, data.notes, currentTierListId, data.metrics);

@@ -224,7 +224,7 @@ export default function TierListClient({
 
       {/* Render Groups */}
       <div className="space-y-12">
-        {activeMode !== 'uncategorized' && roles.map(role => {
+        {activeMode !== 'uncategorized' && [...roles, { id: 'uncategorized', name: 'Other / No Role' }].map(role => {
           const shikisInRole = grouped[role.id];
           if (!shikisInRole || shikisInRole.length === 0) return null;
 
