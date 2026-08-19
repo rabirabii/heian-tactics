@@ -24,14 +24,6 @@ export function SidebarNav({ className, user }: { className?: string, user?: Use
   const pathname = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const resetDemoData = () => {
-    localStorage.clear();
-    toast.success('Demo data has been reset!');
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
-  };
-
   const handleLogout = async () => {
     toast.loading('Logging out...', { id: 'logout' });
     try {
@@ -132,13 +124,21 @@ export function SidebarNav({ className, user }: { className?: string, user?: Use
           </nav>
         </div>
         <div className="space-y-2 mt-auto pt-6">
-          <button
-            onClick={resetDemoData}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-bold text-[var(--foreground)] bg-[var(--surface)] border border-[var(--border-ink)] rounded-[var(--radius-medium)] hover:bg-[var(--surface)] transition-colors"
-          >
-            <RefreshCcw size={16} />
-            Reset Demo
-          </button>
+          {user && (
+            <div className="w-full flex items-center gap-3 px-3 py-2.5 bg-background border border-border-ink rounded-[var(--radius-medium)]">
+              <div className="w-8 h-8 rounded-full bg-accent-gold/20 flex items-center justify-center text-accent-gold font-bold font-mono">
+                {(user.user_metadata?.username?.[0] || user.email?.[0] || '?').toUpperCase()}
+              </div>
+              <div className="flex flex-col flex-1 overflow-hidden">
+                <span className="text-sm font-bold text-foreground truncate">
+                  {user.user_metadata?.username || 'Player'}
+                </span>
+                <span className="text-xs text-text-secondary font-mono truncate">
+                  {user.email}
+                </span>
+              </div>
+            </div>
+          )}
           
           {user ? (
             <button

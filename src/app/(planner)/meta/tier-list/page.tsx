@@ -10,7 +10,7 @@ export default async function TierListPage(props: { searchParams: Promise<{ tier
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const [roles, categories, shikigamis, rarities, publicTierLists, myTierLists] = await Promise.all([
+  const [roles, categories, shikigamis, rarities, publicTierLists, myTierLists, dbUser] = await Promise.all([
     prisma.shikigamiRole.findMany({ orderBy: { name: 'asc' } }),
     prisma.evaluationCategory.findMany({ orderBy: { sortOrder: 'asc' } }),
     prisma.shikigami.findMany({
@@ -52,7 +52,8 @@ export default async function TierListPage(props: { searchParams: Promise<{ tier
     user ? prisma.tierList.findMany({
       where: { authorId: user.id },
       orderBy: { updatedAt: 'desc' }
-    }) : Promise.resolve([])
+    }) : Promise.resolve([]),
+    user ? prisma.user.findUnique({ where: { id: user.id } }) : Promise.resolve(null)
   ]);
 
   return (
@@ -64,6 +65,8 @@ export default async function TierListPage(props: { searchParams: Promise<{ tier
       publicTierLists={publicTierLists || []}
       myTierLists={myTierLists || []}
       currentTierListId={selectedTierListId}
+      isAdmin={dbUser?.role === 'ADMIN'}
+      currentUserId={user?.id}
     />
   );
 }

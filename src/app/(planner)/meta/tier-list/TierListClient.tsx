@@ -27,7 +27,9 @@ export default function TierListClient({
   rarities = [],
   publicTierLists = [],
   myTierLists = [],
-  currentTierListId = null
+  currentTierListId = null,
+  isAdmin = false,
+  currentUserId = null
 }: { 
   shikigamis: any[], 
   roles: any[], 
@@ -35,7 +37,9 @@ export default function TierListClient({
   rarities?: any[],
   publicTierLists?: any[],
   myTierLists?: any[],
-  currentTierListId?: string | null
+  currentTierListId?: string | null,
+  isAdmin?: boolean,
+  currentUserId?: string | null
 }) {
   const [activeMode, setActiveMode] = useState<'pve' | 'pvp' | 'uncategorized'>('pve');
   const [searchQuery, setSearchQuery] = useState('');
@@ -318,6 +322,9 @@ export default function TierListClient({
                     >
                       {/* Edit Button */}
                       {user && (
+                        (currentTierListId === null && isAdmin) || // Admin editing global
+                        (currentTierListId !== null && myTierLists.some((t: any) => t.id === currentTierListId)) // Owner editing their own tier list
+                      ) && (
                           <button
                             onClick={(e) => {
                               e.preventDefault();
@@ -448,14 +455,15 @@ export default function TierListClient({
             {grouped['uncategorized'].length > 0 ? (
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
                 {grouped['uncategorized'].map(shiki => (
-                  <div 
-                    key={shiki.id} 
-                    className="relative group flex flex-col items-center gap-2 p-2 border border-border-ink hover:border-text-secondary bg-background transition-all"
-                  >
+                  <div key={shiki.id} className="group flex flex-col bg-surface border border-border-ink hover:border-accent-vermillion transition-all relative">
+                    {/* Edit Button */}
                     {user && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
+                      (currentTierListId === null && isAdmin) ||
+                      (currentTierListId !== null && myTierLists.some((t: any) => t.id === currentTierListId))
+                    ) && (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
                           e.stopPropagation();
                           setSelectedShikiForEdit(shiki);
                           setIsEditModalOpen(true);
