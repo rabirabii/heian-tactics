@@ -37,7 +37,15 @@ export default function LedgerClient({
   
   // Data state
   const [transactions, setTransactions] = useState(initialTransactions);
-  const [storage, setStorage] = useState(initialStorage);
+  const STATIC_STORAGE = [
+    { resourceId: 'JADE', amount: 2073 },
+    { resourceId: 'COIN', amount: 2095000 },
+    { resourceId: 'AP', amount: 8600 },
+    { resourceId: 'MYSTERY_AMULET', amount: 3 },
+    { resourceId: 'SKILL_DARUMA', amount: 0 },
+    { resourceId: 'GRADE_DARUMA', amount: 0 },
+  ];
+  const [storage, setStorage] = useState(STATIC_STORAGE);
   const [isLoading, setIsLoading] = useState(false);
 
   // Manual entry modal state
