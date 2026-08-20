@@ -19,7 +19,7 @@ export default async function LedgerPage() {
 
   // Fetch initial data for SSR
   const [historyResult, storage] = await Promise.all([
-    getLedgerHistory(1, 20),
+    getLedgerHistory({ category: 'TRANSACTIONS', page: 1, pageSize: 20 }),
     getUserStorage()
   ]);
 

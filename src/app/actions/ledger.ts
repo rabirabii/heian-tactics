@@ -20,7 +20,20 @@ export async function getUserStorage() {
   return storage;
 }
 
-export async function getLedgerHistory(page = 1, pageSize = 20) {
+export interface LedgerFilter {
+  category: 'TRANSACTIONS' | 'ACTIVITIES';
+  year?: number;
+  month?: number; // 1-12
+  startDate?: string; // ISO string
+  endDate?: string; // ISO string
+  resourceId?: string;
+  type?: TransactionType;
+  source?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export async function getLedgerHistory(filter: LedgerFilter) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -28,16 +41,61 @@ export async function getLedgerHistory(page = 1, pageSize = 20) {
     throw new Error('Unauthorized');
   }
 
+  const { page = 1, pageSize = 20 } = filter;
+  const where: any = { userId: user.id };
+
+  // Instruction: Encapsulate ACTIVITY_RUN implementation detail in the backend.
+  // The frontend only knows about 'category'.
+  if (filter.category === 'ACTIVITIES') {
+    where.resourceId = 'ACTIVITY_RUN';
+  } else if (filter.category === 'TRANSACTIONS') {
+    where.resourceId = { not: 'ACTIVITY_RUN' };
+  }
+
+  // Resource / Type / Source filters
+  if (filter.resourceId && filter.category === 'TRANSACTIONS') {
+    where.resourceId = filter.resourceId;
+  }
+  if (filter.type) {
+    where.type = filter.type;
+  }
+  if (filter.source) {
+    where.source = filter.source;
+  }
+
+  // Date Filtering (Timezone and boundary safe)
+  const dateConditions: any = {};
+  
+  if (filter.year) {
+    // If only year and month are provided, construct the boundaries
+    const startMonth = filter.month ? filter.month - 1 : 0;
+    const endMonth = filter.month ? filter.month : 12;
+    
+    // Explicitly using UTC to prevent server/browser timezone drift
+    const start = new Date(Date.UTC(filter.year, startMonth, 1));
+    const end = filter.month 
+      ? new Date(Date.UTC(filter.year, filter.month, 1)) // 1st of next month
+      : new Date(Date.UTC(filter.year + 1, 0, 1)); // 1st of next year
+      
+    dateConditions.gte = start;
+    dateConditions.lt = end;
+  } else if (filter.startDate || filter.endDate) {
+    if (filter.startDate) dateConditions.gte = new Date(filter.startDate);
+    if (filter.endDate) dateConditions.lte = new Date(filter.endDate);
+  }
+
+  if (Object.keys(dateConditions).length > 0) {
+    where.createdAt = dateConditions;
+  }
+
   const transactions = await prisma.ledgerTransaction.findMany({
-    where: { userId: user.id },
+    where,
     orderBy: { createdAt: 'desc' },
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
 
-  const total = await prisma.ledgerTransaction.count({
-    where: { userId: user.id }
-  });
+  const total = await prisma.ledgerTransaction.count({ where });
 
   return { transactions, total, page, pageSize };
 }
