@@ -72,11 +72,36 @@ function ForecastChart({ data, title }: { data: any[]; title: string }) {
   );
 }
 
+import { getPlannerData, updateUserActivityPattern } from "@/app/actions/planner";
+import { useEffect, useState } from "react";
+import { defaultActivityRates } from "@/domain/activity-rates";
+
 export function PlannerPage() {
   const { plannedThroughputs, plannedWeeklyPatterns, setPlannedWeeklyPattern } = useActivityStore();
   const resources = useInventoryStore((state) => state.resources);
   const projectsMap = useProjectStore((state) => state.projects);
   const projects = useMemo(() => Object.values(projectsMap), [projectsMap]);
+
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [actuals, setActuals] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    getPlannerData().then(data => {
+      Object.entries(data.patterns).forEach(([activityType, pattern]) => {
+        const rates = defaultActivityRates[activityType as ActivityType];
+        if (rates) {
+          setPlannedWeeklyPattern(activityType as ActivityType, pattern, rates);
+        }
+      });
+      setActuals(data.actuals);
+      setIsHydrated(true);
+    }).catch(console.error);
+  }, [setPlannedWeeklyPattern]);
+
+  const handleSetPattern = (actType: ActivityType, pattern: any, rates: any) => {
+    setPlannedWeeklyPattern(actType, pattern, rates);
+    updateUserActivityPattern(actType, pattern).catch(console.error);
+  };
 
   // Compute the simulated overrides by summing up monthly yields from all planned activities
   const simulatedYieldOverrides = useMemo(() => {
@@ -182,7 +207,7 @@ export function PlannerPage() {
                                     className="w-5 h-5 rounded border-[var(--border-ink)]"
                                     checked={pattern.mon > 0}
                                     onChange={(e) => {
-                                      setPlannedWeeklyPattern(
+                                      handleSetPattern(
                                         act.type, 
                                         { ...pattern, mon: e.target.checked ? 1 : 0 }, 
                                         throughput.rollingYieldRates
@@ -198,7 +223,7 @@ export function PlannerPage() {
                                     placeholder="0"
                                     onChange={(e) => {
                                       let val = e.target.value === "" ? 0 : Number(e.target.value);
-                                      setPlannedWeeklyPattern(
+                                      handleSetPattern(
                                         act.type, 
                                         { ...pattern, mon: val }, 
                                         throughput.rollingYieldRates
@@ -262,17 +287,18 @@ export function PlannerPage() {
                                           const otherPattern = plannedWeeklyPatterns["RealmCardAP"];
                                           const otherThroughput = plannedThroughputs["RealmCardAP"];
                                           if (otherPattern && otherThroughput) {
-                                            setPlannedWeeklyPattern("RealmCardAP", { ...otherPattern, [day]: 0 }, otherThroughput.rollingYieldRates);
+                                            handleSetPattern("RealmCardAP", { ...otherPattern, [day]: 0 }, otherThroughput.rollingYieldRates);
                                           }
-                                        } else if (act.type === "RealmCardAP" && val > 0) {
+                                        }
+                                        if (act.type === "RealmCardAP" && val > 0) {
                                           const otherPattern = plannedWeeklyPatterns["RealmCardJade"];
                                           const otherThroughput = plannedThroughputs["RealmCardJade"];
                                           if (otherPattern && otherThroughput) {
-                                            setPlannedWeeklyPattern("RealmCardJade", { ...otherPattern, [day]: 0 }, otherThroughput.rollingYieldRates);
+                                            handleSetPattern("RealmCardJade", { ...otherPattern, [day]: 0 }, otherThroughput.rollingYieldRates);
                                           }
                                         }
 
-                                        setPlannedWeeklyPattern(
+                                        handleSetPattern(
                                           act.type, 
                                           { ...pattern, [day]: val }, 
                                           throughput.rollingYieldRates

@@ -25,6 +25,7 @@ model User {
   builds             ShikigamiBuild[]
   tierLists          TierList[]
   apiTokens          ApiToken[]
+  activityPatterns   UserActivityPattern[]
 }
 
 model ApiToken {
@@ -470,3 +471,29 @@ model LedgerTransaction {
 
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+// ==========================================
+// PLANNER (Activity Targets & Expectations)
+// ==========================================
+
+model UserActivityPattern {
+  id           String   @id @default(uuid())
+  userId       String
+  activityType String   // e.g., "Exploration", "RealmRaid", "WeeklyDuel"
+  
+  // Weekly runs (or static amount mapped to 'mon')
+  mon          Int      @default(0)
+  tue          Int      @default(0)
+  wed          Int      @default(0)
+  thu          Int      @default(0)
+  fri          Int      @default(0)
+  sat          Int      @default(0)
+  sun          Int      @default(0)
+
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, activityType])
+}
+
