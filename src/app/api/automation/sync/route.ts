@@ -11,155 +11,215 @@ export async function POST(req: Request) {
     console.log("[BOT_SYNC_DEBUG] Received Auth Header:", authHeader);
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log("[BOT_SYNC_DEBUG] Failed at header validation");
       return NextResponse.json({ error: 'Missing or invalid Authorization header' }, { status: 401 });
     }
 
     const tokenString = authHeader.split('Bearer ')[1]?.trim();
-    console.log("[BOT_SYNC_DEBUG] Extracted Token String:", tokenString);
-    
     if (!tokenString) {
-      console.log("[BOT_SYNC_DEBUG] Failed at token extraction (empty)");
       return NextResponse.json({ error: 'Token is missing' }, { status: 401 });
     }
 
     const tokenHash = createHash('sha256').update(tokenString).digest('hex');
-    console.log("[BOT_SYNC_DEBUG] Computed Hash:", tokenHash);
 
-    // Find the token in the database
     const apiToken = await prisma.apiToken.findUnique({
       where: { tokenHash },
       include: { user: true }
     });
 
     if (!apiToken) {
-      console.log("[BOT_SYNC_DEBUG] Failed to find token in DB for hash:", tokenHash);
       return NextResponse.json({ error: 'Invalid or revoked token' }, { status: 401 });
     }
 
-    // Update last used at (fire and forget)
+    // Fire and forget last used
     prisma.apiToken.update({
       where: { id: apiToken.id },
       data: { lastUsedAt: new Date() }
     }).catch(console.error);
 
     const userId = apiToken.userId;
-
     const body = await req.json();
-    const { activity, runs_completed, metadata } = body;
 
-    if (!activity || typeof runs_completed !== 'number') {
-      return NextResponse.json({ error: 'Missing required fields (activity, runs_completed)' }, { status: 400 });
+    // ==========================================
+    // ROUTER LOGIC: Inventory Sync vs Activity
+    // ==========================================
+    if (body.type === 'inventory_sync') {
+      return await handleInventorySync(userId, body);
+    } else {
+      // Default fallback is activity run for backward compatibility
+      return await handleActivityRun(userId, body);
     }
 
-    // Map bot's snake_case activity name to our Domain ActivityType
-    // e.g. "realm_raid" -> "RealmRaid"
-    const activityMap: Record<string, ActivityType> = {
-      'realm_raid': 'RealmRaid',
-      'exploration': 'Exploration',
-      'soul_zone': 'SoulZone',
-      // Add more mappings as the bot expands
-    };
-
-    const domainActivity = activityMap[activity];
-    if (!domainActivity) {
-      return NextResponse.json({ error: `Unsupported activity type: ${activity}` }, { status: 400 });
-    }
-
-    const rates = defaultActivityRates[domainActivity];
-    if (!rates) {
-      return NextResponse.json({ error: `No EV rates defined for ${domainActivity}` }, { status: 500 });
-    }
-
-    // 1. Calculate Expected Value (EV) from the runs
-    const yieldResult = calculateActivityYield(domainActivity, runs_completed, rates);
-
-    // 2. Wrap everything in a database transaction to ensure Ledger and Storage are synced
-    await prisma.$transaction(async (tx) => {
-      // Create ledger transaction for the run itself (record of event)
-      await tx.ledgerTransaction.create({
-        data: {
-          userId,
-          resourceId: 'ACTIVITY_RUN', // Virtual resource to track runs
-          amount: runs_completed,
-          type: 'INCOME',
-          source: 'BOT_AUTOMATION',
-          referenceType: domainActivity,
-          metadata: body
-        }
-      });
-
-      // Map EV domain fields to InventoryResourceType IDs
-      const resourceMap: Record<string, string> = {
-        'jadePerRun': 'jade',
-        'coinsPerRun': 'coins',
-        'apPerRun': 'ap',
-        'apCostPerRun': 'ap', // Need to subtract this
-        'g2FodderPerRun': 'g2Fodder',
-        'brokenAmuletPerRun': 'brokenAmulet',
-        'mysteryAmuletPerRun': 'mysteryAmulet',
-        'blackDarumaShardsPerRun': 'blackDarumaShards',
-        'blackDarumaPerRun': 'blackDaruma',
-        'soulsPerRun': 'souls',
-        'eventCurrencyPerRun': 'eventCurrency'
-      };
-
-      // Process each yielded resource
-      for (const [yieldKey, amount] of Object.entries(yieldResult)) {
-        if (!amount || amount === 0) continue;
-
-        const resourceId = resourceMap[yieldKey];
-        if (!resourceId) continue;
-
-        // Determine if it's an expense (like apCost) or income
-        const isExpense = yieldKey.includes('Cost');
-        const finalAmount = isExpense ? -Math.abs(amount) : Math.abs(amount);
-        
-        // Log to Ledger
-        await tx.ledgerTransaction.create({
-          data: {
-            userId,
-            resourceId,
-            amount: Math.abs(finalAmount), // Ledger stores absolute value
-            type: isExpense ? 'EXPENSE' : 'INCOME',
-            source: 'BOT_AUTOMATION_YIELD',
-            referenceType: domainActivity,
-            metadata: { runs_completed, yieldKey }
-          }
-        });
-
-        // Update User Storage (Upsert)
-        // Since we are storing raw decimal EVs (like 1.67 Jade), 
-        // we should probably round it or store float. Prisma Int doesn't take float.
-        // For now, we round it. In a real financial app, we might scale by 100.
-        const roundedAmount = Math.round(finalAmount);
-        if (roundedAmount !== 0) {
-          const existing = await tx.userStorage.findUnique({
-            where: { userId_resourceId: { userId, resourceId } }
-          });
-
-          if (existing) {
-            await tx.userStorage.update({
-              where: { id: existing.id },
-              data: { amount: existing.amount + roundedAmount }
-            });
-          } else {
-            // Can't have negative balance if it doesn't exist
-            await tx.userStorage.create({
-              data: {
-                userId,
-                resourceId,
-                amount: Math.max(0, roundedAmount)
-              }
-            });
-          }
-        }
-      }
-    });
-
-    return NextResponse.json({ success: true, calculated_yield: yieldResult });
   } catch (error: any) {
     console.error('Automation Sync Error:', error);
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
+}
+
+// ----------------------------------------------------------------------------
+// HANDLER: INVENTORY SYNC
+// ----------------------------------------------------------------------------
+async function handleInventorySync(userId: string, body: any) {
+  const { inventory } = body;
+  
+  if (!inventory || typeof inventory !== 'object') {
+    return NextResponse.json({ error: 'Invalid inventory payload format' }, { status: 400 });
+  }
+
+  // Map bot's snake_case resource names to our InventoryResourceType IDs
+  const resourceMap: Record<string, string> = {
+    'coins': 'coins',
+    'jade': 'jade',
+    'ap': 'ap',
+    'mystery_amulet': 'mysteryAmulet',
+    'broken_amulet': 'brokenAmulet',
+  };
+
+  const syncResults: any[] = [];
+
+  await prisma.$transaction(async (tx) => {
+    for (const [botKey, botValue] of Object.entries(inventory)) {
+      if (typeof botValue !== 'number') continue;
+
+      const resourceId = resourceMap[botKey];
+      if (!resourceId) continue;
+
+      const newAmount = Math.max(0, Math.round(botValue));
+
+      const existing = await tx.userStorage.findUnique({
+        where: { userId_resourceId: { userId, resourceId } }
+      });
+
+      const currentAmount = existing ? existing.amount : 0;
+      const delta = newAmount - currentAmount;
+
+      if (delta !== 0) {
+        // Create Ledger Transaction for adjustment
+        await tx.ledgerTransaction.create({
+          data: {
+            userId,
+            resourceId,
+            amount: Math.abs(delta),
+            type: delta > 0 ? 'INCOME' : 'EXPENSE',
+            source: 'BOT_INVENTORY_SYNC',
+            referenceType: 'OCR_CORRECTION',
+            metadata: { previous_amount: currentAmount, new_amount: newAmount, delta }
+          }
+        });
+
+        // Update/Create User Storage
+        if (existing) {
+          await tx.userStorage.update({
+            where: { id: existing.id },
+            data: { amount: newAmount }
+          });
+        } else {
+          await tx.userStorage.create({
+            data: { userId, resourceId, amount: newAmount }
+          });
+        }
+      }
+
+      syncResults.push({ resource: resourceId, old: currentAmount, new: newAmount, delta });
+    }
+  });
+
+  return NextResponse.json({ success: true, synced_resources: syncResults });
+}
+
+// ----------------------------------------------------------------------------
+// HANDLER: ACTIVITY RUN (EV Calculation)
+// ----------------------------------------------------------------------------
+async function handleActivityRun(userId: string, body: any) {
+  const { activity, runs_completed } = body;
+
+  if (!activity || typeof runs_completed !== 'number') {
+    return NextResponse.json({ error: 'Missing required fields (activity, runs_completed)' }, { status: 400 });
+  }
+
+  const activityMap: Record<string, ActivityType> = {
+    'realm_raid': 'RealmRaid',
+    'exploration': 'Exploration',
+    'soul_zone': 'SoulZone',
+  };
+
+  const domainActivity = activityMap[activity];
+  if (!domainActivity) {
+    return NextResponse.json({ error: `Unsupported activity type: ${activity}` }, { status: 400 });
+  }
+
+  const rates = defaultActivityRates[domainActivity];
+  if (!rates) {
+    return NextResponse.json({ error: `No EV rates defined for ${domainActivity}` }, { status: 500 });
+  }
+
+  const yieldResult = calculateActivityYield(domainActivity, runs_completed, rates);
+
+  await prisma.$transaction(async (tx) => {
+    // 1. Record the activity run event itself
+    await tx.ledgerTransaction.create({
+      data: {
+        userId,
+        resourceId: 'ACTIVITY_RUN',
+        amount: runs_completed,
+        type: 'INCOME',
+        source: 'BOT_AUTOMATION',
+        referenceType: domainActivity,
+        metadata: body
+      }
+    });
+
+    const resourceMap: Record<string, string> = {
+      'jadePerRun': 'jade',
+      'apPerRun': 'ap',
+      'apCostPerRun': 'ap', 
+      'soulsPerRun': 'souls',
+      'blackDarumaShardsPerRun': 'blackDarumaShards',
+      'eventCurrencyPerRun': 'eventCurrency',
+      'mysteryAmuletPerRun': 'mysteryAmulet',
+      // Note: coins and broken amulets were intentionally removed from EV tracking
+    };
+
+    // 2. Process EV Yields
+    for (const [yieldKey, amount] of Object.entries(yieldResult)) {
+      if (!amount || amount === 0) continue;
+
+      const resourceId = resourceMap[yieldKey];
+      if (!resourceId) continue;
+
+      const isExpense = yieldKey.includes('Cost');
+      const finalAmount = isExpense ? -Math.abs(amount) : Math.abs(amount);
+      
+      await tx.ledgerTransaction.create({
+        data: {
+          userId,
+          resourceId,
+          amount: Math.abs(finalAmount),
+          type: isExpense ? 'EXPENSE' : 'INCOME',
+          source: 'BOT_AUTOMATION_YIELD',
+          referenceType: domainActivity,
+          metadata: { runs_completed, yieldKey }
+        }
+      });
+
+      const roundedAmount = Math.round(finalAmount);
+      if (roundedAmount !== 0) {
+        const existing = await tx.userStorage.findUnique({
+          where: { userId_resourceId: { userId, resourceId } }
+        });
+
+        if (existing) {
+          await tx.userStorage.update({
+            where: { id: existing.id },
+            data: { amount: Math.max(0, existing.amount + roundedAmount) }
+          });
+        } else {
+          await tx.userStorage.create({
+            data: { userId, resourceId, amount: Math.max(0, roundedAmount) }
+          });
+        }
+      }
+    }
+  });
+
+  return NextResponse.json({ success: true, calculated_yield: yieldResult });
 }
