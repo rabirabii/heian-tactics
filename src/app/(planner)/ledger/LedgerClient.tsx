@@ -114,53 +114,74 @@ export default function LedgerClient({
 
       {/* Ledger History */}
       <div className="bg-surface border border-border-ink overflow-hidden">
-        <table className="w-full text-left font-mono text-sm">
-          <thead className="bg-background border-b border-border-ink text-text-secondary text-xs uppercase">
-            <tr>
-              <th className="p-4 font-normal">Date</th>
-              <th className="p-4 font-normal">Type</th>
-              <th className="p-4 font-normal">Resource</th>
-              <th className="p-4 font-normal text-right">Amount</th>
-              <th className="p-4 font-normal">Source</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border-ink/50">
-            {transactions.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="p-8 text-center text-text-secondary">No transactions recorded yet.</td>
-              </tr>
-            ) : (
-              transactions.map(tx => {
-                const isIncome = tx.type === 'INCOME';
-                const rInfo = getResourceDetails(tx.resourceId);
-                return (
-                  <tr key={tx.id} className="hover:bg-background/50 transition-colors">
-                    <td className="p-4 text-text-secondary">
-                      {new Date(tx.createdAt).toLocaleDateString()} {new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </td>
-                    <td className="p-4">
-                      <span className={`flex items-center gap-1 ${isIncome ? 'text-emerald-400' : 'text-accent-vermillion'}`}>
-                        {isIncome ? <ArrowDownRight className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
-                        {tx.type}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <span className="flex items-center gap-2 text-foreground">
-                        {rInfo.icon} {rInfo.name}
-                      </span>
-                    </td>
-                    <td className={`p-4 text-right font-bold ${isIncome ? 'text-emerald-400' : 'text-accent-vermillion'}`}>
-                      {isIncome ? '+' : '-'}{tx.amount.toLocaleString()}
-                    </td>
-                    <td className="p-4 text-text-secondary truncate max-w-[200px]" title={tx.source}>
-                      {tx.source}
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+        {transactions.length === 0 ? (
+          <div className="p-8 text-center text-text-secondary font-mono text-sm">No transactions recorded yet.</div>
+        ) : (
+          <div className="divide-y divide-border-ink/50">
+            {Object.entries(
+              transactions.reduce((acc, tx) => {
+                const date = new Date(tx.createdAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                if (!acc[date]) acc[date] = [];
+                acc[date].push(tx);
+                return acc;
+              }, {} as Record<string, any[]>)
+            ).map(([date, dailyTxs]) => (
+              <div key={date} className="mb-4">
+                <div className="bg-background px-4 py-2 border-b border-border-ink text-xs font-mono text-text-secondary uppercase tracking-wider sticky top-0">
+                  {date}
+                </div>
+                <table className="w-full text-left font-mono text-sm">
+                  <tbody className="divide-y divide-border-ink/20">
+                    {dailyTxs.map(tx => {
+                      const isIncome = tx.type === 'INCOME';
+                      const rInfo = getResourceDetails(tx.resourceId);
+                      
+                      let resourceName = rInfo.name;
+                      let extraDetails = '';
+                      
+                      if (tx.resourceId === 'ACTIVITY_RUN') {
+                        resourceName = `Activity Run: ${tx.referenceType || 'Unknown'}`;
+                        if (tx.metadata && (tx.metadata as any).runs_completed !== undefined) {
+                           extraDetails = `(${(tx.metadata as any).runs_completed} runs)`;
+                        }
+                      } else if (tx.source === 'BOT_INVENTORY_SYNC') {
+                         if (tx.metadata && (tx.metadata as any).new_amount !== undefined) {
+                            extraDetails = `(OCR: ${(tx.metadata as any).new_amount.toLocaleString()})`;
+                         }
+                      }
+
+                      return (
+                        <tr key={tx.id} className="hover:bg-background/50 transition-colors">
+                          <td className="p-4 text-text-secondary w-24">
+                            {new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </td>
+                          <td className="p-4 w-32">
+                            <span className={`flex items-center gap-1 ${isIncome ? 'text-emerald-400' : 'text-accent-vermillion'}`}>
+                              {isIncome ? <ArrowDownRight className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
+                              {tx.type}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <span className="flex items-center gap-2 text-foreground">
+                              {rInfo.icon} {resourceName}
+                              {extraDetails && <span className="text-text-secondary text-xs ml-2">{extraDetails}</span>}
+                            </span>
+                          </td>
+                          <td className={`p-4 text-right font-bold w-32 ${isIncome ? 'text-emerald-400' : 'text-accent-vermillion'}`}>
+                            {isIncome ? '+' : '-'}{tx.amount.toLocaleString()}
+                          </td>
+                          <td className="p-4 text-text-secondary truncate max-w-[200px]" title={tx.source}>
+                            {tx.source}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Modal */}
