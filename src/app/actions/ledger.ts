@@ -174,3 +174,178 @@ export async function createLedgerTransaction(input: CreateLedgerTransactionInpu
     return { transaction, newBalance: newAmount };
   });
 }
+
+export interface SyncManualInventoryInput {
+  resourceId: string;
+  absoluteAmount: number;
+}
+
+export async function syncManualInventory(input: SyncManualInventoryInput) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Unauthorized');
+
+  const newAmount = Math.max(0, Math.round(input.absoluteAmount));
+
+  return await prisma.$transaction(async (tx) => {
+    const existing = await tx.userStorage.findUnique({
+      where: { userId_resourceId: { userId: user.id, resourceId: input.resourceId } }
+    });
+
+    const currentAmount = existing ? existing.amount : 0;
+    const delta = newAmount - currentAmount;
+
+    if (delta !== 0) {
+      await tx.ledgerTransaction.create({
+        data: {
+          userId: user.id,
+          resourceId: input.resourceId,
+          amount: Math.abs(delta),
+          type: delta > 0 ? 'INCOME' : 'EXPENSE',
+          source: 'MANUAL_SYNC',
+          referenceType: 'MANUAL_CORRECTION',
+          metadata: { previous_amount: currentAmount, new_amount: newAmount, delta }
+        }
+      });
+
+      if (existing) {
+        await tx.userStorage.update({
+          where: { id: existing.id },
+          data: { amount: newAmount }
+        });
+      } else {
+        await tx.userStorage.create({
+          data: { userId: user.id, resourceId: input.resourceId, amount: newAmount }
+        });
+      }
+    }
+    return { success: true, delta, newAmount };
+  });
+}
+
+import { ActivityType } from '@/types/domain/activity';
+import { defaultActivityRates } from '@/domain/activity-rates';
+import { calculateActivityYield } from '@/domain/production-pipeline';
+
+export interface LogManualActivityInput {
+  activity: string;
+  runs: number;
+  totalApCost?: number; // Custom total AP expense if no EV is used
+}
+
+export async function logManualActivity(input: LogManualActivityInput) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Unauthorized');
+
+  // Check if it's a known activity for EV calculation
+  const isKnownActivity = Object.keys(defaultActivityRates).includes(input.activity);
+
+  return await prisma.$transaction(async (tx) => {
+    // 1. Record the activity
+    await tx.ledgerTransaction.create({
+      data: {
+        userId: user.id,
+        resourceId: 'ACTIVITY_RUN',
+        amount: input.runs,
+        type: 'INCOME', // Activities are recorded as 'INCOME' internally
+        source: 'MANUAL_ACTIVITY',
+        referenceType: input.activity,
+        metadata: { runs_completed: input.runs, is_custom: !isKnownActivity }
+      }
+    });
+
+    // 2. Process Custom AP Cost (Overrides EV AP Cost if provided, or handles purely custom activity)
+    if (input.totalApCost && input.totalApCost > 0) {
+      await tx.ledgerTransaction.create({
+        data: {
+          userId: user.id,
+          resourceId: 'ap',
+          amount: input.totalApCost,
+          type: 'EXPENSE',
+          source: 'MANUAL_ACTIVITY_COST',
+          referenceType: input.activity,
+          metadata: { runs_completed: input.runs }
+        }
+      });
+
+      const existingAp = await tx.userStorage.findUnique({
+        where: { userId_resourceId: { userId: user.id, resourceId: 'ap' } }
+      });
+      const newApAmount = Math.max(0, (existingAp?.amount || 0) - input.totalApCost);
+      
+      if (existingAp) {
+        await tx.userStorage.update({
+          where: { id: existingAp.id },
+          data: { amount: newApAmount }
+        });
+      } else {
+        await tx.userStorage.create({
+          data: { userId: user.id, resourceId: 'ap', amount: newApAmount }
+        });
+      }
+    }
+
+    // 3. Process Standard EV (only if known activity and we want EV)
+    if (isKnownActivity) {
+      const domainActivity = input.activity as ActivityType;
+      const rates = defaultActivityRates[domainActivity];
+      const yieldResult = calculateActivityYield(domainActivity, input.runs, rates);
+
+      const resourceMap: Record<string, string> = {
+        'jadePerRun': 'jade',
+        'apPerRun': 'ap',
+        'apCostPerRun': 'ap',
+        'soulsPerRun': 'souls',
+        'blackDarumaShardsPerRun': 'blackDarumaShards',
+        'eventCurrencyPerRun': 'eventCurrency',
+        'mysteryAmuletPerRun': 'mysteryAmulet',
+      };
+
+      for (const [yieldKey, amount] of Object.entries(yieldResult)) {
+        if (!amount || amount === 0) continue;
+        
+        // Skip AP EV if custom totalApCost was provided
+        if (yieldKey === 'apCostPerRun' && input.totalApCost) continue;
+
+        const resourceId = resourceMap[yieldKey];
+        if (!resourceId) continue;
+
+        const isExpense = yieldKey.includes('Cost');
+        const finalAmount = isExpense ? -Math.abs(amount) : Math.abs(amount);
+        const roundedAmount = Math.round(finalAmount);
+
+        if (roundedAmount !== 0) {
+          await tx.ledgerTransaction.create({
+            data: {
+              userId: user.id,
+              resourceId,
+              amount: Math.abs(roundedAmount),
+              type: isExpense ? 'EXPENSE' : 'INCOME',
+              source: 'MANUAL_ACTIVITY_YIELD',
+              referenceType: domainActivity,
+              metadata: { runs_completed: input.runs, yieldKey }
+            }
+          });
+
+          const existing = await tx.userStorage.findUnique({
+            where: { userId_resourceId: { userId: user.id, resourceId } }
+          });
+
+          if (existing) {
+            await tx.userStorage.update({
+              where: { id: existing.id },
+              data: { amount: Math.max(0, existing.amount + roundedAmount) }
+            });
+          } else {
+            await tx.userStorage.create({
+              data: { userId: user.id, resourceId, amount: Math.max(0, roundedAmount) }
+            });
+          }
+        }
+      }
+    }
+
+    return { success: true };
+  });
+}

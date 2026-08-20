@@ -42,33 +42,34 @@ export default function LedgerClient({
 
   // Manual entry modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalTab, setModalTab] = useState<'DELTA' | 'SYNC' | 'ACTIVITY'>('DELTA');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Delta State
   const [txType, setTxType] = useState<TransactionType>(TransactionType.INCOME);
   const [resourceId, setResourceId] = useState('jade');
   const [amount, setAmount] = useState<number>(0);
   const [source, setSource] = useState('');
 
-  // Fetch logic
+  // Sync State
+  const [syncResourceId, setSyncResourceId] = useState('jade');
+  const [absoluteAmount, setAbsoluteAmount] = useState<number>(0);
+
+  // Activity State
+  const [activityName, setActivityName] = useState('Exploration');
+  const [runs, setRuns] = useState<number>(1);
+  const [totalApCost, setTotalApCost] = useState<number>(0);
+
+  // ... fetchLedger and other logic stays the same ...
   const fetchLedger = useCallback(async (isInitial = false) => {
-    // If it's the very first render and we're looking at TRANSACTIONS, skip fetch and use initial (avoid double fetch)
-    if (isInitial && activeTab === 'TRANSACTIONS' && filterYear === new Date().getFullYear() && !filterMonth && !filterResource && !filterType) {
-      return; 
-    }
-    
+    if (isInitial && activeTab === 'TRANSACTIONS' && filterYear === new Date().getFullYear() && !filterMonth && !filterResource && !filterType) return; 
     setIsLoading(true);
     try {
-      const filter: LedgerFilter = {
-        category: activeTab,
-        page,
-        pageSize,
-        year: filterYear,
-      };
-      
+      const filter: LedgerFilter = { category: activeTab, page, pageSize, year: filterYear };
       if (filterMonth) filter.month = filterMonth;
       if (filterResource) filter.resourceId = filterResource;
       if (filterType) filter.type = filterType;
-
       const res = await getLedgerHistory(filter);
       setTransactions(res.transactions);
       setTotal(res.total);
@@ -79,46 +80,42 @@ export default function LedgerClient({
     }
   }, [activeTab, page, filterYear, filterMonth, filterResource, filterType]);
 
-  // Refetch when filters/tab change
-  useEffect(() => {
-    setPage(1); // Reset to page 1 on filter change
-  }, [activeTab, filterYear, filterMonth, filterResource, filterType]);
-
-  useEffect(() => {
-    fetchLedger();
-  }, [page, activeTab, filterYear, filterMonth, filterResource, filterType, fetchLedger]);
+  useEffect(() => { setPage(1); }, [activeTab, filterYear, filterMonth, filterResource, filterType]);
+  useEffect(() => { fetchLedger(); }, [page, activeTab, filterYear, filterMonth, filterResource, filterType, fetchLedger]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsSubmitting(true);
     try {
-      if (amount <= 0) throw new Error("Amount must be greater than 0");
-      const res = await createLedgerTransaction({
-        resourceId,
-        amount,
-        type: txType,
-        source: source || 'Manual Entry'
-      });
-      // Optimistic updates (only prepend if on page 1 of transactions tab)
-      if (activeTab === 'TRANSACTIONS' && page === 1 && !filterResource && !filterMonth && !filterType) {
-        setTransactions(prev => [res.transaction, ...prev]);
-        setTotal(prev => prev + 1);
-      } else {
-        // Just trigger a refetch if we are filtered out
-        fetchLedger();
+      if (modalTab === 'DELTA') {
+        if (amount <= 0) throw new Error("Amount must be greater than 0");
+        await createLedgerTransaction({
+          resourceId, amount, type: txType, source: source || 'Manual Entry'
+        });
+      } else if (modalTab === 'SYNC') {
+        if (absoluteAmount < 0) throw new Error("Amount cannot be negative");
+        const { syncManualInventory } = await import('@/app/actions/ledger');
+        await syncManualInventory({ resourceId: syncResourceId, absoluteAmount });
+      } else if (modalTab === 'ACTIVITY') {
+        if (runs <= 0) throw new Error("Runs must be greater than 0");
+        if (totalApCost < 0) throw new Error("AP Cost cannot be negative");
+        const { logManualActivity } = await import('@/app/actions/ledger');
+        await logManualActivity({ 
+          activity: activityName, 
+          runs, 
+          totalApCost: totalApCost > 0 ? totalApCost : undefined 
+        });
       }
+
+      // Quick optimistic refresh
+      fetchLedger();
       
-      const newStorage = [...storage];
-      const storageIdx = newStorage.findIndex(s => s.resourceId === resourceId);
-      if (storageIdx >= 0) {
-        newStorage[storageIdx] = { ...newStorage[storageIdx], amount: res.newBalance };
-      } else {
-        newStorage.push({ resourceId, amount: res.newBalance });
-      }
-      setStorage(newStorage);
       setIsModalOpen(false);
       setAmount(0);
+      setAbsoluteAmount(0);
+      setRuns(1);
+      setTotalApCost(0);
       setSource('');
     } catch (err: any) {
       setError(err.message);
@@ -405,6 +402,27 @@ export default function LedgerClient({
               <p className="font-mono text-xs text-text-secondary mt-1">Manually adjust your storage balance</p>
             </div>
             
+            <div className="flex border-b border-border-ink text-xs font-mono">
+              <button 
+                onClick={() => setModalTab('DELTA')}
+                className={`flex-1 p-3 text-center transition-colors ${modalTab === 'DELTA' ? 'bg-accent-gold/10 text-accent-gold border-b-2 border-accent-gold' : 'text-text-secondary hover:bg-surface'}`}
+              >
+                1. DELTA
+              </button>
+              <button 
+                onClick={() => setModalTab('SYNC')}
+                className={`flex-1 p-3 text-center transition-colors ${modalTab === 'SYNC' ? 'bg-accent-gold/10 text-accent-gold border-b-2 border-accent-gold' : 'text-text-secondary hover:bg-surface'}`}
+              >
+                2. SYNC
+              </button>
+              <button 
+                onClick={() => setModalTab('ACTIVITY')}
+                className={`flex-1 p-3 text-center transition-colors ${modalTab === 'ACTIVITY' ? 'bg-accent-gold/10 text-accent-gold border-b-2 border-accent-gold' : 'text-text-secondary hover:bg-surface'}`}
+              >
+                3. ACTIVITY
+              </button>
+            </div>
+            
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               {error && (
                 <div className="p-3 bg-red-900/20 border border-red-900/50 text-red-500 font-mono text-xs">
@@ -412,54 +430,140 @@ export default function LedgerClient({
                 </div>
               )}
 
-              <div className="flex gap-4">
-                <label className="flex-1 flex items-center gap-2 cursor-pointer border border-border-ink p-3 hover:bg-background transition-colors has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-500/10 text-emerald-400 font-mono text-sm">
-                  <input type="radio" name="txType" className="hidden" checked={txType === 'INCOME'} onChange={() => setTxType('INCOME')} />
-                  <ArrowDownRight className="w-4 h-4" /> INCOME
-                </label>
-                <label className="flex-1 flex items-center gap-2 cursor-pointer border border-border-ink p-3 hover:bg-background transition-colors has-[:checked]:border-accent-vermillion has-[:checked]:bg-accent-vermillion/10 text-accent-vermillion font-mono text-sm">
-                  <input type="radio" name="txType" className="hidden" checked={txType === 'EXPENSE'} onChange={() => setTxType('EXPENSE')} />
-                  <ArrowUpRight className="w-4 h-4" /> EXPENSE
-                </label>
-              </div>
+              {modalTab === 'DELTA' && (
+                <>
+                  <div className="flex gap-4">
+                    <label className="flex-1 flex items-center gap-2 cursor-pointer border border-border-ink p-3 hover:bg-background transition-colors has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-500/10 text-emerald-400 font-mono text-sm">
+                      <input type="radio" name="txType" className="hidden" checked={txType === 'INCOME'} onChange={() => setTxType('INCOME')} />
+                      <ArrowDownRight className="w-4 h-4" /> INCOME
+                    </label>
+                    <label className="flex-1 flex items-center gap-2 cursor-pointer border border-border-ink p-3 hover:bg-background transition-colors has-[:checked]:border-accent-vermillion has-[:checked]:bg-accent-vermillion/10 text-accent-vermillion font-mono text-sm">
+                      <input type="radio" name="txType" className="hidden" checked={txType === 'EXPENSE'} onChange={() => setTxType('EXPENSE')} />
+                      <ArrowUpRight className="w-4 h-4" /> EXPENSE
+                    </label>
+                  </div>
 
-              <div>
-                <label className="block text-xs font-mono text-text-secondary mb-1">Resource</label>
-                <select 
-                  value={resourceId} 
-                  onChange={e => setResourceId(e.target.value)}
-                  className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
-                >
-                  {COMMON_RESOURCES.map(r => (
-                    <option key={r.id} value={r.id}>{r.name}</option>
-                  ))}
-                </select>
-              </div>
+                  <div>
+                    <label className="block text-xs font-mono text-text-secondary mb-1">Resource</label>
+                    <select 
+                      value={resourceId} 
+                      onChange={e => setResourceId(e.target.value)}
+                      className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
+                    >
+                      {COMMON_RESOURCES.map(r => (
+                        <option key={r.id} value={r.id}>{r.name}</option>
+                      ))}
+                    </select>
+                  </div>
 
-              <div>
-                <label className="block text-xs font-mono text-text-secondary mb-1">Amount</label>
-                <input 
-                  type="number" 
-                  min="1"
-                  required
-                  value={amount || ''} 
-                  onChange={e => setAmount(Number(e.target.value))}
-                  className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
-                  placeholder="e.g. 1000"
-                />
-              </div>
+                  <div>
+                    <label className="block text-xs font-mono text-text-secondary mb-1">Amount (+/-)</label>
+                    <input 
+                      type="number" 
+                      min="1"
+                      required
+                      value={amount || ''} 
+                      onChange={e => setAmount(Number(e.target.value))}
+                      className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
+                      placeholder="e.g. 1000"
+                    />
+                  </div>
 
-              <div>
-                <label className="block text-xs font-mono text-text-secondary mb-1">Source / Description</label>
-                <input 
-                  type="text" 
-                  required
-                  value={source} 
-                  onChange={e => setSource(e.target.value)}
-                  className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
-                  placeholder="e.g. Weekly PvP Reward"
-                />
-              </div>
+                  <div>
+                    <label className="block text-xs font-mono text-text-secondary mb-1">Source / Description</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={source} 
+                      onChange={e => setSource(e.target.value)}
+                      className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
+                      placeholder="e.g. Weekly PvP Reward"
+                    />
+                  </div>
+                </>
+              )}
+
+              {modalTab === 'SYNC' && (
+                <>
+                  <div className="p-3 bg-accent-gold/10 border border-accent-gold/30 text-accent-gold font-mono text-xs">
+                    Override your current balance. The system will automatically calculate the required IN/OUT delta.
+                  </div>
+                  <div>
+                    <label className="block text-xs font-mono text-text-secondary mb-1">Resource</label>
+                    <select 
+                      value={syncResourceId} 
+                      onChange={e => setSyncResourceId(e.target.value)}
+                      className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
+                    >
+                      {COMMON_RESOURCES.map(r => (
+                        <option key={r.id} value={r.id}>{r.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-text-secondary mb-1">Current Absolute Total</label>
+                    <input 
+                      type="number" 
+                      min="0"
+                      required
+                      value={absoluteAmount || ''} 
+                      onChange={e => setAbsoluteAmount(Number(e.target.value))}
+                      className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
+                      placeholder="e.g. 25000"
+                    />
+                  </div>
+                </>
+              )}
+
+              {modalTab === 'ACTIVITY' && (
+                <>
+                  <div>
+                    <label className="block text-xs font-mono text-text-secondary mb-1">Activity Name</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={activityName} 
+                      onChange={e => setActivityName(e.target.value)}
+                      className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
+                      placeholder="e.g. Exploration, Event Boss"
+                      list="activity-suggestions"
+                    />
+                    <datalist id="activity-suggestions">
+                      <option value="Exploration" />
+                      <option value="RealmRaid" />
+                      <option value="SoulZone" />
+                      <option value="DemonEncounter" />
+                    </datalist>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-text-secondary mb-1">Runs Completed</label>
+                    <input 
+                      type="number" 
+                      min="1"
+                      required
+                      value={runs || ''} 
+                      onChange={e => setRuns(Number(e.target.value))}
+                      className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
+                      placeholder="e.g. 10"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-text-secondary mb-1">Custom Total AP Cost (Optional)</label>
+                    <input 
+                      type="number" 
+                      min="0"
+                      value={totalApCost || ''} 
+                      onChange={e => setTotalApCost(Number(e.target.value))}
+                      className="w-full bg-background border border-border-ink p-2 font-mono text-sm text-foreground focus:border-accent-gold outline-none"
+                      placeholder="Overrides standard AP EV if provided"
+                    />
+                    <p className="text-text-secondary/50 text-[10px] mt-1">Leave blank to use standard EV rates</p>
+                  </div>
+                </>
+              )}
 
               <div className="pt-4 flex justify-end">
                 <button 
