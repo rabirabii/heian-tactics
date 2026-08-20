@@ -18,7 +18,7 @@ export type ActivityType =
   | "MonthlyFreebies";
 
 export interface ActivityYieldRates {
-  coinsPerRun: number;
+  coinsPerRun?: number;
   apCostPerRun?: number;
   apPerRun?: number; // Passive AP income
   mysteryAmuletPerRun?: number; // For Summon tracking
