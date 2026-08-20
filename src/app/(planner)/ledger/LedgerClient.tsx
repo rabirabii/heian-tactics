@@ -125,7 +125,7 @@ export default function LedgerClient({
                 acc[date].push(tx);
                 return acc;
               }, {} as Record<string, any[]>)
-            ).map(([date, dailyTxs]: [string, any[]]) => (
+            ).map(([date, dailyTxs]: [string, any]) => (
               <div key={date} className="mb-4">
                 <div className="bg-background px-4 py-2 border-b border-border-ink text-xs font-mono text-text-secondary uppercase tracking-wider sticky top-0">
                   {date}
