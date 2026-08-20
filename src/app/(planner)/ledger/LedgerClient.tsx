@@ -125,14 +125,14 @@ export default function LedgerClient({
                 acc[date].push(tx);
                 return acc;
               }, {} as Record<string, any[]>)
-            ).map(([date, dailyTxs]) => (
+            ).map(([date, dailyTxs]: [string, any[]]) => (
               <div key={date} className="mb-4">
                 <div className="bg-background px-4 py-2 border-b border-border-ink text-xs font-mono text-text-secondary uppercase tracking-wider sticky top-0">
                   {date}
                 </div>
                 <table className="w-full text-left font-mono text-sm">
                   <tbody className="divide-y divide-border-ink/20">
-                    {dailyTxs.map(tx => {
+                    {dailyTxs.map((tx: any) => {
                       const isIncome = tx.type === 'INCOME';
                       const rInfo = getResourceDetails(tx.resourceId);
                       
