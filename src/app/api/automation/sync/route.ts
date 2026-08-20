@@ -8,17 +8,23 @@ import { createHash } from 'crypto';
 export async function POST(req: Request) {
   try {
     const authHeader = req.headers.get('authorization');
+    console.log("[BOT_SYNC_DEBUG] Received Auth Header:", authHeader);
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log("[BOT_SYNC_DEBUG] Failed at header validation");
       return NextResponse.json({ error: 'Missing or invalid Authorization header' }, { status: 401 });
     }
 
     const tokenString = authHeader.split('Bearer ')[1]?.trim();
+    console.log("[BOT_SYNC_DEBUG] Extracted Token String:", tokenString);
     
     if (!tokenString) {
+      console.log("[BOT_SYNC_DEBUG] Failed at token extraction (empty)");
       return NextResponse.json({ error: 'Token is missing' }, { status: 401 });
     }
 
     const tokenHash = createHash('sha256').update(tokenString).digest('hex');
+    console.log("[BOT_SYNC_DEBUG] Computed Hash:", tokenHash);
 
     // Find the token in the database
     const apiToken = await prisma.apiToken.findUnique({
@@ -27,6 +33,7 @@ export async function POST(req: Request) {
     });
 
     if (!apiToken) {
+      console.log("[BOT_SYNC_DEBUG] Failed to find token in DB for hash:", tokenHash);
       return NextResponse.json({ error: 'Invalid or revoked token' }, { status: 401 });
     }
 
