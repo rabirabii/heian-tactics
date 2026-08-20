@@ -1,7 +1,7 @@
 import { ActivityType, ActivityYieldRates } from "@/types/domain/activity";
 
 export const defaultActivityRates: Record<ActivityType, ActivityYieldRates> = {
-  Exploration: { coinsPerRun: 500, g2FodderPerRun: 0.1, brokenAmuletPerRun: 0.3, apCostPerRun: 3 },
+  Exploration: { coinsPerRun: 500, brokenAmuletPerRun: 0.3, apCostPerRun: 3 },
   SoulZone: { coinsPerRun: 200, soulsPerRun: 1.5, g6FodderPerRun: 0.005, apCostPerRun: 4 },
   RealmRaid: { coinsPerRun: 1000, jadePerRun: 1.67 },
   DemonEncounter: { coinsPerRun: 50000, blackDarumaShardsPerRun: 2 },
