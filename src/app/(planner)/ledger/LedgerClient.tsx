@@ -6,12 +6,12 @@ import { createLedgerTransaction, getLedgerHistory, LedgerFilter } from '@/app/a
 import { Plus, ArrowDownRight, ArrowUpRight, Coins, Gem, Zap, Scroll, Droplet, Star, Filter, ChevronLeft, ChevronRight, Activity } from 'lucide-react';
 
 const COMMON_RESOURCES = [
-  { id: 'JADE', name: 'Jade', icon: <Gem className="w-4 h-4 text-emerald-400" /> },
-  { id: 'COIN', name: 'Coins', icon: <Coins className="w-4 h-4 text-yellow-400" /> },
-  { id: 'AP', name: 'AP (Sushi)', icon: <Zap className="w-4 h-4 text-pink-400" /> },
-  { id: 'MYSTERY_AMULET', name: 'Mystery Amulet', icon: <Scroll className="w-4 h-4 text-blue-300" /> },
-  { id: 'SKILL_DARUMA', name: 'Skill Daruma', icon: <Droplet className="w-4 h-4 text-black" /> },
-  { id: 'GRADE_DARUMA', name: 'Grade Daruma', icon: <Droplet className="w-4 h-4 text-white" /> },
+  { id: 'jade', name: 'Jade', icon: <Gem className="w-4 h-4 text-emerald-400" /> },
+  { id: 'coins', name: 'Coins', icon: <Coins className="w-4 h-4 text-yellow-400" /> },
+  { id: 'ap', name: 'AP (Sushi)', icon: <Zap className="w-4 h-4 text-pink-400" /> },
+  { id: 'mysteryAmulet', name: 'Mystery Amulet', icon: <Scroll className="w-4 h-4 text-blue-300" /> },
+  { id: 'skillDaruma', name: 'Skill Daruma', icon: <Droplet className="w-4 h-4 text-black" /> },
+  { id: 'gradeDaruma', name: 'Grade Daruma', icon: <Droplet className="w-4 h-4 text-white" /> },
 ];
 
 export default function LedgerClient({ 
@@ -45,7 +45,7 @@ export default function LedgerClient({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [txType, setTxType] = useState<TransactionType>(TransactionType.INCOME);
-  const [resourceId, setResourceId] = useState('JADE');
+  const [resourceId, setResourceId] = useState('jade');
   const [amount, setAmount] = useState<number>(0);
   const [source, setSource] = useState('');
 
