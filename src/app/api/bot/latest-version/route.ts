@@ -11,7 +11,8 @@ export async function GET() {
     type: "patch",
     download_url:
       "https://www.heiantactics.space/api/bot/download?tag=v1.0.3&file=patch_v1.0.3.zip",
-    hash: "2d153d89960c9cb580d66c6bc5aaff5c45021b5a55971100e9a330e0a76a4f54",
+    hash: "6838ac356421d8c19df6e264c3d2636d0159d229ad0e45b029eb970a5ac562ca",
+
     changelog:
       "Phase 5: Dynamic Icon Anchor Vision, Turbo Multi-Scale Detection & 5-Resource Inventory Sync",
   });
