@@ -7,13 +7,10 @@ export async function GET() {
   // Endpoint statis untuk Auto-Updater Bot
   // Bisa diganti valuenya secara manual di sini saat ada update baru
   return NextResponse.json({
-    version: "1.0.3",
+    version: "1.0.3.1",
     type: "patch",
-    download_url:
-      "https://www.heiantactics.space/api/bot/download?tag=v1.0.3&file=patch_v1.0.3.zip",
-    hash: "6b19f4f54656f482eff02cfcc025f640fd3cd5a47c7bf6f3588f1b2b4ec4e862",
-
-    changelog:
-      "Phase 5: Dynamic Icon Anchor Vision, Turbo Multi-Scale Detection & 5-Resource Inventory Sync",
+    download_url: "https://www.heiantactics.space/api/bot/download?tag=v1.0.3.1&file=patch_v1.0.3.1.zip",
+    hash: "8bea4c89a804631d97a70cfa5b740c314e9f35c515956c0a2b30e773f511c7c1",
+    changelog: "Hotfix v1.0.3.1: Realm Raid Session KO Persistence, Animation Settle Buffer & Lightweight 19MB Patch",
   });
 }
