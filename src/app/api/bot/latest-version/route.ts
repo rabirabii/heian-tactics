@@ -9,7 +9,7 @@ export async function GET() {
   // Bisa diganti valuenya secara manual di sini saat ada update baru
   return NextResponse.json({
     latest_version: "1.0.1",
-    hash: "e3824d2c61b200d89900edf6b84b0aa8e197d7613bf40f1ea25ce9b16cabede8",
-    download_url: "https://url-tempat-kamu-menaruh/OnmyojiFarmBotQt_WGC_Fixed.exe"
+    hash: "bd1b06b6b22e986b2e22b7a063d526280c618545a93b950eb5fdc694c2310418",
+    download_url: "https://heiantactics.space/api/bot/download?tag=v1.0.1&file=OnmyojiFarmBotQt_WGC_Fixed.zip" // Atau sesuaikan dengan nama file .zip Anda di Github Release
   });
 }
