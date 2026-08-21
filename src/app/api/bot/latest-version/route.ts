@@ -8,8 +8,10 @@ export async function GET() {
   // Endpoint statis untuk Auto-Updater Bot
   // Bisa diganti valuenya secara manual di sini saat ada update baru
   return NextResponse.json({
-    latest_version: "1.0.1",
-    hash: "bd1b06b6b22e986b2e22b7a063d526280c618545a93b950eb5fdc694c2310418",
-    download_url: "https://heiantactics.space/api/bot/download?tag=v1.0.1&file=OnmyojiFarmBotQt_WGC_Fixed.zip" // Atau sesuaikan dengan nama file .zip Anda di Github Release
+    version: "1.0.2",
+    type: "patch",
+    download_url: "https://www.heiantactics.space/api/bot/download?tag=v1.0.2&file=patch_v1.0.2.zip",
+    hash: "50fca8ff636ff6b6115f753e6dc82896969be84cd575db0dfa7d8d6c85437f34",
+    changelog: "Phase 4: Universal Normalized UV Coordinates & Realm Raid Daruma Victory Fix"
   });
 }
