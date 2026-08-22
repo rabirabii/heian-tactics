@@ -7,10 +7,10 @@ export async function GET() {
   // Endpoint statis untuk Auto-Updater Bot
   // Bisa diganti valuenya secara manual di sini saat ada update baru
   return NextResponse.json({
-    version: "1.0.3.1",
+    version: "1.0.4",
     type: "patch",
-    download_url: "https://www.heiantactics.space/api/bot/download?tag=v1.0.3.1&file=patch_v1.0.3.1.zip",
-    hash: "8bea4c89a804631d97a70cfa5b740c314e9f35c515956c0a2b30e773f511c7c1",
-    changelog: "Hotfix v1.0.3.1: Realm Raid Session KO Persistence, Animation Settle Buffer & Lightweight 19MB Patch",
+    download_url: "https://www.heiantactics.space/api/bot/download?tag=v1.0.4&file=patch_v1.0.4.zip",
+    hash: "21e764299e6235ad092200c7f9e0e751c90485207a46220f90dd16414c5af21f",
+    changelog: "Multi-Resolution Warehouse Sync, Exploration Monster Calibration, Realm Raid Fixes & Clean GUI Layout",
   });
 }
