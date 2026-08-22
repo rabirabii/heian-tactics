@@ -319,6 +319,9 @@ export function PlannerPage() {
                                 </span>
                                 <span className="text-[10px] text-[var(--text-secondary)] ml-1 block">{category === "Grind" ? "runs/day" : "avg/day"}</span>
                               </td>
+                              <td className="py-3 px-4 text-right font-mono font-bold text-emerald-600 bg-emerald-500/5">
+                                {actuals[act.type] || 0}
+                              </td>
                             </tr>
                           );
                         })}
