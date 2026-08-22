@@ -182,6 +182,7 @@ export function PlannerPage() {
                         <tr className="border-b border-[var(--border-ink)] bg-[var(--surface)] text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
                           <th className="py-3 px-4 w-64">Activity</th>
                           <th className="py-3 px-4 text-left">Expected Amount</th>
+                          <th className="py-3 px-4 text-right text-emerald-600">Actual (MTD)</th>
                         </tr>
                       </thead>
                       <tbody className="text-sm">
@@ -232,6 +233,9 @@ export function PlannerPage() {
                                   />
                                 )}
                               </td>
+                              <td className="py-3 px-4 text-right font-mono font-bold text-emerald-600 bg-emerald-500/5">
+                                {actuals[act.type] || 0}
+                              </td>
                             </tr>
                           );
                         })}
@@ -250,6 +254,7 @@ export function PlannerPage() {
                           <th className="py-3 px-2 text-center">Sat</th>
                           <th className="py-3 px-2 text-center">Sun</th>
                           <th className="py-3 px-4 text-right bg-[var(--surface-hover)]">Daily Avg</th>
+                          <th className="py-3 px-4 text-right text-emerald-600 bg-emerald-500/10">Actual (MTD)</th>
                         </tr>
                       </thead>
                       <tbody className="text-sm">
