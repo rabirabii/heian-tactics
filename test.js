@@ -1,1 +1,0 @@
-const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); prisma.ledgerTransaction.findMany({where: { resourceId: 'ACTIVITY_RUN' }, orderBy: { createdAt: 'desc' }, take: 10}).then(r => {console.log(JSON.stringify(r, null, 2)); prisma.$disconnect()});

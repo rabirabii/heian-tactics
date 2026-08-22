@@ -7,6 +7,7 @@ import { ActivityType, WeeklyActivityPattern } from '@/types/domain/activity';
 export interface PlannerData {
   patterns: Record<string, WeeklyActivityPattern>;
   actuals: Record<string, number>; // activityType -> total runs this month
+  storage: Record<string, number>; // resourceId -> amount
 }
 
 export async function getPlannerData(): Promise<PlannerData> {
@@ -59,7 +60,17 @@ export async function getPlannerData(): Promise<PlannerData> {
     }
   });
 
-  return { patterns, actuals };
+  // 3. Fetch User Storage (Current live inventory from DB)
+  const userStorage = await prisma.userStorage.findMany({
+    where: { userId: user.id }
+  });
+
+  const storage: Record<string, number> = {};
+  userStorage.forEach(s => {
+    storage[s.resourceId] = s.amount;
+  });
+
+  return { patterns, actuals, storage };
 }
 
 export async function updateUserActivityPattern(activityType: string, pattern: WeeklyActivityPattern) {

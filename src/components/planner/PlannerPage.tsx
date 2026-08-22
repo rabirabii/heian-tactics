@@ -1,16 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { PageHeader } from "@/features/dashboard/dashboard-shell";
 import { useActivityStore } from "@/store/activity-store";
-import { useInventoryStore } from "@/store/inventory-store";
 import { useProjectStore } from "@/store/project-store";
 import { summarizeAccount, buildMonthlyProjection } from "@/lib/forecast";
 import type { ActivityType, ActivityYieldRates } from "@/types/domain/activity";
-import { calculateMonthlyYield, calculateTotalMonthlyProduction } from "@/domain/production-pipeline";
+import { calculateMonthlyYield, calculateTotalMonthlyProduction, calculateActivityYield } from "@/domain/production-pipeline";
 import { Input } from "@/components/ui/form";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import type { InventoryResourceType } from "@/types/domain/inventory";
+import type { InventoryResource, InventoryResourceType } from "@/types/domain/inventory";
+import { getPlannerData, updateUserActivityPattern } from "@/app/actions/planner";
+import { defaultActivityRates } from "@/domain/activity-rates";
 
 export type ActivityCategory = "Grind" | "DailyBoss" | "WeeklyGuild" | "Event" | "Passive" | "StaticShop";
 
@@ -72,13 +73,9 @@ function ForecastChart({ data, title }: { data: any[]; title: string }) {
   );
 }
 
-import { getPlannerData, updateUserActivityPattern } from "@/app/actions/planner";
-import { useEffect, useState } from "react";
-import { defaultActivityRates } from "@/domain/activity-rates";
-
 export function PlannerPage() {
   const { plannedThroughputs, plannedWeeklyPatterns, setPlannedWeeklyPattern } = useActivityStore();
-  const resources = useInventoryStore((state) => state.resources);
+  const [dbStorage, setDbStorage] = useState<Record<string, number>>({});
   const projectsMap = useProjectStore((state) => state.projects);
   const projects = useMemo(() => Object.values(projectsMap), [projectsMap]);
 
@@ -93,7 +90,8 @@ export function PlannerPage() {
           setPlannedWeeklyPattern(activityType as ActivityType, pattern, rates);
         }
       });
-      setActuals(data.actuals);
+      setActuals(data.actuals || {});
+      setDbStorage(data.storage || {});
       setIsHydrated(true);
     }).catch(console.error);
   }, [setPlannedWeeklyPattern]);
@@ -102,6 +100,83 @@ export function PlannerPage() {
     setPlannedWeeklyPattern(actType, pattern, rates);
     updateUserActivityPattern(actType, pattern).catch(console.error);
   };
+
+  // Convert raw DB storage to InventoryResource records for forecast calculations
+  const resources = useMemo(() => {
+    const resourceTypes: InventoryResourceType[] = [
+      "mysteryAmulet",
+      "brokenAmulet",
+      "blackDaruma",
+      "blackDarumaShards",
+      "jade",
+      "ap",
+      "coins",
+      "realmRaidTickets",
+      "exp",
+      "souls",
+      "eventCurrency",
+      "g2Fodder",
+      "g3Fodder",
+      "g4Fodder",
+      "g5Fodder",
+    ];
+
+    const result = {} as Record<InventoryResourceType, InventoryResource>;
+    for (const type of resourceTypes) {
+      result[type] = {
+        type,
+        label: type,
+        currentAmount: dbStorage[type] ?? 0,
+        origins: [],
+        observedYield: 0,
+      };
+    }
+    return result;
+  }, [dbStorage]);
+
+  // Compute the observed monthly yields extrapolated from actuals month-to-date
+  const observedYieldOverrides = useMemo(() => {
+    const now = new Date();
+    const currentDay = Math.max(1, now.getDate());
+    const paceMultiplier = 30 / currentDay;
+
+    let totalCoins = 0;
+    let totalJade = 0;
+    let totalBD = 0;
+    let totalBDShards = 0;
+    let totalAmulets = 0;
+    let totalMysteryAmulets = 0;
+    let netAP = 0;
+    let totalG2 = 0;
+
+    Object.entries(actuals).forEach(([actType, runs]) => {
+      const rates = defaultActivityRates[actType as ActivityType];
+      if (!rates) return;
+
+      const monthlyPacedRuns = runs * paceMultiplier;
+      const yields = calculateActivityYield(actType as ActivityType, monthlyPacedRuns, rates);
+
+      totalCoins += yields.coinsPerRun ?? 0;
+      totalJade += yields.jadePerRun ?? 0;
+      totalBD += yields.blackDarumaPerRun ?? 0;
+      totalBDShards += yields.blackDarumaShardsPerRun ?? 0;
+      totalAmulets += yields.brokenAmuletPerRun ?? 0;
+      totalMysteryAmulets += yields.mysteryAmuletPerRun ?? 0;
+      netAP += (yields.apPerRun ?? 0) - (yields.apCostPerRun ?? 0);
+      totalG2 += yields.g2FodderPerRun ?? 0;
+    });
+
+    return {
+      coins: totalCoins,
+      jade: totalJade,
+      blackDaruma: totalBD + Math.floor(totalBDShards / 25),
+      blackDarumaShards: totalBDShards,
+      brokenAmulet: totalAmulets,
+      mysteryAmulet: totalMysteryAmulets,
+      ap: netAP,
+      exp: totalG2 + totalAmulets * 0.5,
+    } as Partial<Record<InventoryResourceType, number>>;
+  }, [actuals]);
 
   // Compute the simulated overrides by summing up monthly yields from all planned activities
   const simulatedYieldOverrides = useMemo(() => {
@@ -126,7 +201,7 @@ export function PlannerPage() {
     } as Partial<Record<InventoryResourceType, number>>;
   }, [plannedThroughputs, plannedWeeklyPatterns]);
 
-  const observedProjection = useMemo(() => buildMonthlyProjection(resources), [resources]);
+  const observedProjection = useMemo(() => buildMonthlyProjection(resources, observedYieldOverrides), [resources, observedYieldOverrides]);
   const simulatedProjection = useMemo(() => buildMonthlyProjection(resources, simulatedYieldOverrides), [resources, simulatedYieldOverrides]);
 
   return (
